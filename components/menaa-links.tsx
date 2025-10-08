@@ -36,7 +36,7 @@ const links = [
   {
     title: "Upcoming Events",
     description: "See what we have planned",
-    url: "#",
+    url: "/events",
     icon: Calendar,
     gradient: "from-red-600 via-rose-600 to-pink-600", // MENA red
   },
