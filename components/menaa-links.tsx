@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from "react"
 import Link from "next/link"
 import { Card } from "@/components/ui/card"
-import { Instagram, Twitter, Mail, Calendar, Globe, Heart, MessageCircle, MapPin, ExternalLink } from "lucide-react"
+import { Instagram, Mail, Calendar, Globe, Heart, MessageCircle, MapPin, ExternalLink } from "lucide-react"
 import { ArabesquePatterns } from "@/components/arabesque-patterns"
 
 const links = [
@@ -31,24 +31,24 @@ const links = [
   {
     title: "Contact Us",
     description: "Get in touch with our team",
-    url: "mailto:menaa@deanza.edu",
+    url: "mailto:menasc.da@gmail.com",
     icon: Mail,
     gradient: "from-blue-800 via-indigo-700 to-purple-700", // Deep MENA blue
   },
   {
-    title: "Our Website",
+    title: "About Us",
     description: "Learn more about MENAA",
     url: "/about",
     icon: Globe,
     gradient: "from-slate-700 via-gray-600 to-zinc-600", // Sophisticated gray
   },
-  {
-    title: "Find Us",
-    description: "Visit us at De Anza College",
-    url: "#",
-    icon: MapPin,
-    gradient: "from-amber-600 via-orange-600 to-red-600", // Warm earth tones
-  },
+  // {
+  //   title: "Find Us",
+  //   description: "Visit us at De Anza College",
+  //   url: "#",
+  //   icon: MapPin,
+  //   gradient: "from-amber-600 via-orange-600 to-red-600", // Warm earth tones
+  // },
 ]
 
 export function MENAALinks() {
@@ -383,8 +383,7 @@ export function MENAALinks() {
           <div className="flex justify-center gap-4 mb-6">
             {[
               { icon: Instagram, href: "https://instagram.com/deanzamenaa", color: "from-amber-500 to-orange-600" },
-              { icon: Twitter, href: "https://twitter.com/deanzamenaa", color: "from-emerald-500 to-teal-600" },
-              { icon: Mail, href: "mailto:menaa@deanza.edu", color: "from-blue-600 to-indigo-700" },
+              { icon: Mail, href: "mailto:menasc.da@gmail.com", color: "from-blue-600 to-indigo-700" },
             ].map((social, i) => {
               const SocialIcon = social.icon
               return (

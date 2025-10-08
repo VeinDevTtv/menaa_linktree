@@ -429,7 +429,7 @@ export default function AboutPage() {
             {[
               { icon: Instagram, href: "https://instagram.com/deanzamenaa", color: "from-amber-500 to-orange-600" },
               { icon: Twitter, href: "https://twitter.com/deanzamenaa", color: "from-emerald-500 to-teal-600" },
-              { icon: Mail, href: "mailto:menaa@deanza.edu", color: "from-blue-600 to-indigo-700" },
+              { icon: Mail, href: "mailto:menasc.da@gmail.com", color: "from-blue-600 to-indigo-700" },
             ].map((social, i) => {
               const SocialIcon = social.icon
               return (
