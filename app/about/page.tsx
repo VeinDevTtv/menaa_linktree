@@ -6,7 +6,7 @@ import { Card } from "@/components/ui/card"
 import { 
   Instagram, Twitter, Mail, Calendar, Globe, Heart, 
   MapPin, ExternalLink, Users, Target, Sparkles, Award, BookOpen, 
-  PartyPopper, ArrowLeft, Clock, MapPinned
+  PartyPopper, ArrowLeft, Clock, MapPinned, Gamepad2, Film, Trophy
 } from "lucide-react"
 import { ArabesquePatterns } from "@/components/arabesque-patterns"
 
@@ -75,22 +75,22 @@ export default function AboutPage() {
 
   const upcomingEvents = [
     {
-      title: "Cultural Night 2025",
-      date: "Coming Soon",
-      description: "Join us for an evening of traditional performances, delicious food, and vibrant cultural displays.",
-      icon: PartyPopper,
+      title: "MENAA Bingo",
+      date: "TBA",
+      description: "Join us for an exciting evening of MENAA-themed bingo! Get ready for laughter, prizes, and unforgettable moments with your friends.",
+      icon: Trophy,
     },
     {
-      title: "Weekly Meetups",
-      date: "Every Thursday",
-      description: "Casual gatherings to connect with fellow students, share stories, and enjoy great company.",
-      icon: Users,
+      title: "FIFA/Henna Night",
+      date: "TBA",
+      description: "Experience the perfect blend of competitive FIFA gaming and beautiful henna art. Show off your gaming skills or get stunning henna designs!",
+      icon: Gamepad2,
     },
     {
-      title: "Guest Speaker Series",
-      date: "Monthly",
-      description: "Hear from inspiring MENAA professionals, activists, and community leaders.",
-      icon: Award,
+      title: "Movie Night",
+      date: "TBA",
+      description: "Grab your friends and join us for a cozy movie night featuring a beloved MENAA film. Complete with popcorn, snacks, and great company.",
+      icon: Film,
     },
   ]
 

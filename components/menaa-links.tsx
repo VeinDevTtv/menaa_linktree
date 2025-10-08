@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from "react"
 import Link from "next/link"
 import { Card } from "@/components/ui/card"
-import { Instagram, Mail, Calendar, Globe, Heart, MapPin, ExternalLink } from "lucide-react"
+import { Instagram, Mail, Calendar, Globe, Heart, MapPin, ExternalLink, UserPlus } from "lucide-react"
 import { ArabesquePatterns } from "@/components/arabesque-patterns"
 
 // Custom Discord Icon component matching lucide-react style
@@ -20,47 +20,48 @@ const DiscordIcon = ({ className }: { className?: string }) => (
 
 const links = [
   {
+    title: "Become a Member!",
+    description: "Join our community today",
+    url: "/member-form",
+    icon: UserPlus,
+    gradient: "from-purple-600 via-pink-600 to-rose-600",
+    featured: true,
+  },
+  {
     title: "Instagram",
     description: "Follow our journey & events",
     url: "https://instagram.com/deanzamenaa",
     icon: Instagram,
-    gradient: "from-amber-500 via-yellow-500 to-orange-600", // Desert gold
+    gradient: "from-amber-500 via-yellow-500 to-orange-600",
   },
   {
     title: "Join Our Discord",
     description: "Connect with the community",
     url: "https://discord.gg/UAS7xXRj27",
     icon: DiscordIcon,
-    gradient: "from-emerald-600 via-teal-600 to-cyan-600", // MENA green
+    gradient: "from-emerald-600 via-teal-600 to-cyan-600",
   },
   {
     title: "Upcoming Events",
     description: "See what we have planned",
     url: "/events",
     icon: Calendar,
-    gradient: "from-red-600 via-rose-600 to-pink-600", // MENA red
-  },
-  {
-    title: "Contact Us",
-    description: "Get in touch with our team",
-    url: "mailto:menasc.da@gmail.com",
-    icon: Mail,
-    gradient: "from-blue-800 via-indigo-700 to-purple-700", // Deep MENA blue
+    gradient: "from-red-600 via-rose-600 to-pink-600",
   },
   {
     title: "About Us",
     description: "Learn more about MENAA",
     url: "/about",
     icon: Globe,
-    gradient: "from-slate-700 via-gray-600 to-zinc-600", // Sophisticated gray
+    gradient: "from-blue-800 via-indigo-700 to-purple-700",
   },
-  // {
-  //   title: "Find Us",
-  //   description: "Visit us at De Anza College",
-  //   url: "#",
-  //   icon: MapPin,
-  //   gradient: "from-amber-600 via-orange-600 to-red-600", // Warm earth tones
-  // },
+  {
+    title: "Contact Us",
+    description: "Get in touch with our team",
+    url: "mailto:menasc.da@gmail.com",
+    icon: Mail,
+    gradient: "from-slate-700 via-gray-600 to-zinc-600",
+  },
 ]
 
 export function MENAALinks() {
@@ -293,96 +294,125 @@ export function MENAALinks() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-12">
-          {links.map((link, index) => {
-            const Icon = link.icon
-            const isLarge = index === 0 || index === 3
-            const isInternal = link.url.startsWith("/")
-            const LinkWrapper = isInternal ? Link : "a"
-            const linkProps = isInternal 
-              ? { href: link.url } 
-              : { href: link.url, target: "_blank", rel: "noopener noreferrer" }
-
-            return (
-              <div
-                key={index}
-                className={`transition-all duration-700 ${
-                  mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
-                } ${isLarge ? "md:col-span-2" : ""}`}
-                style={{ transitionDelay: `${index * 100}ms` }}
-                onMouseEnter={() => setHoveredIndex(index)}
-                onMouseLeave={() => setHoveredIndex(null)}
-              >
-                <LinkWrapper {...linkProps} className="block h-full">
-                  <Card
-                    className={`group relative overflow-hidden border-white/10 bg-gradient-to-br from-white/5 to-white/10 backdrop-blur-md transition-all duration-500 hover:scale-[1.02] hover:border-white/30 h-full ${
-                      hoveredIndex === index ? "shadow-2xl shadow-amber-500/25" : "shadow-lg shadow-slate-900/20"
-                    }`}
-                  >
-                    {/* Animated gradient background */}
-                    <div
-                      className={`absolute inset-0 bg-gradient-to-br ${link.gradient} opacity-0 group-hover:opacity-20 transition-all duration-500 animate-gradient-shift`}
-                    />
-
-                    {/* Shimmer effect on hover */}
+        <div className="space-y-6 mb-12">
+          {/* Featured Member Form Section */}
+          <div 
+            className={`transition-all duration-700 ${
+              mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
+            }`}
+            style={{ transitionDelay: "0ms" }}
+          >
+            {(() => {
+              const link = links[0]
+              const Icon = link.icon
+              return (
+                <Link href={link.url} className="block">
+                  <Card className="group relative overflow-hidden border-white/20 bg-gradient-to-br from-white/10 to-white/15 backdrop-blur-md transition-all duration-500 hover:scale-[1.01] hover:border-white/40 shadow-2xl hover:shadow-purple-500/30">
+                    <div className={`absolute inset-0 bg-gradient-to-br ${link.gradient} opacity-20 group-hover:opacity-30 transition-all duration-500 animate-gradient-shift`} />
+                    
                     <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer" />
+                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/15 to-transparent animate-shimmer" />
                     </div>
 
-                    {/* MENA-inspired decorative corner patterns */}
-                    <div className="absolute top-2 right-2 w-8 h-8 opacity-20 group-hover:opacity-40 transition-opacity duration-500">
-                      <div className="w-full h-full border-t-2 border-r-2 border-amber-400 rounded-tr-lg" />
-                    </div>
-                    <div className="absolute bottom-2 left-2 w-8 h-8 opacity-20 group-hover:opacity-40 transition-opacity duration-500">
-                      <div className="w-full h-full border-b-2 border-l-2 border-emerald-400 rounded-bl-lg" />
-                    </div>
-
-                    {/* Content */}
-                    <div className={`relative ${isLarge ? "p-8" : "p-6"} flex items-center gap-6`}>
-                      {/* Icon with enhanced gradient border */}
+                    <div className="relative p-8 md:p-10 flex flex-col md:flex-row items-center gap-6 md:gap-8">
                       <div className="relative flex-shrink-0">
-                        <div
-                          className={`absolute inset-0 bg-gradient-to-br ${link.gradient} rounded-2xl blur-lg opacity-50 group-hover:opacity-100 transition-opacity duration-500`}
-                        />
-                        <div
-                          className={`relative ${isLarge ? "w-20 h-20" : "w-16 h-16"} rounded-2xl bg-gradient-to-br ${link.gradient} flex items-center justify-center transform group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-lg group-hover:shadow-2xl`}
-                        >
-                          <Icon className={`${isLarge ? "w-10 h-10" : "w-8 h-8"} text-white drop-shadow-lg`} />
+                        <div className={`absolute inset-0 bg-gradient-to-br ${link.gradient} rounded-3xl blur-2xl opacity-75 group-hover:opacity-100 transition-opacity duration-500 animate-pulse-glow`} />
+                        <div className={`relative w-24 h-24 md:w-28 md:h-28 rounded-3xl bg-gradient-to-br ${link.gradient} flex items-center justify-center transform group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-2xl`}>
+                          <Icon className="w-12 h-12 md:w-14 md:h-14 text-white drop-shadow-2xl" />
                         </div>
                       </div>
 
-                      {/* Text content with enhanced typography */}
-                      <div className="flex-1 min-w-0">
-                        <h3
-                          className={`${isLarge ? "text-2xl md:text-3xl" : "text-xl md:text-2xl"} font-bold mb-2 text-white group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:${link.gradient} group-hover:bg-clip-text transition-all duration-500 text-balance tracking-tight`}
-                        >
+                      <div className="flex-1 text-center md:text-left">
+                        <h3 className="text-3xl md:text-4xl font-bold mb-3 bg-gradient-to-r from-purple-300 via-pink-300 to-rose-300 bg-clip-text text-transparent animate-gradient-shift">
                           {link.title}
                         </h3>
-                        <p
-                          className={`${isLarge ? "text-base leading-relaxed" : "text-sm leading-relaxed"} text-white/60 group-hover:text-white/80 transition-colors duration-500 text-pretty`}
-                        >
+                        <p className="text-lg md:text-xl text-white/80 leading-relaxed">
                           {link.description}
                         </p>
                       </div>
 
-                      {/* Enhanced arrow with MENA styling */}
-                      <div className="flex-shrink-0 transform group-hover:translate-x-2 group-hover:scale-110 transition-all duration-500">
-                        <div className="relative">
-                          <ExternalLink className="w-6 h-6 text-white/40 group-hover:text-white transition-colors duration-500 drop-shadow-sm" />
-                          <div className="absolute inset-0 w-6 h-6 bg-gradient-to-br from-amber-400/20 to-emerald-400/20 rounded-full blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                        </div>
+                      <div className="flex-shrink-0 transform group-hover:translate-x-3 group-hover:scale-125 transition-all duration-500">
+                        <ExternalLink className="w-8 h-8 text-white/60 group-hover:text-white transition-colors duration-500 drop-shadow-lg" />
                       </div>
                     </div>
 
-                    {/* Bottom glow effect */}
-                    <div
-                      className={`absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r ${link.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-500`}
-                    />
+                    <div className={`absolute bottom-0 left-0 right-0 h-1.5 bg-gradient-to-r ${link.gradient} opacity-60 group-hover:opacity-100 transition-opacity duration-500`} />
                   </Card>
-                </LinkWrapper>
-              </div>
-            )
-          })}
+                </Link>
+              )
+            })()}
+          </div>
+
+          {/* Other Links Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {links.slice(1).map((link, index) => {
+              const actualIndex = index + 1
+              const Icon = link.icon
+              const isInternal = link.url.startsWith("/")
+              const LinkWrapper = isInternal ? Link : "a"
+              const linkProps = isInternal 
+                ? { href: link.url } 
+                : { href: link.url, target: "_blank", rel: "noopener noreferrer" }
+
+              return (
+                <div
+                  key={actualIndex}
+                  className={`transition-all duration-700 ${
+                    mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
+                  }`}
+                  style={{ transitionDelay: `${actualIndex * 100}ms` }}
+                  onMouseEnter={() => setHoveredIndex(actualIndex)}
+                  onMouseLeave={() => setHoveredIndex(null)}
+                >
+                  <LinkWrapper {...linkProps} className="block h-full">
+                    <Card className={`group relative overflow-hidden border-white/10 bg-gradient-to-br from-white/5 to-white/10 backdrop-blur-md transition-all duration-500 hover:scale-[1.02] hover:border-white/30 h-full ${
+                      hoveredIndex === actualIndex ? "shadow-2xl shadow-amber-500/25" : "shadow-lg shadow-slate-900/20"
+                    }`}>
+                      <div className={`absolute inset-0 bg-gradient-to-br ${link.gradient} opacity-0 group-hover:opacity-20 transition-all duration-500 animate-gradient-shift`} />
+
+                      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer" />
+                      </div>
+
+                      <div className="absolute top-2 right-2 w-8 h-8 opacity-20 group-hover:opacity-40 transition-opacity duration-500">
+                        <div className="w-full h-full border-t-2 border-r-2 border-amber-400 rounded-tr-lg" />
+                      </div>
+                      <div className="absolute bottom-2 left-2 w-8 h-8 opacity-20 group-hover:opacity-40 transition-opacity duration-500">
+                        <div className="w-full h-full border-b-2 border-l-2 border-emerald-400 rounded-bl-lg" />
+                      </div>
+
+                      <div className="relative p-6 flex items-center gap-6">
+                        <div className="relative flex-shrink-0">
+                          <div className={`absolute inset-0 bg-gradient-to-br ${link.gradient} rounded-2xl blur-lg opacity-50 group-hover:opacity-100 transition-opacity duration-500`} />
+                          <div className={`relative w-16 h-16 rounded-2xl bg-gradient-to-br ${link.gradient} flex items-center justify-center transform group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-lg group-hover:shadow-2xl`}>
+                            <Icon className="w-8 h-8 text-white drop-shadow-lg" />
+                          </div>
+                        </div>
+
+                        <div className="flex-1 min-w-0">
+                          <h3 className="text-xl md:text-2xl font-bold mb-2 text-white group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:bg-clip-text transition-all duration-500 text-balance tracking-tight">
+                            {link.title}
+                          </h3>
+                          <p className="text-sm leading-relaxed text-white/60 group-hover:text-white/80 transition-colors duration-500 text-pretty">
+                            {link.description}
+                          </p>
+                        </div>
+
+                        <div className="flex-shrink-0 transform group-hover:translate-x-2 group-hover:scale-110 transition-all duration-500">
+                          <div className="relative">
+                            <ExternalLink className="w-6 h-6 text-white/40 group-hover:text-white transition-colors duration-500 drop-shadow-sm" />
+                            <div className="absolute inset-0 w-6 h-6 bg-gradient-to-br from-amber-400/20 to-emerald-400/20 rounded-full blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className={`absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r ${link.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
+                    </Card>
+                  </LinkWrapper>
+                </div>
+              )
+            })}
+          </div>
         </div>
 
         <div
