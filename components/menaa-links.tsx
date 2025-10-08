@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect, useRef } from "react"
+import Link from "next/link"
 import { Card } from "@/components/ui/card"
 import { Instagram, Twitter, Mail, Calendar, Globe, Heart, MessageCircle, MapPin, ExternalLink } from "lucide-react"
 import { ArabesquePatterns } from "@/components/arabesque-patterns"
@@ -37,7 +38,7 @@ const links = [
   {
     title: "Our Website",
     description: "Learn more about MENAA",
-    url: "#",
+    url: "/about",
     icon: Globe,
     gradient: "from-slate-700 via-gray-600 to-zinc-600", // Sophisticated gray
   },
@@ -284,6 +285,11 @@ export function MENAALinks() {
           {links.map((link, index) => {
             const Icon = link.icon
             const isLarge = index === 0 || index === 3
+            const isInternal = link.url.startsWith("/")
+            const LinkWrapper = isInternal ? Link : "a"
+            const linkProps = isInternal 
+              ? { href: link.url } 
+              : { href: link.url, target: "_blank", rel: "noopener noreferrer" }
 
             return (
               <div
@@ -295,7 +301,7 @@ export function MENAALinks() {
                 onMouseEnter={() => setHoveredIndex(index)}
                 onMouseLeave={() => setHoveredIndex(null)}
               >
-                <a href={link.url} target="_blank" rel="noopener noreferrer" className="block h-full">
+                <LinkWrapper {...linkProps} className="block h-full">
                   <Card
                     className={`group relative overflow-hidden border-white/10 bg-gradient-to-br from-white/5 to-white/10 backdrop-blur-md transition-all duration-500 hover:scale-[1.02] hover:border-white/30 h-full ${
                       hoveredIndex === index ? "shadow-2xl shadow-amber-500/25" : "shadow-lg shadow-slate-900/20"
@@ -361,7 +367,7 @@ export function MENAALinks() {
                       className={`absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r ${link.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-500`}
                     />
                   </Card>
-                </a>
+                </LinkWrapper>
               </div>
             )
           })}
