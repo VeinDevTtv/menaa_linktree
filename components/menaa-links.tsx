@@ -78,59 +78,97 @@ export function MENAALinks() {
   return (
     <div
       ref={containerRef}
-      className="min-h-screen relative overflow-hidden bg-gradient-to-br from-slate-900 via-amber-950 to-slate-900"
+      className="min-h-screen relative overflow-hidden bg-gradient-to-br from-slate-900 via-amber-900 to-emerald-950"
     >
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {/* MENA-inspired morphing gradient blobs */}
+        {/* Enhanced MENA-inspired morphing gradient blobs with richer colors */}
         <div
-          className="absolute top-0 left-1/4 w-96 h-96 bg-gradient-to-br from-amber-600/20 to-orange-600/20 animate-morph blur-3xl"
+          className="absolute top-0 left-1/4 w-96 h-96 bg-gradient-to-br from-amber-500/30 to-orange-500/30 animate-morph blur-3xl"
           style={{ animationDelay: "0s" }}
         />
         <div
-          className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-gradient-to-br from-emerald-600/20 to-teal-600/20 animate-morph blur-3xl"
+          className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-gradient-to-br from-emerald-500/25 to-teal-500/25 animate-morph blur-3xl"
           style={{ animationDelay: "3s" }}
         />
         <div
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-br from-blue-800/15 to-indigo-700/15 animate-morph blur-3xl"
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-br from-blue-600/20 to-indigo-600/20 animate-morph blur-3xl"
           style={{ animationDelay: "6s" }}
         />
         <div
-          className="absolute top-1/4 right-1/3 w-[400px] h-[400px] bg-gradient-to-br from-red-600/15 to-rose-600/15 animate-morph blur-3xl"
+          className="absolute top-1/4 right-1/3 w-[400px] h-[400px] bg-gradient-to-br from-red-500/20 to-rose-500/20 animate-morph blur-3xl"
           style={{ animationDelay: "4s" }}
         />
-
-        {/* 3D Floating Geometric Elements - MENA Inspired */}
-        {/* Floating pyramids */}
-        <div className="absolute top-32 right-32 w-16 h-16 bg-gradient-to-b from-amber-500 to-amber-700 transform rotate-45 animate-float-3d opacity-60" />
-        <div className="absolute bottom-32 left-32 w-20 h-20 bg-gradient-to-b from-emerald-500 to-emerald-700 transform rotate-12 animate-float-3d-reverse opacity-50" style={{ animationDelay: "2s" }} />
         
-        {/* Floating geometric shapes */}
-        <div className="absolute top-1/3 left-1/4 w-12 h-12 bg-gradient-to-br from-blue-600 to-indigo-700 transform rotate-45 animate-rotate-3d opacity-40" />
-        <div className="absolute bottom-1/3 right-1/3 w-14 h-14 bg-gradient-to-br from-red-600 to-rose-700 transform rotate-12 animate-rotate-3d-reverse opacity-45" style={{ animationDelay: "3s" }} />
-        
-        {/* Arabesque-inspired floating elements */}
-        <div className="absolute top-20 left-1/2 w-8 h-8 border-2 border-amber-400/30 rounded-full animate-pulse-3d opacity-50" />
-        <div className="absolute bottom-20 right-1/2 w-10 h-10 border-2 border-emerald-400/30 rounded-full animate-pulse-3d opacity-50" style={{ animationDelay: "1s" }} />
-
-        {/* Rotating geometric patterns - MENA style */}
-        <div className="absolute top-20 right-20 w-64 h-64 border border-amber-400/10 rounded-full animate-rotate-slow" />
+        {/* Additional vibrant color blobs for richer MENA palette */}
         <div
-          className="absolute bottom-20 left-20 w-80 h-80 border border-emerald-400/10 rounded-full animate-rotate-slow"
+          className="absolute top-3/4 left-1/3 w-[450px] h-[450px] bg-gradient-to-br from-purple-600/15 to-pink-600/15 animate-morph blur-3xl"
+          style={{ animationDelay: "7s" }}
+        />
+        <div
+          className="absolute bottom-1/4 right-1/2 w-[350px] h-[350px] bg-gradient-to-br from-cyan-600/20 to-blue-500/20 animate-morph blur-3xl"
+          style={{ animationDelay: "5s" }}
+        />
+
+        {/* Enhanced 3D Floating Geometric Elements - MENA Inspired */}
+        
+        {/* Large floating pyramids with shadows */}
+        <div className="absolute top-24 right-24 w-24 h-24 bg-gradient-to-b from-amber-400 via-amber-500 to-amber-700 transform rotate-45 animate-float-3d opacity-70 shadow-2xl shadow-amber-500/50" />
+        <div className="absolute bottom-24 left-24 w-28 h-28 bg-gradient-to-b from-emerald-400 via-emerald-500 to-emerald-700 transform rotate-12 animate-float-3d-reverse opacity-65 shadow-2xl shadow-emerald-500/50" style={{ animationDelay: "2s" }} />
+        
+        {/* Medium pyramids */}
+        <div className="absolute top-1/4 left-1/3 w-20 h-20 bg-gradient-to-b from-blue-400 via-blue-500 to-blue-700 transform -rotate-12 animate-float-3d opacity-60 shadow-xl shadow-blue-500/40" style={{ animationDelay: "4s" }} />
+        <div className="absolute bottom-1/3 right-1/4 w-22 h-22 bg-gradient-to-b from-red-400 via-red-500 to-red-700 transform rotate-45 animate-float-3d-reverse opacity-65 shadow-xl shadow-red-500/40" style={{ animationDelay: "6s" }} />
+        
+        {/* Rotating 3D cubes */}
+        <div className="absolute top-1/3 left-1/4 w-16 h-16 bg-gradient-to-br from-purple-500 to-indigo-700 transform rotate-45 animate-rotate-3d opacity-55 shadow-xl shadow-purple-500/30" />
+        <div className="absolute bottom-1/3 right-1/3 w-18 h-18 bg-gradient-to-br from-pink-500 to-rose-700 transform rotate-12 animate-rotate-3d-reverse opacity-60 shadow-xl shadow-pink-500/30" style={{ animationDelay: "3s" }} />
+        
+        {/* Additional floating geometric shapes */}
+        <div className="absolute top-1/2 right-1/4 w-14 h-14 bg-gradient-to-br from-cyan-500 to-teal-700 transform -rotate-45 animate-rotate-3d opacity-50 shadow-lg shadow-cyan-500/30" style={{ animationDelay: "5s" }} />
+        <div className="absolute top-3/4 left-1/2 w-16 h-16 bg-gradient-to-br from-orange-500 to-amber-700 transform rotate-30 animate-float-3d opacity-55 shadow-lg shadow-orange-500/30" style={{ animationDelay: "7s" }} />
+        
+        {/* Arabesque-inspired floating circles with enhanced glow */}
+        <div className="absolute top-20 left-1/2 w-12 h-12 border-3 border-amber-400/50 rounded-full animate-pulse-3d opacity-60 shadow-lg shadow-amber-400/40" />
+        <div className="absolute bottom-20 right-1/2 w-14 h-14 border-3 border-emerald-400/50 rounded-full animate-pulse-3d opacity-60 shadow-lg shadow-emerald-400/40" style={{ animationDelay: "1s" }} />
+        <div className="absolute top-1/2 left-1/6 w-10 h-10 border-3 border-blue-400/50 rounded-full animate-pulse-3d opacity-55 shadow-lg shadow-blue-400/40" style={{ animationDelay: "2.5s" }} />
+        <div className="absolute bottom-1/2 right-1/6 w-11 h-11 border-3 border-red-400/50 rounded-full animate-pulse-3d opacity-55 shadow-lg shadow-red-400/40" style={{ animationDelay: "4.5s" }} />
+        
+        {/* Floating stars - Islamic geometric motifs */}
+        <div className="absolute top-40 left-20 w-16 h-16">
+          <div className="absolute inset-0 bg-gradient-to-br from-yellow-400 to-amber-600 opacity-70 shadow-xl shadow-yellow-500/50" style={{ clipPath: "polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%)" }} />
+        </div>
+        <div className="absolute bottom-40 right-20 w-18 h-18 animate-float-3d" style={{ animationDelay: "3s" }}>
+          <div className="absolute inset-0 bg-gradient-to-br from-teal-400 to-emerald-600 opacity-70 shadow-xl shadow-teal-500/50" style={{ clipPath: "polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%)" }} />
+        </div>
+
+        {/* Enhanced rotating geometric patterns - MENA style with richer colors */}
+        <div className="absolute top-20 right-20 w-64 h-64 border-2 border-amber-400/20 rounded-full animate-rotate-slow shadow-lg shadow-amber-400/10" />
+        <div
+          className="absolute bottom-20 left-20 w-80 h-80 border-2 border-emerald-400/20 rounded-full animate-rotate-slow shadow-lg shadow-emerald-400/10"
           style={{ animationDirection: "reverse" }}
         />
         
-        {/* Additional geometric rings */}
-        <div className="absolute top-1/2 left-10 w-48 h-48 border border-blue-400/10 rounded-full animate-rotate-slow" style={{ animationDelay: "5s" }} />
-        <div className="absolute bottom-1/2 right-10 w-56 h-56 border border-red-400/10 rounded-full animate-rotate-slow" style={{ animationDelay: "7s", animationDirection: "reverse" }} />
+        {/* Additional enhanced geometric rings */}
+        <div className="absolute top-1/2 left-10 w-48 h-48 border-2 border-blue-400/20 rounded-full animate-rotate-slow shadow-lg shadow-blue-400/10" style={{ animationDelay: "5s" }} />
+        <div className="absolute bottom-1/2 right-10 w-56 h-56 border-2 border-red-400/20 rounded-full animate-rotate-slow shadow-lg shadow-red-400/10" style={{ animationDelay: "7s", animationDirection: "reverse" }} />
+        
+        {/* Nested ornamental rings */}
+        <div className="absolute top-32 right-32 w-48 h-48 border border-purple-400/15 rounded-full animate-rotate-slow" style={{ animationDelay: "2s" }} />
+        <div className="absolute bottom-32 left-32 w-64 h-64 border border-pink-400/15 rounded-full animate-rotate-slow" style={{ animationDelay: "4s", animationDirection: "reverse" }} />
 
-        {/* Enhanced sparkle effects with MENA colors - optimized for performance */}
-        {[...Array(25)].map((_, i) => (
+        {/* Enhanced sparkle effects with vibrant MENA colors - optimized for performance */}
+        {[...Array(35)].map((_, i) => (
           <div
             key={i}
-            className={`absolute w-1 h-1 rounded-full animate-sparkle ${
-              i % 4 === 0 ? 'bg-amber-400' : 
-              i % 4 === 1 ? 'bg-emerald-400' : 
-              i % 4 === 2 ? 'bg-blue-400' : 'bg-red-400'
+            className={`absolute w-1.5 h-1.5 rounded-full animate-sparkle ${
+              i % 8 === 0 ? 'bg-amber-400 shadow-lg shadow-amber-400/50' : 
+              i % 8 === 1 ? 'bg-emerald-400 shadow-lg shadow-emerald-400/50' : 
+              i % 8 === 2 ? 'bg-blue-400 shadow-lg shadow-blue-400/50' : 
+              i % 8 === 3 ? 'bg-red-400 shadow-lg shadow-red-400/50' :
+              i % 8 === 4 ? 'bg-purple-400 shadow-lg shadow-purple-400/50' :
+              i % 8 === 5 ? 'bg-pink-400 shadow-lg shadow-pink-400/50' :
+              i % 8 === 6 ? 'bg-cyan-400 shadow-lg shadow-cyan-400/50' :
+              'bg-orange-400 shadow-lg shadow-orange-400/50'
             } hidden md:block`}
             style={{
               left: `${Math.random() * 100}%`,
@@ -143,13 +181,16 @@ export function MENAALinks() {
         ))}
         
         {/* Reduced sparkles for mobile devices */}
-        {[...Array(10)].map((_, i) => (
+        {[...Array(15)].map((_, i) => (
           <div
             key={`mobile-${i}`}
-            className={`absolute w-1 h-1 rounded-full animate-sparkle ${
-              i % 4 === 0 ? 'bg-amber-400' : 
-              i % 4 === 1 ? 'bg-emerald-400' : 
-              i % 4 === 2 ? 'bg-blue-400' : 'bg-red-400'
+            className={`absolute w-1.5 h-1.5 rounded-full animate-sparkle ${
+              i % 6 === 0 ? 'bg-amber-400' : 
+              i % 6 === 1 ? 'bg-emerald-400' : 
+              i % 6 === 2 ? 'bg-blue-400' : 
+              i % 6 === 3 ? 'bg-red-400' :
+              i % 6 === 4 ? 'bg-purple-400' :
+              'bg-cyan-400'
             } block md:hidden`}
             style={{
               left: `${Math.random() * 100}%`,
@@ -164,13 +205,23 @@ export function MENAALinks() {
         {/* MENA Arabesque Patterns */}
         <ArabesquePatterns />
 
+        {/* Enhanced cursor glow with MENA colors */}
         <div
           className="absolute w-96 h-96 rounded-full pointer-events-none transition-all duration-300 ease-out"
           style={{
             left: mousePosition.x - 192,
             top: mousePosition.y - 192,
-            background: "radial-gradient(circle, rgba(245, 158, 11, 0.15) 0%, transparent 70%)",
+            background: "radial-gradient(circle, rgba(251, 191, 36, 0.2) 0%, rgba(16, 185, 129, 0.15) 40%, rgba(59, 130, 246, 0.1) 60%, transparent 80%)",
             opacity: mounted ? 1 : 0,
+          }}
+        />
+        <div
+          className="absolute w-64 h-64 rounded-full pointer-events-none transition-all duration-500 ease-out blur-xl"
+          style={{
+            left: mousePosition.x - 128,
+            top: mousePosition.y - 128,
+            background: "radial-gradient(circle, rgba(251, 191, 36, 0.25) 0%, rgba(16, 185, 129, 0.2) 50%, transparent 70%)",
+            opacity: mounted ? 0.8 : 0,
           }}
         />
       </div>

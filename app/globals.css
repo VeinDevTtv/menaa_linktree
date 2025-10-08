@@ -209,78 +209,78 @@
 
 @keyframes float-3d {
   0%, 100% {
-    transform: translateY(0px) translateZ(0px) rotateX(0deg);
+    transform: translateY(0px) translateZ(0px) rotateX(0deg) rotateY(0deg);
   }
   25% {
-    transform: translateY(-20px) translateZ(10px) rotateX(5deg);
+    transform: translateY(-25px) translateZ(15px) rotateX(8deg) rotateY(5deg);
   }
   50% {
-    transform: translateY(-10px) translateZ(20px) rotateX(0deg);
+    transform: translateY(-15px) translateZ(30px) rotateX(0deg) rotateY(10deg);
   }
   75% {
-    transform: translateY(-30px) translateZ(10px) rotateX(-5deg);
+    transform: translateY(-35px) translateZ(15px) rotateX(-8deg) rotateY(5deg);
   }
 }
 
 @keyframes float-3d-reverse {
   0%, 100% {
-    transform: translateY(0px) translateZ(0px) rotateX(0deg);
+    transform: translateY(0px) translateZ(0px) rotateX(0deg) rotateY(0deg);
   }
   25% {
-    transform: translateY(20px) translateZ(-10px) rotateX(-5deg);
+    transform: translateY(25px) translateZ(-15px) rotateX(-8deg) rotateY(-5deg);
   }
   50% {
-    transform: translateY(10px) translateZ(-20px) rotateX(0deg);
+    transform: translateY(15px) translateZ(-30px) rotateX(0deg) rotateY(-10deg);
   }
   75% {
-    transform: translateY(30px) translateZ(-10px) rotateX(5deg);
+    transform: translateY(35px) translateZ(-15px) rotateX(8deg) rotateY(-5deg);
   }
 }
 
 @keyframes rotate-3d {
   0% {
-    transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg);
+    transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg) scale(1);
   }
   25% {
-    transform: rotateX(90deg) rotateY(90deg) rotateZ(45deg);
+    transform: rotateX(90deg) rotateY(90deg) rotateZ(45deg) scale(1.05);
   }
   50% {
-    transform: rotateX(180deg) rotateY(180deg) rotateZ(90deg);
+    transform: rotateX(180deg) rotateY(180deg) rotateZ(90deg) scale(1.1);
   }
   75% {
-    transform: rotateX(270deg) rotateY(270deg) rotateZ(135deg);
+    transform: rotateX(270deg) rotateY(270deg) rotateZ(135deg) scale(1.05);
   }
   100% {
-    transform: rotateX(360deg) rotateY(360deg) rotateZ(180deg);
+    transform: rotateX(360deg) rotateY(360deg) rotateZ(180deg) scale(1);
   }
 }
 
 @keyframes rotate-3d-reverse {
   0% {
-    transform: rotateX(360deg) rotateY(360deg) rotateZ(180deg);
+    transform: rotateX(360deg) rotateY(360deg) rotateZ(180deg) scale(1);
   }
   25% {
-    transform: rotateX(270deg) rotateY(270deg) rotateZ(135deg);
+    transform: rotateX(270deg) rotateY(270deg) rotateZ(135deg) scale(1.05);
   }
   50% {
-    transform: rotateX(180deg) rotateY(180deg) rotateZ(90deg);
+    transform: rotateX(180deg) rotateY(180deg) rotateZ(90deg) scale(1.1);
   }
   75% {
-    transform: rotateX(90deg) rotateY(90deg) rotateZ(45deg);
+    transform: rotateX(90deg) rotateY(90deg) rotateZ(45deg) scale(1.05);
   }
   100% {
-    transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg);
+    transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg) scale(1);
   }
 }
 
 @keyframes pulse-3d {
   0%, 100% {
-    transform: scale(1) translateZ(0px);
-    opacity: 0.5;
+    transform: scale(1) translateZ(0px) rotate(0deg);
+    opacity: 0.6;
   }
   50% {
-    transform: scale(1.2) translateZ(10px);
-    opacity: 0.8;
+    transform: scale(1.3) translateZ(15px) rotate(180deg);
+    opacity: 0.9;
   }
 }
 
@@ -318,26 +318,36 @@
 .animate-float-3d {
   animation: float-3d 8s ease-in-out infinite;
   will-change: transform;
+  perspective: 1000px;
+  transform-style: preserve-3d;
 }
 
 .animate-float-3d-reverse {
   animation: float-3d-reverse 8s ease-in-out infinite;
   will-change: transform;
+  perspective: 1000px;
+  transform-style: preserve-3d;
 }
 
 .animate-rotate-3d {
   animation: rotate-3d 12s linear infinite;
   will-change: transform;
+  perspective: 1000px;
+  transform-style: preserve-3d;
 }
 
 .animate-rotate-3d-reverse {
   animation: rotate-3d-reverse 12s linear infinite;
   will-change: transform;
+  perspective: 1000px;
+  transform-style: preserve-3d;
 }
 
 .animate-pulse-3d {
   animation: pulse-3d 4s ease-in-out infinite;
   will-change: transform, opacity;
+  perspective: 1000px;
+  transform-style: preserve-3d;
 }
 
 /* Performance optimizations for mobile devices */
