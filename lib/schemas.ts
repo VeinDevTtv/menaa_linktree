@@ -9,9 +9,11 @@ export const officerApplicationSchema = z.object({
   availability: z.string().min(1, "Availability is required"),
   whyJoin: z.string().min(1, "This field is required"),
   experience: z.string().optional(),
-  codeOfConduct: z.literal(true, {
-    errorMap: () => ({ message: "You must accept the Code of Conduct" }),
-  }),
+  codeOfConduct: z
+    .boolean()
+    .refine((val) => val === true, {
+      message: "You must accept the Code of Conduct",
+    }),
   website: z.string().optional(),
 })
 
