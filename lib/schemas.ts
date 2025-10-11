@@ -33,6 +33,11 @@ export const memberRegistrationSchema = z.object({
   attendance: z.enum(["yes", "no"], {
     required_error: "Please select an option",
   }),
+  codeOfConduct: z
+    .boolean()
+    .refine((val) => val === true, {
+      message: "You must accept the Code of Conduct",
+    }),
   website: z.string().optional(),
 })
 
