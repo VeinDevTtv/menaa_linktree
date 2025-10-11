@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react"
 import Link from "next/link"
+import Image from "next/image"
 import { Card } from "@/components/ui/card"
 import { 
   Calendar, Heart, ArrowLeft, Sparkles, Users, 
@@ -53,8 +54,8 @@ export default function EventsPage() {
       time: "Evening",
       location: "De Anza College",
       icon: Trophy,
-      gradient: "from-amber-500 via-yellow-500 to-orange-600",
-      accentColor: "amber",
+      gradient: "from-orange-500 via-orange-600 to-orange-700",
+      accentColor: "orange",
       highlights: [
         "Amazing prizes to be won",
         "Traditional MENAA snacks",
@@ -71,8 +72,8 @@ export default function EventsPage() {
       time: "Evening",
       location: "De Anza College",
       icon: Gamepad2,
-      gradient: "from-emerald-600 via-teal-600 to-cyan-600",
-      accentColor: "emerald",
+      gradient: "from-amber-600 via-yellow-600 to-amber-700",
+      accentColor: "amber",
       highlights: [
         "FIFA tournament with prizes",
         "Professional henna artists",
@@ -89,8 +90,8 @@ export default function EventsPage() {
       time: "Evening",
       location: "De Anza College",
       icon: Film,
-      gradient: "from-red-600 via-rose-600 to-pink-600",
-      accentColor: "rose",
+      gradient: "from-yellow-600 via-amber-600 to-orange-600",
+      accentColor: "yellow",
       highlights: [
         "Carefully selected MENAA film",
         "Popcorn & refreshments",
@@ -104,34 +105,34 @@ export default function EventsPage() {
   return (
     <div
       ref={containerRef}
-      className="min-h-screen relative overflow-hidden bg-gradient-to-br from-slate-900 via-amber-900 to-emerald-950"
+      className="min-h-screen relative overflow-hidden bg-gradient-to-br from-stone-950 via-amber-950 to-orange-950"
     >
-      {/* Enhanced Background Effects with Parallax */}
+      {/* Enhanced Background Effects with Parallax - MENAA Orange/Brown/Yellow */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         {/* Parallax morphing gradient blobs */}
         <div
-          className="absolute top-0 left-1/4 w-96 h-96 bg-gradient-to-br from-amber-500/30 to-orange-500/30 animate-morph blur-3xl"
+          className="absolute top-0 left-1/4 w-96 h-96 bg-gradient-to-br from-orange-500/30 to-yellow-500/30 animate-gooey-morph blur-3xl"
           style={{ 
             animationDelay: "0s",
             transform: `translateY(${scrollY * 0.3}px)`
           }}
         />
         <div
-          className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-gradient-to-br from-emerald-500/25 to-teal-500/25 animate-morph blur-3xl"
+          className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-gradient-to-br from-amber-600/25 to-orange-600/25 animate-gooey-morph blur-3xl"
           style={{ 
             animationDelay: "3s",
             transform: `translateY(${scrollY * -0.2}px)`
           }}
         />
         <div
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-br from-blue-600/20 to-indigo-600/20 animate-morph blur-3xl"
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-br from-yellow-600/20 to-amber-700/20 animate-gooey-morph blur-3xl"
           style={{ 
             animationDelay: "6s",
             transform: `translateY(${scrollY * 0.15}px)`
           }}
         />
         <div
-          className="absolute top-1/4 right-1/3 w-[400px] h-[400px] bg-gradient-to-br from-red-500/20 to-rose-500/20 animate-morph blur-3xl"
+          className="absolute top-1/4 right-1/3 w-[400px] h-[400px] bg-gradient-to-br from-orange-500/20 to-amber-500/20 animate-gooey-morph blur-3xl"
           style={{ 
             animationDelay: "4s",
             transform: `translateY(${scrollY * 0.25}px)`
@@ -140,18 +141,18 @@ export default function EventsPage() {
 
         {/* Floating 3D geometric shapes with parallax */}
         <div 
-          className="absolute top-24 right-24 w-20 h-20 bg-gradient-to-b from-amber-400 via-amber-500 to-amber-700 transform rotate-45 animate-float-3d opacity-70 shadow-2xl shadow-amber-500/50"
+          className="absolute top-24 right-24 w-20 h-20 bg-gradient-to-b from-orange-400 via-orange-500 to-orange-700 transform rotate-45 animate-float-3d opacity-70 shadow-2xl shadow-orange-500/50"
           style={{ transform: `translateY(${scrollY * 0.4}px) rotate(45deg)` }}
         />
         <div 
-          className="absolute bottom-32 left-32 w-24 h-24 bg-gradient-to-b from-emerald-400 via-emerald-500 to-emerald-700 transform rotate-12 animate-float-3d-reverse opacity-65 shadow-2xl shadow-emerald-500/50"
+          className="absolute bottom-32 left-32 w-24 h-24 bg-gradient-to-b from-yellow-400 via-yellow-500 to-amber-700 transform rotate-12 animate-float-3d-reverse opacity-65 shadow-2xl shadow-yellow-500/50"
           style={{ 
             animationDelay: "2s",
             transform: `translateY(${scrollY * -0.3}px) rotate(12deg)`
           }}
         />
         <div 
-          className="absolute top-1/3 left-1/4 w-16 h-16 bg-gradient-to-br from-purple-500 to-indigo-700 transform rotate-45 animate-rotate-3d opacity-55 shadow-xl shadow-purple-500/30"
+          className="absolute top-1/3 left-1/4 w-16 h-16 bg-gradient-to-br from-amber-500 to-orange-700 transform rotate-45 animate-rotate-3d opacity-55 shadow-xl shadow-amber-500/30"
           style={{ transform: `translateY(${scrollY * 0.2}px)` }}
         />
 
@@ -169,7 +170,7 @@ export default function EventsPage() {
             transform: `translateY(${scrollY * -0.4}px)`
           }}
         >
-          <div className="absolute inset-0 bg-gradient-to-br from-teal-400 to-emerald-600 opacity-70 shadow-xl shadow-teal-500/50" style={{ clipPath: "polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%)" }} />
+          <div className="absolute inset-0 bg-gradient-to-br from-orange-400 to-amber-600 opacity-70 shadow-xl shadow-orange-500/50" style={{ clipPath: "polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%)" }} />
         </div>
 
         {/* Enhanced sparkle effects */}
@@ -177,13 +178,9 @@ export default function EventsPage() {
           <div
             key={i}
             className={`absolute w-1.5 h-1.5 rounded-full animate-sparkle ${
-              i % 7 === 0 ? 'bg-amber-400 shadow-lg shadow-amber-400/50' : 
-              i % 7 === 1 ? 'bg-emerald-400 shadow-lg shadow-emerald-400/50' : 
-              i % 7 === 2 ? 'bg-blue-400 shadow-lg shadow-blue-400/50' : 
-              i % 7 === 3 ? 'bg-red-400 shadow-lg shadow-red-400/50' :
-              i % 7 === 4 ? 'bg-purple-400 shadow-lg shadow-purple-400/50' :
-              i % 7 === 5 ? 'bg-pink-400 shadow-lg shadow-pink-400/50' :
-              'bg-cyan-400 shadow-lg shadow-cyan-400/50'
+              i % 3 === 0 ? 'bg-orange-400 shadow-lg shadow-orange-400/50' : 
+              i % 3 === 1 ? 'bg-yellow-400 shadow-lg shadow-yellow-400/50' : 
+              'bg-amber-400 shadow-lg shadow-amber-400/50'
             } hidden md:block`}
             style={{
               left: `${Math.random() * 100}%`,
@@ -204,7 +201,7 @@ export default function EventsPage() {
           style={{
             left: mousePosition.x - 192,
             top: mousePosition.y - 192,
-            background: "radial-gradient(circle, rgba(251, 191, 36, 0.25) 0%, rgba(16, 185, 129, 0.2) 40%, rgba(239, 68, 68, 0.15) 60%, transparent 80%)",
+            background: "radial-gradient(circle, rgba(249, 115, 22, 0.25) 0%, rgba(234, 179, 8, 0.2) 40%, rgba(180, 83, 9, 0.15) 60%, transparent 80%)",
             opacity: mounted ? 1 : 0,
           }}
         />
@@ -214,7 +211,7 @@ export default function EventsPage() {
         {/* Back Button with enhanced styling */}
         <Link 
           href="/"
-          className={`inline-flex items-center gap-2 mb-8 px-6 py-3 bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 hover:border-white/40 rounded-2xl text-white transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-amber-500/20 ${
+          className={`inline-flex items-center gap-2 mb-8 px-6 py-3 bg-orange-950/40 hover:bg-orange-950/60 backdrop-blur-md border border-orange-500/20 hover:border-orange-400/40 rounded-2xl text-white transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-orange-500/20 ${
             mounted ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-10"
           }`}
         >
@@ -231,18 +228,25 @@ export default function EventsPage() {
           {/* Animated Logo */}
           <div className="mb-8 flex justify-center">
             <div className="relative group">
-              <div className="absolute inset-0 bg-gradient-to-r from-amber-500 via-emerald-500 to-rose-600 rounded-3xl blur-2xl opacity-75 group-hover:opacity-100 animate-gradient-shift" />
-              <div className="absolute inset-0 bg-gradient-to-r from-rose-600 via-amber-500 to-emerald-500 rounded-3xl animate-rotate-slow opacity-50" />
+              <div className="absolute inset-0 bg-gradient-to-r from-orange-500 via-yellow-500 to-amber-600 rounded-3xl blur-2xl opacity-75 group-hover:opacity-100 animate-border-flow" />
+              <div className="absolute inset-0 bg-gradient-to-r from-orange-500 via-yellow-500 to-amber-600 rounded-3xl animate-rotate-slow opacity-50" />
               
-              <div className="relative w-32 h-32 bg-gradient-to-br from-amber-500 via-emerald-500 to-rose-600 rounded-3xl flex items-center justify-center shadow-2xl transform group-hover:scale-110 group-hover:rotate-6 transition-all duration-500">
-                <div className="absolute inset-2 bg-slate-900 rounded-2xl flex items-center justify-center">
-                  <Calendar className="w-16 h-16 text-transparent bg-gradient-to-br from-amber-300 via-emerald-300 to-rose-300 bg-clip-text animate-pulse" />
+              <div className="relative w-32 h-32 bg-gradient-to-br from-orange-500 via-yellow-500 to-amber-600 rounded-3xl flex items-center justify-center shadow-2xl transform group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 overflow-hidden">
+                <div className="absolute inset-2 bg-stone-950 rounded-2xl flex items-center justify-center overflow-hidden">
+                  <Image 
+                    src="/MENAA_LOGO.jpg"
+                    alt="MENAA Logo"
+                    width={112}
+                    height={112}
+                    className="object-cover rounded-xl"
+                    priority
+                  />
                 </div>
               </div>
             </div>
           </div>
 
-          <h1 className="text-5xl md:text-7xl font-bold mb-4 bg-gradient-to-r from-amber-400 via-emerald-400 to-rose-400 bg-clip-text text-transparent animate-gradient-shift text-balance leading-tight">
+          <h1 className="text-5xl md:text-7xl font-bold mb-4 bg-gradient-to-r from-orange-400 via-yellow-400 to-amber-400 bg-clip-text text-transparent animate-border-flow text-balance leading-tight">
             Upcoming Events
           </h1>
 
@@ -250,7 +254,7 @@ export default function EventsPage() {
             <p className="text-xl md:text-2xl text-white/90 font-medium text-balance relative z-10">
               This Quarter's Exciting Activities
             </p>
-            <div className="absolute inset-0 bg-gradient-to-r from-amber-500/20 via-emerald-500/20 to-rose-500/20 blur-2xl animate-pulse-glow" />
+            <div className="absolute inset-0 bg-gradient-to-r from-orange-500/20 via-yellow-500/20 to-amber-500/20 blur-2xl animate-pulse-glow" />
           </div>
 
           <p className="text-base md:text-lg text-white/60 max-w-3xl mx-auto text-pretty leading-relaxed">
@@ -258,9 +262,9 @@ export default function EventsPage() {
           </p>
 
           <div className="mt-8 flex items-center justify-center gap-4">
+            <div className="h-px w-20 bg-gradient-to-r from-transparent via-orange-400/40 to-transparent" />
+            <PartyPopper className="w-5 h-5 text-yellow-400 animate-pulse" />
             <div className="h-px w-20 bg-gradient-to-r from-transparent via-amber-400/40 to-transparent" />
-            <PartyPopper className="w-5 h-5 text-emerald-400 animate-pulse" />
-            <div className="h-px w-20 bg-gradient-to-r from-transparent via-rose-400/40 to-transparent" />
           </div>
         </div>
 
@@ -280,10 +284,10 @@ export default function EventsPage() {
                 onMouseEnter={() => setHoveredEvent(index)}
                 onMouseLeave={() => setHoveredEvent(null)}
               >
-                <Card className="group relative overflow-hidden border-white/10 bg-gradient-to-br from-white/5 to-white/10 backdrop-blur-xl transition-all duration-700 hover:scale-[1.02] hover:border-white/30 hover:shadow-2xl">
+                <Card className="group relative overflow-hidden border-orange-500/10 bg-gradient-to-br from-orange-950/20 to-amber-950/30 backdrop-blur-xl transition-all duration-700 hover:scale-[1.02] hover:border-orange-400/30 hover:shadow-2xl card-spotlight">
                   {/* Animated gradient background */}
                   <div
-                    className={`absolute inset-0 bg-gradient-to-br ${event.gradient} opacity-0 group-hover:opacity-30 transition-all duration-700 animate-gradient-shift`}
+                    className={`absolute inset-0 bg-gradient-to-br ${event.gradient} opacity-0 group-hover:opacity-30 transition-all duration-700 animate-border-flow`}
                   />
 
                   {/* Shimmer effect */}
@@ -430,15 +434,15 @@ export default function EventsPage() {
           }`}
           style={{ transitionDelay: "800ms" }}
         >
-          <Card className="border-white/20 bg-gradient-to-br from-white/10 to-white/15 backdrop-blur-xl p-8 md:p-12 text-center relative overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-br from-amber-500/10 via-emerald-500/10 to-rose-500/10 animate-gradient-shift" />
+          <Card className="border-orange-500/20 bg-gradient-to-br from-orange-950/40 to-amber-950/50 backdrop-blur-xl p-8 md:p-12 text-center relative overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-br from-orange-500/10 via-yellow-500/10 to-amber-500/10 animate-border-flow" />
             
             <div className="relative z-10 max-w-3xl mx-auto">
-              <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-br from-amber-500 via-emerald-500 to-rose-600 mb-6 animate-pulse-3d">
+              <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-br from-orange-500 via-yellow-500 to-amber-600 mb-6 animate-pulse-3d">
                 <Users className="w-10 h-10 text-white" />
               </div>
 
-              <h2 className="text-3xl md:text-4xl font-bold mb-4 bg-gradient-to-r from-amber-300 via-emerald-300 to-rose-300 bg-clip-text text-transparent">
+              <h2 className="text-3xl md:text-4xl font-bold mb-4 bg-gradient-to-r from-orange-300 via-yellow-300 to-amber-300 bg-clip-text text-transparent">
                 Don't Miss Out!
               </h2>
 
@@ -452,7 +456,7 @@ export default function EventsPage() {
                   href="https://instagram.com/deanzamenaa"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-amber-500 to-orange-600 rounded-2xl text-white font-semibold shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300"
+                  className="group inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-orange-500 to-orange-600 rounded-2xl text-white font-semibold shadow-xl hover:shadow-2xl hover:shadow-orange-500/50 transform hover:scale-105 transition-all duration-300"
                 >
                   <Star className="w-5 h-5 group-hover:rotate-180 transition-transform duration-500" />
                   <span>Follow on Instagram</span>
@@ -462,7 +466,7 @@ export default function EventsPage() {
                   href="https://discord.gg/UAS7xXRj27"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-emerald-600 to-teal-600 rounded-2xl text-white font-semibold shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300"
+                  className="group inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-amber-600 to-yellow-600 rounded-2xl text-white font-semibold shadow-xl hover:shadow-2xl hover:shadow-yellow-500/50 transform hover:scale-105 transition-all duration-300"
                 >
                   <Sparkles className="w-5 h-5 group-hover:rotate-180 transition-transform duration-500" />
                   <span>Join Discord</span>
@@ -493,7 +497,7 @@ export default function EventsPage() {
           style={{ transitionDelay: "1000ms" }}
         >
           <p className="text-sm text-white/40 mb-2">
-            Made with <Heart className="inline w-4 h-4 text-emerald-400 fill-emerald-400 animate-pulse" /> by MENAA
+            Made with <Heart className="inline w-4 h-4 text-orange-400 fill-orange-400 animate-pulse" /> by MENAA
           </p>
           <p className="text-xs text-white/30">© 2025 De Anza MENAA. All rights reserved.</p>
         </div>

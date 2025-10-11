@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react"
 import Link from "next/link"
+import Image from "next/image"
 import { Card } from "@/components/ui/card"
 import { 
   Instagram, Mail, Heart, 
@@ -51,25 +52,25 @@ export default function Home() {
       icon: Users,
       title: "Community Building",
       description: "Creating a welcoming space for all MENAA students and allies to connect, share experiences, and build lasting friendships.",
-      gradient: "from-amber-500 via-yellow-500 to-orange-600",
+      gradient: "from-orange-500 via-orange-600 to-orange-700",
     },
     {
       icon: Sparkles,
       title: "Cultural Celebration",
       description: "Showcasing the rich diversity of Middle Eastern and North African cultures through events, food, music, and traditions.",
-      gradient: "from-emerald-600 via-teal-600 to-cyan-600",
+      gradient: "from-amber-600 via-yellow-600 to-amber-700",
     },
     {
       icon: Target,
       title: "Advocacy & Awareness",
       description: "Raising awareness about MENAA issues, promoting cultural understanding, and advocating for our community's needs.",
-      gradient: "from-blue-800 via-indigo-700 to-purple-700",
+      gradient: "from-yellow-600 via-amber-600 to-orange-600",
     },
     {
       icon: BookOpen,
       title: "Education & Growth",
       description: "Providing resources, workshops, and discussions to educate about MENAA history, current events, and cultural heritage.",
-      gradient: "from-red-600 via-rose-600 to-pink-600",
+      gradient: "from-orange-700 via-amber-700 to-yellow-700",
     },
   ]
 
@@ -79,45 +80,48 @@ export default function Home() {
       date: "TBA",
       description: "Join us for an exciting evening of MENAA-themed bingo! Get ready for laughter, prizes, and unforgettable moments with your friends.",
       icon: Trophy,
+      gradient: "from-orange-500 via-orange-600 to-orange-700",
     },
     {
       title: "FIFA/Henna Night",
       date: "TBA",
       description: "Experience the perfect blend of competitive FIFA gaming and beautiful henna art. Show off your gaming skills or get stunning henna designs!",
       icon: Gamepad2,
+      gradient: "from-amber-600 via-yellow-600 to-amber-700",
     },
     {
       title: "Movie Night",
       date: "TBA",
       description: "Grab your friends and join us for a cozy movie night featuring a beloved MENAA film. Complete with popcorn, snacks, and great company.",
       icon: Film,
+      gradient: "from-yellow-600 via-amber-600 to-orange-600",
     },
   ]
 
   return (
     <div
       ref={containerRef}
-      className="min-h-screen relative overflow-hidden bg-gradient-to-br from-slate-900 via-amber-900 to-emerald-950"
+      className="min-h-screen relative overflow-hidden bg-gradient-to-br from-stone-950 via-amber-950 to-orange-950"
     >
-      {/* Background Effects - Same as homepage */}
+      {/* Background Effects - MENAA Orange/Brown/Yellow */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         {/* Morphing gradient blobs */}
         <div
-          className="absolute top-0 left-1/4 w-96 h-96 bg-gradient-to-br from-amber-500/30 to-orange-500/30 animate-morph blur-3xl"
+          className="absolute top-0 left-1/4 w-96 h-96 bg-gradient-to-br from-orange-500/30 to-yellow-500/30 animate-gooey-morph blur-3xl"
           style={{ animationDelay: "0s" }}
         />
         <div
-          className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-gradient-to-br from-emerald-500/25 to-teal-500/25 animate-morph blur-3xl"
+          className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-gradient-to-br from-amber-600/25 to-orange-600/25 animate-gooey-morph blur-3xl"
           style={{ animationDelay: "3s" }}
         />
         <div
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-br from-blue-600/20 to-indigo-600/20 animate-morph blur-3xl"
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-br from-yellow-600/20 to-amber-700/20 animate-gooey-morph blur-3xl"
           style={{ animationDelay: "6s" }}
         />
 
         {/* 3D Floating Geometric Elements */}
-        <div className="absolute top-24 right-24 w-24 h-24 bg-gradient-to-b from-amber-400 via-amber-500 to-amber-700 transform rotate-45 animate-float-3d opacity-70 shadow-2xl shadow-amber-500/50" />
-        <div className="absolute bottom-24 left-24 w-28 h-28 bg-gradient-to-b from-emerald-400 via-emerald-500 to-emerald-700 transform rotate-12 animate-float-3d-reverse opacity-65 shadow-2xl shadow-emerald-500/50" style={{ animationDelay: "2s" }} />
+        <div className="absolute top-24 right-24 w-24 h-24 bg-gradient-to-b from-orange-400 via-orange-500 to-orange-700 transform rotate-45 animate-float-3d opacity-70 shadow-2xl shadow-orange-500/50" />
+        <div className="absolute bottom-24 left-24 w-28 h-28 bg-gradient-to-b from-yellow-400 via-yellow-500 to-amber-700 transform rotate-12 animate-float-3d-reverse opacity-65 shadow-2xl shadow-yellow-500/50" style={{ animationDelay: "2s" }} />
 
         {/* Arabesque Patterns */}
         <ArabesquePatterns />
@@ -128,7 +132,7 @@ export default function Home() {
           style={{
             left: mousePosition.x - 192,
             top: mousePosition.y - 192,
-            background: "radial-gradient(circle, rgba(251, 191, 36, 0.2) 0%, rgba(16, 185, 129, 0.15) 40%, rgba(59, 130, 246, 0.1) 60%, transparent 80%)",
+            background: "radial-gradient(circle, rgba(249, 115, 22, 0.25) 0%, rgba(234, 179, 8, 0.2) 40%, rgba(180, 83, 9, 0.15) 60%, transparent 80%)",
             opacity: mounted ? 1 : 0,
           }}
         />
@@ -144,20 +148,25 @@ export default function Home() {
           {/* Logo */}
           <div className="mb-8 flex justify-center">
             <div className="relative group">
-              <div className="absolute inset-0 bg-gradient-to-r from-amber-500 via-emerald-500 to-blue-600 rounded-3xl blur-xl opacity-75 group-hover:opacity-100 animate-gradient-shift" />
-              <div className="absolute inset-0 bg-gradient-to-r from-amber-500 via-emerald-500 to-blue-600 rounded-3xl animate-rotate-slow opacity-50" />
+              <div className="absolute inset-0 bg-gradient-to-r from-orange-500 via-yellow-500 to-amber-600 rounded-3xl blur-xl opacity-75 group-hover:opacity-100 animate-border-flow" />
+              <div className="absolute inset-0 bg-gradient-to-r from-orange-500 via-yellow-500 to-amber-600 rounded-3xl animate-rotate-slow opacity-50" />
               
-              <div className="relative w-32 h-32 bg-gradient-to-br from-amber-500 via-emerald-500 to-blue-600 rounded-3xl flex items-center justify-center shadow-2xl transform group-hover:scale-110 group-hover:rotate-6 transition-all duration-500">
-                <div className="absolute inset-2 bg-slate-900 rounded-2xl flex items-center justify-center">
-                  <span className="text-5xl font-bold bg-gradient-to-br from-amber-300 via-emerald-300 to-blue-300 bg-clip-text text-transparent">
-                    M
-                  </span>
+              <div className="relative w-32 h-32 bg-gradient-to-br from-orange-500 via-yellow-500 to-amber-600 rounded-3xl flex items-center justify-center shadow-2xl transform group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 overflow-hidden">
+                <div className="absolute inset-2 bg-stone-950 rounded-2xl flex items-center justify-center overflow-hidden">
+                  <Image 
+                    src="/MENAA_LOGO.jpg"
+                    alt="MENAA Logo"
+                    width={112}
+                    height={112}
+                    className="object-cover rounded-xl"
+                    priority
+                  />
                 </div>
               </div>
             </div>
           </div>
 
-          <h1 className="text-5xl md:text-7xl font-bold mb-4 bg-gradient-to-r from-amber-400 via-emerald-400 to-blue-400 bg-clip-text text-transparent animate-gradient-shift text-balance leading-tight">
+          <h1 className="text-5xl md:text-7xl font-bold mb-4 bg-gradient-to-r from-orange-400 via-yellow-400 to-amber-400 bg-clip-text text-transparent animate-border-flow text-balance leading-tight">
             About DE ANZA MENAA
           </h1>
 
@@ -165,7 +174,7 @@ export default function Home() {
             <p className="text-xl md:text-2xl text-white/90 font-medium text-balance relative z-10">
               Middle East & North African Association
             </p>
-            <div className="absolute inset-0 bg-gradient-to-r from-amber-500/20 via-emerald-500/20 to-blue-500/20 blur-2xl animate-pulse-glow" />
+            <div className="absolute inset-0 bg-gradient-to-r from-orange-500/20 via-yellow-500/20 to-amber-500/20 blur-2xl animate-pulse-glow" />
           </div>
 
           <p className="text-base md:text-lg text-white/60 max-w-3xl mx-auto text-pretty leading-relaxed">
@@ -174,16 +183,16 @@ export default function Home() {
           </p>
 
           <div className="mt-8 flex items-center justify-center gap-4">
+            <div className="h-px w-16 bg-gradient-to-r from-transparent via-orange-400/40 to-transparent" />
+            <Heart className="w-4 h-4 text-yellow-400 fill-yellow-400 animate-pulse" />
             <div className="h-px w-16 bg-gradient-to-r from-transparent via-amber-400/40 to-transparent" />
-            <Heart className="w-4 h-4 text-emerald-400 fill-emerald-400 animate-pulse" />
-            <div className="h-px w-16 bg-gradient-to-r from-transparent via-blue-400/40 to-transparent" />
           </div>
 
           {/* Prominent Upcoming Events Button */}
           <div className="mt-12">
             <Link 
               href="/events"
-              className={`group inline-flex items-center gap-3 px-10 py-5 bg-gradient-to-r from-red-600 via-rose-600 to-pink-600 hover:from-red-500 hover:via-rose-500 hover:to-pink-500 rounded-2xl text-white font-bold text-xl shadow-2xl hover:shadow-pink-500/50 transform hover:scale-105 transition-all duration-300 ${
+              className={`group inline-flex items-center gap-3 px-10 py-5 bg-gradient-to-r from-orange-600 via-yellow-600 to-amber-600 hover:from-orange-500 hover:via-yellow-500 hover:to-amber-500 rounded-2xl text-white font-bold text-xl shadow-2xl hover:shadow-orange-500/50 transform hover:scale-105 transition-all duration-300 ${
                 mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
               }`}
               style={{ transitionDelay: "200ms" }}
@@ -198,7 +207,7 @@ export default function Home() {
         {/* Mission & Values Section */}
         <div className="mb-16">
           <h2 
-            className={`text-3xl md:text-4xl font-bold text-center mb-12 bg-gradient-to-r from-amber-300 via-emerald-300 to-blue-300 bg-clip-text text-transparent transition-all duration-1000 ${
+            className={`text-3xl md:text-4xl font-bold text-center mb-12 bg-gradient-to-r from-orange-300 via-yellow-300 to-amber-300 bg-clip-text text-transparent transition-all duration-1000 ${
               mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
             }`}
             style={{ transitionDelay: "400ms" }}
@@ -217,9 +226,9 @@ export default function Home() {
                   }`}
                   style={{ transitionDelay: `${(index + 4) * 100}ms` }}
                 >
-                  <Card className="group relative overflow-hidden border-white/10 bg-gradient-to-br from-white/5 to-white/10 backdrop-blur-md transition-all duration-500 hover:scale-[1.02] hover:border-white/30 h-full">
+                  <Card className="group relative overflow-hidden border-orange-500/10 bg-gradient-to-br from-orange-950/20 to-amber-950/30 backdrop-blur-md transition-all duration-500 hover:scale-[1.02] hover:border-orange-400/30 h-full card-spotlight">
                     <div
-                      className={`absolute inset-0 bg-gradient-to-br ${item.gradient} opacity-0 group-hover:opacity-20 transition-all duration-500`}
+                      className={`absolute inset-0 bg-gradient-to-br ${item.gradient} opacity-0 group-hover:opacity-20 transition-all duration-500 animate-border-flow`}
                     />
 
                     <div className="relative p-6">
@@ -264,36 +273,36 @@ export default function Home() {
           }`}
           style={{ transitionDelay: "800ms" }}
         >
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-8 bg-gradient-to-r from-amber-300 via-emerald-300 to-blue-300 bg-clip-text text-transparent">
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-8 bg-gradient-to-r from-orange-300 via-yellow-300 to-amber-300 bg-clip-text text-transparent">
             What We Do
           </h2>
 
-          <Card className="border-white/10 bg-gradient-to-br from-white/5 to-white/10 backdrop-blur-md p-8">
+          <Card className="border-orange-500/10 bg-gradient-to-br from-orange-950/20 to-amber-950/30 backdrop-blur-md p-8">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div>
                 <h3 className="text-2xl font-bold text-white mb-4 flex items-center gap-3">
-                  <PartyPopper className="w-6 h-6 text-amber-400" />
+                  <PartyPopper className="w-6 h-6 text-orange-400" />
                   Events & Activities
                 </h3>
                 <ul className="space-y-3 text-white/70">
                   <li className="flex items-start gap-2">
-                    <span className="text-emerald-400 mt-1">•</span>
+                    <span className="text-orange-400 mt-1">•</span>
                     <span>Cultural nights featuring traditional music, dance, and food</span>
                   </li>
                   <li className="flex items-start gap-2">
-                    <span className="text-emerald-400 mt-1">•</span>
+                    <span className="text-orange-400 mt-1">•</span>
                     <span>Weekly social gatherings and study sessions</span>
                   </li>
                   <li className="flex items-start gap-2">
-                    <span className="text-emerald-400 mt-1">•</span>
+                    <span className="text-orange-400 mt-1">•</span>
                     <span>Holiday celebrations and cultural festivals</span>
                   </li>
                   <li className="flex items-start gap-2">
-                    <span className="text-emerald-400 mt-1">•</span>
+                    <span className="text-orange-400 mt-1">•</span>
                     <span>Movie nights and cultural film screenings</span>
                   </li>
                   <li className="flex items-start gap-2">
-                    <span className="text-emerald-400 mt-1">•</span>
+                    <span className="text-orange-400 mt-1">•</span>
                     <span>Community service and volunteer opportunities</span>
                   </li>
                 </ul>
@@ -301,28 +310,28 @@ export default function Home() {
 
               <div>
                 <h3 className="text-2xl font-bold text-white mb-4 flex items-center gap-3">
-                  <BookOpen className="w-6 h-6 text-blue-400" />
+                  <BookOpen className="w-6 h-6 text-yellow-400" />
                   Learning & Discussion
                 </h3>
                 <ul className="space-y-3 text-white/70">
                   <li className="flex items-start gap-2">
-                    <span className="text-emerald-400 mt-1">•</span>
+                    <span className="text-yellow-400 mt-1">•</span>
                     <span>Guest speaker series with MENAA professionals and activists</span>
                   </li>
                   <li className="flex items-start gap-2">
-                    <span className="text-emerald-400 mt-1">•</span>
+                    <span className="text-yellow-400 mt-1">•</span>
                     <span>Workshops on language, art, and cultural traditions</span>
                   </li>
                   <li className="flex items-start gap-2">
-                    <span className="text-emerald-400 mt-1">•</span>
+                    <span className="text-yellow-400 mt-1">•</span>
                     <span>Panel discussions on current events and social issues</span>
                   </li>
                   <li className="flex items-start gap-2">
-                    <span className="text-emerald-400 mt-1">•</span>
+                    <span className="text-yellow-400 mt-1">•</span>
                     <span>Cultural exchange programs with other student organizations</span>
                   </li>
                   <li className="flex items-start gap-2">
-                    <span className="text-emerald-400 mt-1">•</span>
+                    <span className="text-yellow-400 mt-1">•</span>
                     <span>History and heritage educational sessions</span>
                   </li>
                 </ul>
@@ -334,7 +343,7 @@ export default function Home() {
         {/* Upcoming Events Section */}
         <div className="mb-16">
           <h2 
-            className={`text-3xl md:text-4xl font-bold text-center mb-12 bg-gradient-to-r from-amber-300 via-emerald-300 to-blue-300 bg-clip-text text-transparent transition-all duration-1000 ${
+            className={`text-3xl md:text-4xl font-bold text-center mb-12 bg-gradient-to-r from-orange-300 via-yellow-300 to-amber-300 bg-clip-text text-transparent transition-all duration-1000 ${
               mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
             }`}
             style={{ transitionDelay: "900ms" }}
@@ -353,17 +362,17 @@ export default function Home() {
                   }`}
                   style={{ transitionDelay: `${(index + 9) * 100}ms` }}
                 >
-                  <Card className="group relative overflow-hidden border-white/10 bg-gradient-to-br from-white/5 to-white/10 backdrop-blur-md transition-all duration-500 hover:scale-[1.02] hover:border-white/30 h-full">
-                    <div className="absolute inset-0 bg-gradient-to-br from-amber-500/10 via-emerald-500/10 to-blue-500/10 opacity-0 group-hover:opacity-100 transition-all duration-500" />
+                  <Card className="group relative overflow-hidden border-orange-500/10 bg-gradient-to-br from-orange-950/20 to-amber-950/30 backdrop-blur-md transition-all duration-500 hover:scale-[1.02] hover:border-orange-400/30 h-full card-spotlight">
+                    <div className={`absolute inset-0 bg-gradient-to-br ${event.gradient} opacity-0 group-hover:opacity-100 transition-all duration-500`} />
 
                     <div className="relative p-6">
                       <div className="flex items-center gap-3 mb-4">
-                        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-500 to-emerald-600 flex items-center justify-center">
+                        <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${event.gradient} flex items-center justify-center`}>
                           <Icon className="w-6 h-6 text-white" />
                         </div>
                         <div>
                           <h3 className="text-lg font-bold text-white">{event.title}</h3>
-                          <div className="flex items-center gap-1 text-sm text-amber-300">
+                          <div className="flex items-center gap-1 text-sm text-orange-300">
                             <Clock className="w-3 h-3" />
                             <span>{event.date}</span>
                           </div>
@@ -388,9 +397,9 @@ export default function Home() {
           }`}
           style={{ transitionDelay: "1200ms" }}
         >
-          <Card className="border-white/20 bg-gradient-to-br from-white/10 to-white/15 backdrop-blur-md p-8 md:p-12 text-center">
+          <Card className="border-orange-500/20 bg-gradient-to-br from-orange-950/40 to-amber-950/50 backdrop-blur-md p-8 md:p-12 text-center">
             <div className="max-w-3xl mx-auto">
-              <h2 className="text-3xl md:text-4xl font-bold mb-6 bg-gradient-to-r from-amber-300 via-emerald-300 to-blue-300 bg-clip-text text-transparent">
+              <h2 className="text-3xl md:text-4xl font-bold mb-6 bg-gradient-to-r from-orange-300 via-yellow-300 to-amber-300 bg-clip-text text-transparent">
                 Join Our Community
               </h2>
 
@@ -404,7 +413,7 @@ export default function Home() {
                   href="https://instagram.com/deanzamenaa"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-amber-500 to-orange-600 rounded-2xl text-white font-semibold shadow-lg hover:shadow-2xl transform hover:scale-105 transition-all duration-300"
+                  className="group inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-orange-500 to-orange-600 rounded-2xl text-white font-semibold shadow-lg hover:shadow-2xl hover:shadow-orange-500/50 transform hover:scale-105 transition-all duration-300"
                 >
                   <Instagram className="w-5 h-5" />
                   <span>Follow Us on Instagram</span>
@@ -415,7 +424,7 @@ export default function Home() {
                   href="https://discord.gg/UAS7xXRj27"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-emerald-600 to-teal-600 rounded-2xl text-white font-semibold shadow-lg hover:shadow-2xl transform hover:scale-105 transition-all duration-300"
+                  className="group inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-amber-600 to-yellow-600 rounded-2xl text-white font-semibold shadow-lg hover:shadow-2xl hover:shadow-yellow-500/50 transform hover:scale-105 transition-all duration-300"
                 >
                   <DiscordIcon className="w-5 h-5" />
                   <span>Join Our Discord</span>
@@ -445,9 +454,9 @@ export default function Home() {
         >
           <div className="flex justify-center gap-4 mb-6">
             {[
-              { icon: Instagram, href: "https://instagram.com/deanzamenaa", color: "from-amber-500 to-orange-600" },
-              { icon: DiscordIcon, href: "https://discord.gg/UAS7xXRj27", color: "from-emerald-500 to-teal-600" },
-              { icon: Mail, href: "mailto:menasc.da@gmail.com", color: "from-blue-600 to-indigo-700" },
+              { icon: Instagram, href: "https://instagram.com/deanzamenaa", color: "from-orange-500 to-orange-600" },
+              { icon: DiscordIcon, href: "https://discord.gg/UAS7xXRj27", color: "from-amber-600 to-yellow-600" },
+              { icon: Mail, href: "mailto:menasc.da@gmail.com", color: "from-yellow-600 to-amber-600" },
             ].map((social, i) => {
               const SocialIcon = social.icon
               return (
@@ -466,7 +475,7 @@ export default function Home() {
           </div>
 
           <p className="text-sm text-white/40 mb-2">
-            Made with <Heart className="inline w-4 h-4 text-emerald-400 fill-emerald-400 animate-pulse" /> by MENAA
+            Made with <Heart className="inline w-4 h-4 text-orange-400 fill-orange-400 animate-pulse" /> by MENAA
           </p>
           <p className="text-xs text-white/30">© 2025 De Anza MENAA. All rights reserved.</p>
         </div>

@@ -221,50 +221,50 @@ export function ArabesquePatterns() {
           <circle cx="860" cy="400" r="50" stroke="url(#gradient4)" strokeWidth="2" fill="none" />
         </g>
 
-        {/* Gradient definitions with more vibrant MENA colors */}
+        {/* Gradient definitions with MENAA Orange/Brown/Yellow colors */}
         <defs>
-          {/* Amber/Gold gradients */}
+          {/* Orange gradients */}
           <linearGradient id="gradient1" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#FBBF24" />
-            <stop offset="50%" stopColor="#F59E0B" />
-            <stop offset="100%" stopColor="#D97706" />
+            <stop offset="0%" stopColor="#F97316" />
+            <stop offset="50%" stopColor="#EA580C" />
+            <stop offset="100%" stopColor="#C2410C" />
           </linearGradient>
           <radialGradient id="gradient1-fill">
-            <stop offset="0%" stopColor="#FBBF24" />
-            <stop offset="100%" stopColor="#F59E0B" />
+            <stop offset="0%" stopColor="#F97316" />
+            <stop offset="100%" stopColor="#EA580C" />
           </radialGradient>
           
-          {/* Emerald/Green gradients */}
+          {/* Brown/Amber gradients */}
           <linearGradient id="gradient2" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#34D399" />
-            <stop offset="50%" stopColor="#10B981" />
-            <stop offset="100%" stopColor="#059669" />
+            <stop offset="0%" stopColor="#B45309" />
+            <stop offset="50%" stopColor="#92400E" />
+            <stop offset="100%" stopColor="#78350F" />
           </linearGradient>
           <radialGradient id="gradient2-fill">
-            <stop offset="0%" stopColor="#34D399" />
-            <stop offset="100%" stopColor="#10B981" />
+            <stop offset="0%" stopColor="#B45309" />
+            <stop offset="100%" stopColor="#92400E" />
           </radialGradient>
           
-          {/* Blue gradients */}
+          {/* Yellow/Gold gradients */}
           <linearGradient id="gradient3" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#3B82F6" />
-            <stop offset="50%" stopColor="#1E40AF" />
-            <stop offset="100%" stopColor="#1E3A8A" />
+            <stop offset="0%" stopColor="#FACC15" />
+            <stop offset="50%" stopColor="#EAB308" />
+            <stop offset="100%" stopColor="#CA8A04" />
           </linearGradient>
           <radialGradient id="gradient3-fill">
-            <stop offset="0%" stopColor="#3B82F6" />
-            <stop offset="100%" stopColor="#1E40AF" />
+            <stop offset="0%" stopColor="#FACC15" />
+            <stop offset="100%" stopColor="#EAB308" />
           </radialGradient>
           
-          {/* Red/Rose gradients */}
+          {/* Mixed warm gradients */}
           <linearGradient id="gradient4" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#F87171" />
-            <stop offset="50%" stopColor="#DC2626" />
-            <stop offset="100%" stopColor="#B91C1C" />
+            <stop offset="0%" stopColor="#F97316" />
+            <stop offset="50%" stopColor="#EAB308" />
+            <stop offset="100%" stopColor="#B45309" />
           </linearGradient>
           <radialGradient id="gradient4-fill">
-            <stop offset="0%" stopColor="#F87171" />
-            <stop offset="100%" stopColor="#DC2626" />
+            <stop offset="0%" stopColor="#F97316" />
+            <stop offset="100%" stopColor="#EAB308" />
           </radialGradient>
         </defs>
       </svg>

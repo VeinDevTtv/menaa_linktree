@@ -52,27 +52,27 @@ export default function ComingSoon({ pageName = "This Page" }: ComingSoonProps) 
   return (
     <div
       ref={containerRef}
-      className="min-h-screen relative overflow-hidden bg-gradient-to-br from-slate-900 via-amber-900 to-emerald-950"
+      className="min-h-screen relative overflow-hidden bg-gradient-to-br from-stone-950 via-amber-950 to-orange-950"
     >
-      {/* Background Effects - Same as homepage */}
+      {/* Background Effects - MENAA Orange/Brown/Yellow */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         {/* Morphing gradient blobs */}
         <div
-          className="absolute top-0 left-1/4 w-96 h-96 bg-gradient-to-br from-amber-500/30 to-orange-500/30 animate-morph blur-3xl"
+          className="absolute top-0 left-1/4 w-96 h-96 bg-gradient-to-br from-orange-500/30 to-yellow-500/30 animate-gooey-morph blur-3xl"
           style={{ animationDelay: "0s" }}
         />
         <div
-          className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-gradient-to-br from-emerald-500/25 to-teal-500/25 animate-morph blur-3xl"
+          className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-gradient-to-br from-amber-600/25 to-orange-600/25 animate-gooey-morph blur-3xl"
           style={{ animationDelay: "3s" }}
         />
         <div
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-br from-blue-600/20 to-indigo-600/20 animate-morph blur-3xl"
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-br from-yellow-600/20 to-amber-700/20 animate-gooey-morph blur-3xl"
           style={{ animationDelay: "6s" }}
         />
 
         {/* 3D Floating Geometric Elements */}
-        <div className="absolute top-24 right-24 w-24 h-24 bg-gradient-to-b from-amber-400 via-amber-500 to-amber-700 transform rotate-45 animate-float-3d opacity-70 shadow-2xl shadow-amber-500/50" />
-        <div className="absolute bottom-24 left-24 w-28 h-28 bg-gradient-to-b from-emerald-400 via-emerald-500 to-emerald-700 transform rotate-12 animate-float-3d-reverse opacity-65 shadow-2xl shadow-emerald-500/50" style={{ animationDelay: "2s" }} />
+        <div className="absolute top-24 right-24 w-24 h-24 bg-gradient-to-b from-orange-400 via-orange-500 to-orange-700 transform rotate-45 animate-float-3d opacity-70 shadow-2xl shadow-orange-500/50" />
+        <div className="absolute bottom-24 left-24 w-28 h-28 bg-gradient-to-b from-yellow-400 via-yellow-500 to-amber-700 transform rotate-12 animate-float-3d-reverse opacity-65 shadow-2xl shadow-yellow-500/50" style={{ animationDelay: "2s" }} />
 
         {/* Arabesque Patterns */}
         <ArabesquePatterns />
@@ -83,7 +83,7 @@ export default function ComingSoon({ pageName = "This Page" }: ComingSoonProps) 
           style={{
             left: mousePosition.x - 192,
             top: mousePosition.y - 192,
-            background: "radial-gradient(circle, rgba(251, 191, 36, 0.2) 0%, rgba(16, 185, 129, 0.15) 40%, rgba(59, 130, 246, 0.1) 60%, transparent 80%)",
+            background: "radial-gradient(circle, rgba(249, 115, 22, 0.25) 0%, rgba(234, 179, 8, 0.2) 40%, rgba(180, 83, 9, 0.15) 60%, transparent 80%)",
             opacity: mounted ? 1 : 0,
           }}
         />
@@ -100,23 +100,23 @@ export default function ComingSoon({ pageName = "This Page" }: ComingSoonProps) 
             {/* Icon */}
             <div className="mb-8 flex justify-center">
               <div className="relative group">
-                <div className="absolute inset-0 bg-gradient-to-r from-amber-500 via-emerald-500 to-blue-600 rounded-3xl blur-2xl opacity-75 group-hover:opacity-100 animate-gradient-shift" />
-                <div className="absolute inset-0 bg-gradient-to-r from-amber-500 via-emerald-500 to-blue-600 rounded-3xl animate-rotate-slow opacity-50" />
+                <div className="absolute inset-0 bg-gradient-to-r from-orange-500 via-yellow-500 to-amber-600 rounded-3xl blur-2xl opacity-75 group-hover:opacity-100 animate-border-flow" />
+                <div className="absolute inset-0 bg-gradient-to-r from-orange-500 via-yellow-500 to-amber-600 rounded-3xl animate-rotate-slow opacity-50" />
                 
-                <div className="relative w-32 h-32 bg-gradient-to-br from-amber-500 via-emerald-500 to-blue-600 rounded-3xl flex items-center justify-center shadow-2xl transform group-hover:scale-110 group-hover:rotate-6 transition-all duration-500">
-                  <div className="absolute inset-2 bg-slate-900 rounded-2xl flex items-center justify-center">
+                <div className="relative w-32 h-32 bg-gradient-to-br from-orange-500 via-yellow-500 to-amber-600 rounded-3xl flex items-center justify-center shadow-2xl transform group-hover:scale-110 group-hover:rotate-6 transition-all duration-500">
+                  <div className="absolute inset-2 bg-stone-950 rounded-2xl flex items-center justify-center">
                     <div className="relative">
-                      <Wrench className="w-16 h-16 text-transparent bg-gradient-to-br from-amber-300 via-emerald-300 to-blue-300 bg-clip-text" style={{ stroke: 'url(#gradient)' }} />
+                      <Wrench className="w-16 h-16 text-transparent bg-gradient-to-br from-orange-300 via-yellow-300 to-amber-300 bg-clip-text" style={{ stroke: 'url(#gradient)' }} />
                       <svg width="0" height="0">
                         <defs>
                           <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                            <stop offset="0%" stopColor="#fcd34d" />
-                            <stop offset="50%" stopColor="#6ee7b7" />
-                            <stop offset="100%" stopColor="#93c5fd" />
+                            <stop offset="0%" stopColor="#fdba74" />
+                            <stop offset="50%" stopColor="#fde047" />
+                            <stop offset="100%" stopColor="#fcd34d" />
                           </linearGradient>
                         </defs>
                       </svg>
-                      <Clock className="w-8 h-8 absolute -top-2 -right-2 text-amber-400 animate-pulse" />
+                      <Clock className="w-8 h-8 absolute -top-2 -right-2 text-yellow-400 animate-pulse" />
                     </div>
                   </div>
                 </div>
@@ -124,7 +124,7 @@ export default function ComingSoon({ pageName = "This Page" }: ComingSoonProps) 
             </div>
 
             {/* Title */}
-            <h1 className="text-5xl md:text-7xl font-bold mb-4 bg-gradient-to-r from-amber-400 via-emerald-400 to-blue-400 bg-clip-text text-transparent animate-gradient-shift text-balance leading-tight">
+            <h1 className="text-5xl md:text-7xl font-bold mb-4 bg-gradient-to-r from-orange-400 via-yellow-400 to-amber-400 bg-clip-text text-transparent animate-border-flow text-balance leading-tight">
               Coming Soon
             </h1>
 
@@ -132,7 +132,7 @@ export default function ComingSoon({ pageName = "This Page" }: ComingSoonProps) 
               <p className="text-xl md:text-2xl text-white/90 font-medium text-balance relative z-10">
                 {pageName} is Under Construction
               </p>
-              <div className="absolute inset-0 bg-gradient-to-r from-amber-500/20 via-emerald-500/20 to-blue-500/20 blur-2xl animate-pulse-glow" />
+              <div className="absolute inset-0 bg-gradient-to-r from-orange-500/20 via-yellow-500/20 to-amber-500/20 blur-2xl animate-pulse-glow" />
             </div>
 
             <p className="text-base md:text-lg text-white/60 max-w-2xl mx-auto text-pretty leading-relaxed mb-12">
@@ -141,16 +141,16 @@ export default function ComingSoon({ pageName = "This Page" }: ComingSoonProps) 
 
             {/* Decorative line */}
             <div className="mt-8 mb-12 flex items-center justify-center gap-4">
+              <div className="h-px w-16 bg-gradient-to-r from-transparent via-orange-400/40 to-transparent" />
+              <Sparkles className="w-5 h-5 text-yellow-400 animate-pulse" />
               <div className="h-px w-16 bg-gradient-to-r from-transparent via-amber-400/40 to-transparent" />
-              <Sparkles className="w-5 h-5 text-emerald-400 animate-pulse" />
-              <div className="h-px w-16 bg-gradient-to-r from-transparent via-blue-400/40 to-transparent" />
             </div>
 
             {/* Action Buttons */}
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16">
               <Link 
                 href="/"
-                className="group inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-amber-500 via-emerald-500 to-blue-600 rounded-2xl text-white font-semibold shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300"
+                className="group inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-orange-500 via-yellow-500 to-amber-600 rounded-2xl text-white font-semibold shadow-xl hover:shadow-2xl hover:shadow-orange-500/50 transform hover:scale-105 transition-all duration-300"
               >
                 <Home className="w-5 h-5" />
                 <span>Return to Main Page</span>
@@ -158,8 +158,8 @@ export default function ComingSoon({ pageName = "This Page" }: ComingSoonProps) 
             </div>
 
             {/* Stay Connected Section */}
-            <Card className="border-white/20 bg-gradient-to-br from-white/10 to-white/15 backdrop-blur-md p-8 text-center">
-              <h2 className="text-2xl md:text-3xl font-bold mb-4 bg-gradient-to-r from-amber-300 via-emerald-300 to-blue-300 bg-clip-text text-transparent">
+            <Card className="border-orange-500/20 bg-gradient-to-br from-orange-950/40 to-amber-950/50 backdrop-blur-md p-8 text-center">
+              <h2 className="text-2xl md:text-3xl font-bold mb-4 bg-gradient-to-r from-orange-300 via-yellow-300 to-amber-300 bg-clip-text text-transparent">
                 Stay Connected
               </h2>
               
@@ -172,7 +172,7 @@ export default function ComingSoon({ pageName = "This Page" }: ComingSoonProps) 
                   href="https://instagram.com/deanzamenaa"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-amber-500 to-orange-600 rounded-xl text-white font-semibold shadow-lg hover:shadow-2xl transform hover:scale-105 transition-all duration-300"
+                  className="group inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-orange-500 to-orange-600 rounded-xl text-white font-semibold shadow-lg hover:shadow-2xl hover:shadow-orange-500/50 transform hover:scale-105 transition-all duration-300"
                 >
                   <Instagram className="w-5 h-5" />
                   <span>Instagram</span>
@@ -183,7 +183,7 @@ export default function ComingSoon({ pageName = "This Page" }: ComingSoonProps) 
                   href="https://discord.gg/UAS7xXRj27"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-emerald-600 to-teal-600 rounded-xl text-white font-semibold shadow-lg hover:shadow-2xl transform hover:scale-105 transition-all duration-300"
+                  className="group inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-amber-600 to-yellow-600 rounded-xl text-white font-semibold shadow-lg hover:shadow-2xl hover:shadow-yellow-500/50 transform hover:scale-105 transition-all duration-300"
                 >
                   <DiscordIcon className="w-5 h-5" />
                   <span>Discord</span>
@@ -200,7 +200,7 @@ export default function ComingSoon({ pageName = "This Page" }: ComingSoonProps) 
               style={{ transitionDelay: "400ms" }}
             >
               <p className="text-sm text-white/40 mb-2">
-                Made with <Heart className="inline w-4 h-4 text-emerald-400 fill-emerald-400 animate-pulse" /> by MENAA
+                Made with <Heart className="inline w-4 h-4 text-orange-400 fill-orange-400 animate-pulse" /> by MENAA
               </p>
               <p className="text-xs text-white/30">© 2025 De Anza MENAA. All rights reserved.</p>
             </div>
