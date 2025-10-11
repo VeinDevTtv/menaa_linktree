@@ -19,6 +19,7 @@ export default function ApplyOfficerPage() {
     handleSubmit,
     formState: { errors },
     reset,
+    setValue,
   } = useForm<OfficerApplicationInput>({
     resolver: zodResolver(officerApplicationSchema),
     defaultValues: {
