@@ -7,7 +7,7 @@ import { Card } from "@/components/ui/card"
 import { 
   Instagram, Mail, Heart, 
   MapPin, ExternalLink, Users, Target, Sparkles, Award, BookOpen, 
-  PartyPopper, Clock, MapPinned, Gamepad2, Film, Trophy, Calendar, ArrowRight
+  PartyPopper, Clock, MapPinned, Gamepad2, Film, Trophy, Calendar, ArrowRight, UserPlus
 } from "lucide-react"
 import { ArabesquePatterns } from "@/components/arabesque-patterns"
 
@@ -188,8 +188,8 @@ export default function Home() {
             <div className="h-px w-16 bg-gradient-to-r from-transparent via-amber-400/40 to-transparent" />
           </div>
 
-          {/* Prominent Upcoming Events Button */}
-          <div className="mt-12">
+          {/* Prominent CTAs */}
+          <div className="mt-12 flex flex-wrap items-center justify-center gap-4">
             <Link 
               href="/events"
               className={`group inline-flex items-center gap-3 px-10 py-5 bg-gradient-to-r from-orange-600 via-yellow-600 to-amber-600 hover:from-orange-500 hover:via-yellow-500 hover:to-amber-500 rounded-2xl text-white font-bold text-xl shadow-2xl hover:shadow-orange-500/50 transform hover:scale-105 transition-all duration-300 ${
@@ -199,6 +199,18 @@ export default function Home() {
             >
               <Calendar className="w-7 h-7 group-hover:rotate-12 transition-transform duration-300" />
               <span>View Upcoming Events</span>
+              <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform duration-300" />
+            </Link>
+
+            <Link 
+              href="/apply-officer"
+              className={`group inline-flex items-center gap-3 px-10 py-5 bg-gradient-to-r from-amber-600 via-yellow-600 to-orange-600 hover:from-amber-500 hover:via-yellow-500 hover:to-orange-500 rounded-2xl text-white font-bold text-xl shadow-2xl hover:shadow-yellow-500/50 transform hover:scale-105 transition-all duration-300 ${
+                mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
+              }`}
+              style={{ transitionDelay: "300ms" }}
+            >
+              <UserPlus className="w-7 h-7 group-hover:rotate-12 transition-transform duration-300" />
+              <span>Apply for Officer</span>
               <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform duration-300" />
             </Link>
           </div>

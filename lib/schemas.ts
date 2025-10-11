@@ -1,0 +1,20 @@
+import { z } from "zod"
+
+export const officerApplicationSchema = z.object({
+  fullName: z.string().min(1, "Full name is required"),
+  discordName: z.string().min(1, "Discord name is required"),
+  email: z.string().email("Invalid email"),
+  yearMajor: z.string().min(1, "Year/Major is required"),
+  rolesInterested: z.string().min(1, "Please specify roles of interest"),
+  availability: z.string().min(1, "Availability is required"),
+  whyJoin: z.string().min(1, "This field is required"),
+  experience: z.string().optional(),
+  codeOfConduct: z.literal(true, {
+    errorMap: () => ({ message: "You must accept the Code of Conduct" }),
+  }),
+  website: z.string().optional(),
+})
+
+export type OfficerApplicationInput = z.infer<typeof officerApplicationSchema>
+
+
