@@ -27,7 +27,7 @@ export default function ApplyOfficerPage() {
       discordName: "",
       email: "",
       yearMajor: "",
-      rolesInterested: "",
+      rolesInterested: undefined as unknown as OfficerApplicationInput["rolesInterested"],
       availability: "",
       whyJoin: "",
       experience: "",
@@ -129,7 +129,18 @@ export default function ApplyOfficerPage() {
 
           <div>
             <label className="block text-sm mb-1" htmlFor="rolesInterested">Roles Interested In</label>
-            <input id="rolesInterested" {...register("rolesInterested")} className="w-full rounded-xl bg-stone-900/60 p-4 border border-amber-500/20 focus:outline-none focus:ring-2 focus:ring-amber-500/50" placeholder="e.g., Events, Marketing, Outreach" />
+            <select
+              id="rolesInterested"
+              {...register("rolesInterested")}
+              className="w-full rounded-xl bg-stone-900/60 p-4 border border-amber-500/20 focus:outline-none focus:ring-2 focus:ring-amber-500/50"
+              defaultValue=""
+            >
+              <option value="" disabled>Select a role</option>
+              <option value="Vice President">Vice President</option>
+              <option value="Treasurer">Treasurer</option>
+              <option value="Secretary">Secretary</option>
+              <option value="Event Coordinator">Event Coordinator</option>
+            </select>
             {errors.rolesInterested && <p className="text-red-400 text-sm mt-1">{errors.rolesInterested.message}</p>}
           </div>
 
