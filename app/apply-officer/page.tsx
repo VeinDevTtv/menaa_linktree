@@ -1,14 +1,19 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import Link from "next/link"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { officerApplicationSchema, type OfficerApplicationInput } from "@/lib/schemas"
 import { toast } from "sonner"
+import * as Dialog from "@radix-ui/react-dialog"
 
 export default function ApplyOfficerPage() {
   const [submitting, setSubmitting] = useState(false)
+  const [cocOpen, setCocOpen] = useState(false)
+  const [cocUnlocked, setCocUnlocked] = useState(false)
+  const [scrolledToBottom, setScrolledToBottom] = useState(false)
+  const scrollRef = useRef<HTMLDivElement | null>(null)
   const {
     register,
     handleSubmit,
@@ -29,6 +34,32 @@ export default function ApplyOfficerPage() {
       website: "",
     },
   })
+
+  useEffect(() => {
+    if (!cocOpen) {
+      document.body.style.overflow = ""
+      setScrolledToBottom(false)
+    } else {
+      document.body.style.overflow = "hidden"
+    }
+    return () => {
+      document.body.style.overflow = ""
+    }
+  }, [cocOpen])
+
+  const handleScrollCheck = () => {
+    const el = scrollRef.current
+    if (!el) return
+    const atBottom = el.scrollTop + el.clientHeight >= el.scrollHeight - 4
+    if (atBottom) setScrolledToBottom(true)
+  }
+
+  const handleAgreeCoc = () => {
+    setCocUnlocked(true)
+    setCocOpen(false)
+    // Mark checkbox as agreed
+    setValue("codeOfConduct", true, { shouldDirty: true, shouldTouch: true, shouldValidate: true })
+  }
 
   const onSubmit = async (data: OfficerApplicationInput) => {
     setSubmitting(true)
@@ -118,11 +149,94 @@ export default function ApplyOfficerPage() {
             <textarea id="experience" {...register("experience")} className="w-full rounded-xl bg-stone-900/60 p-4 border border-amber-500/20 focus:outline-none focus:ring-2 focus:ring-amber-500/50 min-h-24" placeholder="Share any relevant experience" />
           </div>
 
-          <label className="flex items-center gap-3">
-            <input type="checkbox" {...register("codeOfConduct")} className="accent-orange-500 w-5 h-5" />
-            <span className="text-white/80">I agree to the MENAA Code of Conduct</span>
-          </label>
-          {errors.codeOfConduct && <p className="text-red-400 text-sm">{errors.codeOfConduct.message}</p>}
+          <div className="flex flex-col gap-2">
+            <div className="flex items-center gap-3">
+              <input
+                type="checkbox"
+                disabled={!cocUnlocked}
+                {...register("codeOfConduct")}
+                className="accent-orange-500 w-5 h-5 disabled:opacity-60"
+              />
+              <button
+                type="button"
+                className="text-white/80 hover:text-white underline decoration-dotted underline-offset-4"
+                onClick={() => setCocOpen(true)}
+              >
+                I agree to the MENAA Code of Conduct (read to unlock)
+              </button>
+            </div>
+            {errors.codeOfConduct && <p className="text-red-400 text-sm">{errors.codeOfConduct.message}</p>}
+          </div>
+
+          <Dialog.Root open={cocOpen} onOpenChange={setCocOpen}>
+            <Dialog.Portal>
+              <Dialog.Overlay className="fixed inset-0 bg-black/70 backdrop-blur-sm" />
+              <Dialog.Content className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[92vw] max-w-2xl rounded-2xl border border-white/10 bg-stone-950 shadow-2xl">
+                <div className="p-6">
+                  <Dialog.Title className="text-2xl font-bold mb-2 bg-gradient-to-r from-orange-300 via-yellow-300 to-amber-300 bg-clip-text text-transparent">
+                    MENAA Code of Conduct
+                  </Dialog.Title>
+                  <Dialog.Description className="text-white/60 mb-4">
+                    Please read the following rules and community guidelines. You must scroll to the bottom to enable Agree.
+                  </Dialog.Description>
+                  <div
+                    ref={scrollRef}
+                    onScroll={handleScrollCheck}
+                    className="max-h-72 overflow-y-auto pr-2 rounded-xl bg-stone-900/60 border border-white/10 p-4 space-y-3 text-white/80"
+                  >
+                    <p>
+                      1. Respect everyone. We welcome members of all backgrounds. Harassment, discrimination, and hate speech are strictly prohibited.
+                    </p>
+                    <p>
+                      2. Keep discussions constructive. Debate ideas, not people. Avoid personal attacks and inflammatory language.
+                    </p>
+                    <p>
+                      3. Follow De Anza College policies and applicable laws during club events and online spaces.
+                    </p>
+                    <p>
+                      4. No spam or self-promotion without explicit permission from officers.
+                    </p>
+                    <p>
+                      5. Protect privacy. Do not share personal information of members without consent.
+                    </p>
+                    <p>
+                      6. Use designated channels appropriately in Discord. Read pinned messages and event details.
+                    </p>
+                    <p>
+                      7. Be reliable. If you commit to a role or task, communicate proactively if plans change.
+                    </p>
+                    <p>
+                      8. Safety first at events. Follow instructions from officers and venue staff.
+                    </p>
+                    <p>
+                      9. Report issues to officers or advisors promptly. We take concerns seriously and will address them confidentially when possible.
+                    </p>
+                    <p>
+                      10. Violations may result in warnings or removal from activities at the officers’ discretion.
+                    </p>
+                    <p>
+                      By agreeing, you confirm you have read and will uphold this Code of Conduct.
+                    </p>
+                  </div>
+                  <div className="mt-5 flex items-center justify-end gap-3">
+                    <Dialog.Close asChild>
+                      <button type="button" className="px-4 py-2 rounded-lg bg-stone-800 text-white/90 hover:bg-stone-700">
+                        Close
+                      </button>
+                    </Dialog.Close>
+                    <button
+                      type="button"
+                      onClick={handleAgreeCoc}
+                      disabled={!scrolledToBottom}
+                      className="px-4 py-2 rounded-lg bg-gradient-to-r from-orange-600 via-yellow-600 to-amber-600 text-white font-semibold disabled:opacity-60"
+                    >
+                      Agree
+                    </button>
+                  </div>
+                </div>
+              </Dialog.Content>
+            </Dialog.Portal>
+          </Dialog.Root>
 
           <div className="flex items-center gap-4">
             <button
