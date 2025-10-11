@@ -502,6 +502,9 @@ export default function Home() {
             Made with <Heart className="inline w-4 h-4 text-orange-400 fill-orange-400 animate-pulse" /> by MENAA
           </p>
           <p className="text-xs text-white/30">© 2025 De Anza MENAA. All rights reserved.</p>
+          <p className="text-xs text-white/30 mt-1 hover:text-white/50 transition-colors">
+            Developed with <Heart className="inline w-3 h-3 text-orange-400 fill-orange-400 -mt-0.5" /> by Abdelkarim Ait Bourich
+          </p>
         </div>
       </div>
     </div>
