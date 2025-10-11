@@ -213,6 +213,18 @@ export default function Home() {
               <span>Apply for Officer</span>
               <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform duration-300" />
             </Link>
+
+            <Link 
+              href="/member-form"
+              className={`group inline-flex items-center gap-3 px-10 py-5 bg-gradient-to-r from-yellow-600 via-amber-600 to-orange-600 hover:from-yellow-500 hover:via-amber-500 hover:to-orange-500 rounded-2xl text-white font-bold text-xl shadow-2xl hover:shadow-amber-500/50 transform hover:scale-105 transition-all duration-300 ${
+                mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
+              }`}
+              style={{ transitionDelay: "400ms" }}
+            >
+              <Users className="w-7 h-7 group-hover:rotate-12 transition-transform duration-300" />
+              <span>Member Form</span>
+              <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform duration-300" />
+            </Link>
           </div>
         </div>
 
