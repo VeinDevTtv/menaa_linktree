@@ -216,7 +216,7 @@ export default function EventsPage() {
           }`}
         >
           <ArrowLeft className="w-5 h-5" />
-          <span className="font-medium">Back to Links</span>
+          <span className="font-medium">Back to Home</span>
         </Link>
 
         {/* Header Section with enhanced animations */}
