@@ -15,8 +15,51 @@ export default function NotFound() {
   const [targets, setTargets] = useState<Array<{ id: number; x: number; y: number }>>([])
   const [playing, setPlaying] = useState(false)
   const [highScore, setHighScore] = useState(0)
+  const [leaderboard, setLeaderboard] = useState<number[]>([])
   const spawnTimer = useRef<number | null>(null)
   const TARGET_LIFETIME_MS = 2600
+
+  // Web Audio + Haptics helpers
+  const audioCtxRef = useRef<AudioContext | null>(null)
+  const ensureAudioContext = () => {
+    if (audioCtxRef.current) return audioCtxRef.current
+    const winAny = typeof window !== "undefined" ? (window as unknown as { AudioContext?: typeof AudioContext; webkitAudioContext?: typeof AudioContext }) : undefined
+    const Ctx = winAny?.AudioContext ?? winAny?.webkitAudioContext
+    if (!Ctx) return null
+    const ctx = new Ctx()
+    audioCtxRef.current = ctx
+    return ctx
+  }
+  const playTone = (frequency: number, durationMs = 90, type: OscillatorType = "sine", gainValue = 0.035) => {
+    const ctx = ensureAudioContext()
+    if (!ctx) return
+    // resume in case it's suspended (autoplay policy)
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
+    ctx.resume?.()
+    const oscillator = ctx.createOscillator()
+    const gain = ctx.createGain()
+    oscillator.type = type
+    oscillator.frequency.value = frequency
+    gain.gain.value = gainValue
+    oscillator.connect(gain).connect(ctx.destination)
+    const now = ctx.currentTime
+    oscillator.start(now)
+    gain.gain.setValueAtTime(gainValue, now)
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + durationMs / 1000)
+    oscillator.stop(now + durationMs / 1000)
+  }
+  const playSequence = (frequencies: number[], gapMs = 60) => {
+    frequencies.forEach((f, i) => {
+      window.setTimeout(() => playTone(f, 90, "triangle", 0.04), i * (gapMs + 90))
+    })
+  }
+  const haptic = (pattern: number | number[] = 10) => {
+    if (typeof navigator !== "undefined" && "vibrate" in navigator) {
+      try {
+        ;(navigator as unknown as { vibrate?: (p: number | number[]) => boolean }).vibrate?.(pattern)
+      } catch {}
+    }
+  }
 
   useEffect(() => setMounted(true), [])
 
@@ -33,6 +76,27 @@ export default function NotFound() {
       localStorage.setItem("menaa-404-highscore", String(highScore))
     } catch {}
   }, [highScore])
+
+  // Load leaderboard from sessionStorage
+  useEffect(() => {
+    try {
+      const raw = sessionStorage.getItem("menaa-404-leaderboard")
+      if (raw) {
+        const arr = JSON.parse(raw) as unknown
+        if (Array.isArray(arr)) {
+          const nums = arr.map((n) => Number(n)).filter((n) => Number.isFinite(n)) as number[]
+          nums.sort((a, b) => b - a)
+          setLeaderboard(nums.slice(0, 5))
+        }
+      }
+    } catch {}
+  }, [])
+
+  const persistLeaderboard = (next: number[]) => {
+    try {
+      sessionStorage.setItem("menaa-404-leaderboard", JSON.stringify(next))
+    } catch {}
+  }
 
   // Mini-game: Click the zellij stars (targets) to gain points within the timer
   useEffect(() => {
@@ -78,18 +142,32 @@ export default function NotFound() {
     setTimeLeft(30)
     setTargets([])
     setPlaying(true)
+    haptic(30)
+    playSequence([440, 660, 880])
   }
 
   const stopGame = () => {
     setPlaying(false)
     if (spawnTimer.current) window.clearInterval(spawnTimer.current)
     setHighScore((h) => (score > h ? score : h))
+    // leaderboard update
+    if (score > 0) {
+      setLeaderboard((prev) => {
+        const next = [...prev, score].sort((a, b) => b - a).slice(0, 5)
+        persistLeaderboard(next)
+        return next
+      })
+    }
+    haptic([20, 20, 20])
+    playSequence([660, 550, 440], 80)
   }
 
   const handleHit = (id: number) => {
     if (!playing) return
     setScore((s) => s + 1)
     setTargets((prev) => prev.filter((t) => t.id !== id))
+    haptic(10)
+    playTone(820 + Math.random() * 140, 70, "triangle", 0.045)
   }
 
   return (
@@ -199,6 +277,34 @@ export default function NotFound() {
             <p className="mt-4 text-xs text-white/50 text-center">
               Tip: Targets fade if you wait too long—keep tapping the stars!
             </p>
+          </CardContent>
+        </Card>
+
+        {/* Session Leaderboard */}
+        <Card className="mt-6 border-orange-500/20 bg-gradient-to-br from-orange-950/30 to-amber-950/40">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-3">
+                <Trophy className="w-5 h-5 text-yellow-400" />
+                <h3 className="text-white font-semibold">Session Leaderboard</h3>
+              </div>
+              <span className="text-xs text-white/50">Top 5 this session</span>
+            </div>
+            {leaderboard.length === 0 ? (
+              <p className="text-white/60 text-sm">Play a round to set your first score!</p>
+            ) : (
+              <ol className="space-y-2">
+                {leaderboard.map((s, i) => (
+                  <li key={`${s}-${i}`} className="flex items-center justify-between rounded-xl px-3 py-2 bg-stone-900/40 border border-white/5">
+                    <div className="flex items-center gap-3">
+                      <span className="inline-flex w-6 h-6 items-center justify-center rounded-full text-xs font-bold bg-gradient-to-br from-orange-600 to-amber-600 text-white">{i + 1}</span>
+                      <span className="text-white/90">{s} pts</span>
+                    </div>
+                    {i === 0 ? <span className="text-yellow-400 text-xs">Best</span> : <span className="text-white/40 text-xs">—</span>}
+                  </li>
+                ))}
+              </ol>
+            )}
           </CardContent>
         </Card>
 
