@@ -10,9 +10,8 @@ export async function POST(req: Request) {
   const data = parsed.data
   if (data.website) return new Response("Bad request", { status: 400 })
 
-  // Prefer env var; fallback to user-provided webhook if configured in env is missing
-  const webhook = process.env.DISCORD_WEBHOOK_URL ||
-    "https://discord.com/api/webhooks/1427370612401242232/rut_6p-3W9ns228YE_E2jmRPWVuiTyOcAyj8_Exhom_LBlEaqgFJHxOH_NgrdbC3rdRO"
+  // Use the dedicated RSVP webhook
+  const webhook = "https://discord.com/api/webhooks/1427370612401242232/rut_6p-3W9ns228YE_E2jmRPWVuiTyOcAyj8_Exhom_LBlEaqgFJHxOH_NgrdbC3rdRO"
 
   if (!webhook) return new Response("Server misconfigured", { status: 500 })
 

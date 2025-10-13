@@ -10,7 +10,7 @@ export async function POST(req: Request) {
   const data = parsed.data
   if (data.website) return new Response("Bad request", { status: 400 })
 
-  const webhook = process.env.DISCORD_WEBHOOK_URL
+  const webhook = "https://discord.com/api/webhooks/1426432794334072852/rnx_Y2JEz7aD_IJVSycH-gQntbxof6MqNJqovfEqwYbp5_WVGJSBUsv2ayfyalkLPzDN"
   if (!webhook) return new Response("Server misconfigured", { status: 500 })
 
   const content = `New MENAA Member Registration`

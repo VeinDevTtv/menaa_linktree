@@ -17,7 +17,7 @@ export async function POST(req: Request) {
     return new Response("Bad request", { status: 400 })
   }
 
-  const webhook = process.env.DISCORD_WEBHOOK_URL
+  const webhook = "https://discord.com/api/webhooks/1427375477227786362/9-YRyThb3EdyDuV1tG3igosdQfTg2YoVOKd7L0Z2WTE_aTrIVKb-TaGsIiJL66casgu7"
   if (!webhook) {
     return new Response("Server misconfigured", { status: 500 })
   }
