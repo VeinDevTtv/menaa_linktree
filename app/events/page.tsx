@@ -47,6 +47,26 @@ export default function EventsPage() {
 
   const events = [
     {
+      title: "MENAA Social Mixer",
+      tagline: "Connect, vibe, and make new friends!",
+      description: "Kick off the quarter with our first social mixer. Meet the MENAA community, enjoy light refreshments, and hang out in a relaxed, welcoming space.",
+      date: "TBA",
+      time: "Evening",
+      location: "De Anza College",
+      icon: Users,
+      gradient: "from-amber-600 via-orange-600 to-yellow-600",
+      accentColor: "amber",
+      highlights: [
+        "Meet new people across MENAA",
+        "Light refreshments",
+        "Chill vibes, music & games",
+        "All are welcome"
+      ],
+      decorativeIcons: [PartyPopper, Star, Sparkles, Heart],
+      rsvpLink: "/events/mixer-rsvp",
+      rsvpText: "RSVP Now"
+    },
+    {
       title: "MENAA Bingo",
       tagline: "Win Prizes, Make Memories!",
       description: "Join us for an exciting evening of MENAA-themed bingo! Get ready for laughter, prizes, and unforgettable moments with your friends. Traditional snacks and refreshments will be served.",
@@ -398,12 +418,22 @@ export default function EventsPage() {
                           </div>
 
                           {/* RSVP Button */}
-                          <button
-                            className={`w-full mt-4 px-6 py-4 rounded-2xl bg-gradient-to-r ${event.gradient} text-white font-bold text-lg shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-500 hover:brightness-110 flex items-center justify-center gap-2`}
-                          >
-                            <Zap className="w-5 h-5" />
-                            Stay Tuned!
-                          </button>
+                          {"rsvpLink" in event && event.rsvpLink ? (
+                            <Link
+                              href={event.rsvpLink}
+                              className={`w-full mt-4 px-6 py-4 rounded-2xl bg-gradient-to-r ${event.gradient} text-white font-bold text-lg shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-500 hover:brightness-110 flex items-center justify-center gap-2`}
+                            >
+                              <Zap className="w-5 h-5" />
+                              {event.rsvpText || "RSVP Now"}
+                            </Link>
+                          ) : (
+                            <button
+                              className={`w-full mt-4 px-6 py-4 rounded-2xl bg-gradient-to-r ${event.gradient} text-white font-bold text-lg shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-500 hover:brightness-110 flex items-center justify-center gap-2`}
+                            >
+                              <Zap className="w-5 h-5" />
+                              Stay Tuned!
+                            </button>
+                          )}
                         </div>
                       </div>
                     </div>

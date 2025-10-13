@@ -44,3 +44,24 @@ export const memberRegistrationSchema = z.object({
 export type MemberRegistrationInput = z.infer<typeof memberRegistrationSchema>
 
 
+// Event RSVP (e.g., MENAA Social Mixer)
+export const eventRSVPSchema = z.object({
+  fullName: z.string().min(1, "Full name is required"),
+  email: z.string().email("Invalid email"),
+  attending: z.enum(["yes", "no"], {
+    required_error: "Please select if you are attending",
+  }),
+  guests: z
+    .string()
+    .optional()
+    .refine((val) => (val === undefined || val === "" ? true : /^\d+$/.test(val)), {
+      message: "Guests must be a number",
+    }),
+  notes: z.string().max(500, "Keep it under 500 characters").optional(),
+  subscribe: z.boolean().optional(),
+  website: z.string().optional(),
+})
+
+export type EventRSVPInput = z.infer<typeof eventRSVPSchema>
+
+
