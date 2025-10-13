@@ -6,6 +6,7 @@ import { Analytics } from "@vercel/analytics/next"
 import "./globals.css"
 import { Suspense } from "react"
 import { Toaster } from "sonner"
+import { AnnouncementToast } from "@/components/announcement-toast"
 
 export const metadata: Metadata = {
   title: "DE ANZA MENAA - Middle East & North African Association",
@@ -22,6 +23,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`font-sans ${GeistSans.variable} ${GeistMono.variable}`}>
         <Suspense fallback={null}>{children}</Suspense>
+        <AnnouncementToast />
         <Analytics />
         <Toaster richColors position="top-center" />
       </body>
