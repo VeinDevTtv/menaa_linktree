@@ -6,6 +6,7 @@ import { Card } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
+import { PartyPopper, Frown } from "lucide-react"
 
 export default function MixerRSVPPage() {
   const [submitting, setSubmitting] = useState(false)
@@ -59,7 +60,8 @@ export default function MixerRSVPPage() {
           </p>
         </div>
 
-        <Card className="border-orange-500/20 bg-white/5 backdrop-blur-lg p-6 md:p-8">
+        <Card className="relative overflow-hidden border-orange-500/20 bg-white/5 backdrop-blur-lg p-6 md:p-8">
+          <div className="pointer-events-none absolute inset-0 rounded-xl bg-gradient-to-br from-orange-500/10 via-amber-500/10 to-yellow-500/10 animate-border-flow" />
           <form
             action={async (formData) => {
               await onSubmit(formData)
@@ -78,14 +80,41 @@ export default function MixerRSVPPage() {
 
             <div>
               <Label>Will you be attending?</Label>
-              <div className="flex flex-wrap gap-3">
-                <label className="inline-flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-4 py-2 hover:border-amber-400/40">
-                  <input type="radio" name="attending" value="yes" required className="accent-amber-500" />
-                  <span className="font-medium">YES!!!!!!!!!</span>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {/* YES card */}
+                <label className="group relative cursor-pointer">
+                  <input type="radio" name="attending" value="yes" required className="peer sr-only" />
+                  <div className="rounded-2xl border border-white/10 bg-gradient-to-br from-white/10 to-white/5 px-4 py-4 text-amber-100 transition-all duration-300 shadow-sm hover:shadow-md group-hover:scale-[1.01] peer-checked:scale-[1.02] peer-checked:border-transparent peer-checked:text-white peer-checked:shadow-xl peer-checked:bg-gradient-to-r peer-checked:from-orange-500 peer-checked:via-amber-500 peer-checked:to-yellow-500">
+                    <div className="flex items-center gap-3">
+                      <div className="relative">
+                        <PartyPopper className="h-6 w-6 opacity-90 transition-all group-hover:rotate-6" />
+                        {/* confetti pings */}
+                        <span className="absolute -top-2 -right-2 h-2 w-2 rounded-full bg-yellow-300 opacity-0 peer-checked:opacity-100 animate-ping" />
+                        <span className="absolute -bottom-2 -left-1 h-1.5 w-1.5 rounded-full bg-orange-300 opacity-0 peer-checked:opacity-100 animate-ping [animation-delay:150ms]" />
+                        <span className="absolute -top-1 left-3 h-1.5 w-1.5 rounded-full bg-amber-300 opacity-0 peer-checked:opacity-100 animate-ping [animation-delay:300ms]" />
+                      </div>
+                      <div className="flex-1">
+                        <div className="font-semibold tracking-wide">YES!!!!!!!!!</div>
+                        <div className="text-xs opacity-80">We can’t wait to see you there!</div>
+                      </div>
+                    </div>
+                  </div>
                 </label>
-                <label className="inline-flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-4 py-2 hover:border-amber-400/40">
-                  <input type="radio" name="attending" value="no" className="accent-amber-500" />
-                  <span className="font-medium">No :(</span>
+                {/* NO card */}
+                <label className="group relative cursor-pointer">
+                  <input type="radio" name="attending" value="no" className="peer sr-only" />
+                  <div className="rounded-2xl border border-white/10 bg-gradient-to-br from-white/10 to-white/5 px-4 py-4 text-stone-200 transition-all duration-300 shadow-sm hover:shadow-md group-hover:scale-[1.01] peer-checked:scale-[1.02] peer-checked:border-transparent peer-checked:text-white peer-checked:shadow-xl peer-checked:bg-gradient-to-r peer-checked:from-stone-500 peer-checked:to-amber-500">
+                    <div className="flex items-center gap-3">
+                      <div className="relative">
+                        <Frown className="h-6 w-6 opacity-90 transition-all group-hover:-rotate-6" />
+                        <span className="absolute -top-2 -right-2 h-2 w-2 rounded-full bg-stone-300 opacity-0 peer-checked:opacity-100 animate-ping" />
+                      </div>
+                      <div className="flex-1">
+                        <div className="font-semibold tracking-wide">No :(</div>
+                        <div className="text-xs opacity-80">We’ll miss you — hope to see you next time.</div>
+                      </div>
+                    </div>
+                  </div>
                 </label>
               </div>
             </div>
