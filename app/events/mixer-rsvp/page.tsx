@@ -3,6 +3,9 @@
 import { useState } from "react"
 import Link from "next/link"
 import { Card } from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Button } from "@/components/ui/button"
 
 export default function MixerRSVPPage() {
   const [submitting, setSubmitting] = useState(false)
@@ -17,9 +20,6 @@ export default function MixerRSVPPage() {
       fullName: String(formData.get("fullName") || ""),
       email: String(formData.get("email") || ""),
       attending: String(formData.get("attending") || ""),
-      guests: String(formData.get("guests") || ""),
-      notes: String(formData.get("notes") || ""),
-      subscribe: Boolean(formData.get("subscribe")),
       website: String(formData.get("website") || ""),
     }
 
@@ -67,73 +67,30 @@ export default function MixerRSVPPage() {
             className="space-y-5"
           >
             <div>
-              <label className="block text-sm text-white/80 mb-2" htmlFor="fullName">Full name</label>
-              <input
-                id="fullName"
-                name="fullName"
-                type="text"
-                required
-                className="w-full rounded-lg bg-white/10 border border-white/10 focus:border-amber-400 focus:outline-none px-4 py-3"
-                placeholder="Your full name"
-              />
+              <Label htmlFor="fullName">Name (Last, First)</Label>
+              <Input id="fullName" name="fullName" type="text" required placeholder="Doe, John" />
             </div>
 
             <div>
-              <label className="block text-sm text-white/80 mb-2" htmlFor="email">Email</label>
-              <input
-                id="email"
-                name="email"
-                type="email"
-                required
-                className="w-full rounded-lg bg-white/10 border border-white/10 focus:border-amber-400 focus:outline-none px-4 py-3"
-                placeholder="you@example.com"
-              />
+              <Label htmlFor="email">Email</Label>
+              <Input id="email" name="email" type="email" required placeholder="you@example.com" />
             </div>
 
             <div>
-              <label className="block text-sm text-white/80 mb-2">Are you attending?</label>
-              <div className="flex gap-4">
-                <label className="inline-flex items-center gap-2">
+              <Label>Will you be attending?</Label>
+              <div className="flex flex-wrap gap-3">
+                <label className="inline-flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-4 py-2 hover:border-amber-400/40">
                   <input type="radio" name="attending" value="yes" required className="accent-amber-500" />
-                  <span>Yes</span>
+                  <span className="font-medium">YES!!!!!!!!!</span>
                 </label>
-                <label className="inline-flex items-center gap-2">
+                <label className="inline-flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-4 py-2 hover:border-amber-400/40">
                   <input type="radio" name="attending" value="no" className="accent-amber-500" />
-                  <span>No</span>
+                  <span className="font-medium">No :(</span>
                 </label>
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm text-white/80 mb-2" htmlFor="guests">Number of guests (optional)</label>
-                <input
-                  id="guests"
-                  name="guests"
-                  type="number"
-                  min={0}
-                  className="w-full rounded-lg bg-white/10 border border-white/10 focus:border-amber-400 focus:outline-none px-4 py-3"
-                  placeholder="0"
-                />
-              </div>
-              <div className="flex items-end">
-                <label className="inline-flex items-center gap-2">
-                  <input type="checkbox" name="subscribe" className="accent-amber-500" />
-                  <span>Subscribe to event updates</span>
-                </label>
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-sm text-white/80 mb-2" htmlFor="notes">Anything we should know? (dietary, accessibility, etc.)</label>
-              <textarea
-                id="notes"
-                name="notes"
-                rows={4}
-                className="w-full rounded-lg bg-white/10 border border-white/10 focus:border-amber-400 focus:outline-none px-4 py-3"
-                placeholder="Share any notes for the organizers"
-              />
-            </div>
+            
 
             {/* Honeypot */}
             <input type="text" name="website" className="hidden" tabIndex={-1} autoComplete="off" />
@@ -149,13 +106,9 @@ export default function MixerRSVPPage() {
               </div>
             )}
 
-            <button
-              type="submit"
-              disabled={submitting}
-              className="w-full rounded-xl bg-gradient-to-r from-orange-500 via-amber-500 to-yellow-500 px-6 py-3 font-semibold text-white shadow-lg hover:brightness-110 disabled:opacity-60 disabled:cursor-not-allowed"
-            >
+            <Button type="submit" disabled={submitting} className="w-full">
               {submitting ? "Submitting..." : "Submit RSVP"}
-            </button>
+            </Button>
           </form>
         </Card>
       </div>

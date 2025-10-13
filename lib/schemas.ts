@@ -51,14 +51,6 @@ export const eventRSVPSchema = z.object({
   attending: z.enum(["yes", "no"], {
     required_error: "Please select if you are attending",
   }),
-  guests: z
-    .string()
-    .optional()
-    .refine((val) => (val === undefined || val === "" ? true : /^\d+$/.test(val)), {
-      message: "Guests must be a number",
-    }),
-  notes: z.string().max(500, "Keep it under 500 characters").optional(),
-  subscribe: z.boolean().optional(),
   website: z.string().optional(),
 })
 
