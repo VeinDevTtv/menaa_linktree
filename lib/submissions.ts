@@ -71,7 +71,6 @@ async function writeToBlob(registry: Registry): Promise<void> {
   if (!BLOB_TOKEN) return writeToLocal(registry)
   const { put } = await import("@vercel/blob")
   await put(BLOB_KEY, JSON.stringify(registry), {
-    access: "private",
     contentType: "application/json",
     token: BLOB_TOKEN,
   })
