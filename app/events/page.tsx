@@ -6,8 +6,8 @@ import Image from "next/image"
 import { Card } from "@/components/ui/card"
 import { 
   Calendar, Heart, ArrowLeft, Sparkles, Users, 
-  Film, Gamepad2, Trophy, PartyPopper, Clock, MapPin,
-  Star, Zap, Music, Gift, Coffee
+  Film, Gamepad2, PartyPopper, Clock, MapPin,
+  Star, Zap, Music, Coffee
 } from "lucide-react"
 import { ArabesquePatterns } from "@/components/arabesque-patterns"
 import { motion } from "framer-motion"
@@ -51,10 +51,10 @@ export default function EventsPage() {
     {
       title: "MENAA Social Mixer",
       tagline: "📢 MENAA Social Mixer — Wednesday, October 15th!",
-      description: "Our first event of the quarter is happening this Wednesday from 3–5 PM at the Sunken Gardens 🌿",
+      description: "Our first event of the quarter is happening this Wednesday from 3–5 PM at Fireside 🌿",
       date: "Wednesday, Oct 15",
       time: "3 PM – 5 PM",
-      location: "Sunken Gardens",
+      location: "Fireside",
       icon: Users,
       gradient: "from-amber-600 via-orange-600 to-yellow-600",
       accentColor: "amber",
@@ -276,7 +276,7 @@ export default function EventsPage() {
 
           <div className="relative inline-block mb-6">
             <p className="text-xl md:text-2xl text-white/90 font-medium text-balance relative z-10">
-              This Quarter's Exciting Activities
+              This Quarter&rsquo;s Exciting Activities
             </p>
             <div className="absolute inset-0 bg-gradient-to-r from-orange-500/20 via-yellow-500/20 to-amber-500/20 blur-2xl animate-pulse-glow" />
           </div>
@@ -484,12 +484,12 @@ export default function EventsPage() {
               </div>
 
               <h2 className="text-3xl md:text-4xl font-bold mb-4 bg-gradient-to-r from-orange-300 via-yellow-300 to-amber-300 bg-clip-text text-transparent">
-                Don't Miss Out!
+                Don&rsquo;t Miss Out!
               </h2>
 
               <p className="text-lg text-white/80 mb-8 leading-relaxed">
                 Stay connected with us on Instagram and Discord for exact dates, times, and special announcements. 
-                These events fill up fast, so make sure you're following us to get the latest updates!
+                These events fill up fast, so make sure you&rsquo;re following us to get the latest updates!
               </p>
 
               <div className="flex flex-wrap justify-center gap-4">
