@@ -48,42 +48,44 @@ export default function EventsPage() {
   const events = [
     {
       title: "MENAA Social Mixer",
-      tagline: "Connect, vibe, and make new friends!",
-      description: "Kick off the quarter with our first social mixer. Meet the MENAA community, enjoy light refreshments, and hang out in a relaxed, welcoming space.",
+      tagline: "📢 MENAA Social Mixer — Wednesday, October 15th!",
+      description: "Our first event of the quarter is happening this Wednesday from 3–5 PM at the Sunken Gardens 🌿",
       date: "Wednesday, Oct 15",
       time: "3 PM – 5 PM",
-      location: "De Anza College",
+      location: "Sunken Gardens",
       icon: Users,
       gradient: "from-amber-600 via-orange-600 to-yellow-600",
       accentColor: "amber",
       highlights: [
-        "Meet new people across MENAA",
-        "Light refreshments",
-        "Chill vibes, music & games",
-        "All are welcome"
+        "🎯 MENA Bingo",
+        "🎨 Henna & glitter tattoos",
+        "🎲 Games & snacks",
+        "✨ Good vibes and community!",
+        "✅ RSVP here: tinyurl.com/menaamixer",
+        "Don’t miss it — see you there! 🌙"
       ],
       decorativeIcons: [PartyPopper, Star, Sparkles, Heart],
-      rsvpLink: "/events/mixer-rsvp",
-      rsvpText: "RSVP Now"
+      rsvpLink: "https://tinyurl.com/menaamixer",
+      rsvpText: "RSVP Here"
     },
-    {
-      title: "MENAA Bingo",
-      tagline: "Win Prizes, Make Memories!",
-      description: "Join us for an exciting evening of MENAA-themed bingo! Get ready for laughter, prizes, and unforgettable moments with your friends. Traditional snacks and refreshments will be served.",
-      date: "TBA",
-      time: "Evening",
-      location: "De Anza College",
-      icon: Trophy,
-      gradient: "from-orange-500 via-orange-600 to-orange-700",
-      accentColor: "orange",
-      highlights: [
-        "Amazing prizes to be won",
-        "Traditional MENAA snacks",
-        "Fun games & activities",
-        "Meet new friends"
-      ],
-      decorativeIcons: [Gift, Star, Sparkles, PartyPopper]
-    },
+    // {
+    //   title: "MENAA Bingo",
+    //   tagline: "Win Prizes, Make Memories!",
+    //   description: "Join us for an exciting evening of MENAA-themed bingo! Get ready for laughter, prizes, and unforgettable moments with your friends. Traditional snacks and refreshments will be served.",
+    //   date: "TBA",
+    //   time: "Evening",
+    //   location: "De Anza College",
+    //   icon: Trophy,
+    //   gradient: "from-orange-500 via-orange-600 to-orange-700",
+    //   accentColor: "orange",
+    //   highlights: [
+    //     "Amazing prizes to be won",
+    //     "Traditional MENAA snacks",
+    //     "Fun games & activities",
+    //     "Meet new friends"
+    //   ],
+    //   decorativeIcons: [Gift, Star, Sparkles, PartyPopper]
+    // },
     {
       title: "FIFA/Henna Night",
       tagline: "Game & Glamour Combined!",
