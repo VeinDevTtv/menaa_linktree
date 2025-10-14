@@ -6,10 +6,13 @@ import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { memberRegistrationSchema, type MemberRegistrationInput } from "@/lib/schemas"
 import { toast } from "sonner"
+import { SubmitSuccess } from "@/components/submit-success"
 import * as Dialog from "@radix-ui/react-dialog"
 
 export default function MemberFormPage() {
   const [submitting, setSubmitting] = useState(false)
+  const [showSuccess, setShowSuccess] = useState(false)
+  const [dupMessage, setDupMessage] = useState<string | null>(null)
   const [cocOpen, setCocOpen] = useState(false)
   const [cocUnlocked, setCocUnlocked] = useState(false)
   const [scrolledToBottom, setScrolledToBottom] = useState(false)
@@ -52,18 +55,27 @@ export default function MemberFormPage() {
 
   const onSubmit = async (data: MemberRegistrationInput) => {
     setSubmitting(true)
+    setDupMessage(null)
     try {
       const response = await fetch("/api/member-registration", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       })
-      if (!response.ok) throw new Error(await response.text())
+      if (!response.ok) {
+        const text = await response.text()
+        if (response.status === 409) {
+          setDupMessage(text || "You’ve already submitted this form.")
+          throw new Error(text || "Duplicate submission")
+        }
+        throw new Error(text || "Failed to submit")
+      }
+      setShowSuccess(true)
       toast.success("Thanks for joining MENAA! See you soon.")
       reset()
     } catch (e: unknown) {
       const message = e instanceof Error ? e.message : "Something went wrong"
-      toast.error(message)
+      if (!dupMessage) toast.error(message)
     } finally {
       setSubmitting(false)
     }
@@ -78,6 +90,11 @@ export default function MemberFormPage() {
         <p className="text-white/70 mb-8">Welcome! Join our community by filling out this quick form.</p>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+          {dupMessage && (
+            <div className="rounded-xl border border-amber-400/30 bg-amber-500/10 px-4 py-3 text-amber-300 animate-in fade-in slide-in-from-top-2">
+              {dupMessage}
+            </div>
+          )}
           {/* Honeypot */}
           <div className="hidden">
             <label className="block text-sm mb-1" htmlFor="website">Website</label>
@@ -212,6 +229,7 @@ export default function MemberFormPage() {
           </div>
         </form>
       </div>
+      <SubmitSuccess open={showSuccess} onClose={() => setShowSuccess(false)} title="Registration received!" subtitle="Welcome to MENAA — we’re excited to have you." />
     </div>
   )
 }

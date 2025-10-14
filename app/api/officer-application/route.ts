@@ -1,4 +1,5 @@
 import { officerApplicationSchema } from "@/lib/schemas"
+import { hasEmail, addEmail } from "@/lib/submissions"
 
 export async function POST(req: Request) {
   const json = await req.json().catch(() => null)
@@ -21,6 +22,12 @@ export async function POST(req: Request) {
   if (!webhook) {
     return new Response("Server misconfigured", { status: 500 })
   }
+
+  const email = data.email.trim().toLowerCase()
+  if (await hasEmail("officer", email)) {
+    return new Response("You’ve already applied. Multiple entries are not allowed.", { status: 409 })
+  }
+  await addEmail("officer", email)
 
   const content = `New Officer Application` 
   const embeds = [

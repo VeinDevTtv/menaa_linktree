@@ -1,4 +1,5 @@
 import { memberRegistrationSchema } from "@/lib/schemas"
+import { hasEmail, addEmail } from "@/lib/submissions"
 
 export async function POST(req: Request) {
   const json = await req.json().catch(() => null)
@@ -26,6 +27,12 @@ export async function POST(req: Request) {
       timestamp: new Date().toISOString(),
     },
   ]
+
+  const email = data.email.trim().toLowerCase()
+  if (await hasEmail("member", email)) {
+    return new Response("You’ve already submitted this form.", { status: 409 })
+  }
+  await addEmail("member", email)
 
   const payload = { content, embeds }
   const rsp = await fetch(webhook, {

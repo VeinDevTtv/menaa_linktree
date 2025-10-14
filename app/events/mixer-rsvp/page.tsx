@@ -7,16 +7,20 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 import { PartyPopper, Frown } from "lucide-react"
+import { SubmitSuccess } from "@/components/submit-success"
 
 export default function MixerRSVPPage() {
   const [submitting, setSubmitting] = useState(false)
   const [success, setSuccess] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
+  const [showSuccess, setShowSuccess] = useState(false)
+  const [dupMessage, setDupMessage] = useState<string | null>(null)
 
   async function onSubmit(formData: FormData) {
     setSubmitting(true)
     setSuccess(null)
     setError(null)
+    setDupMessage(null)
     const payload = {
       fullName: String(formData.get("fullName") || ""),
       email: String(formData.get("email") || ""),
@@ -35,7 +39,15 @@ export default function MixerRSVPPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       })
-      if (!rsp.ok) throw new Error("Failed to submit RSVP")
+      if (!rsp.ok) {
+        const text = await rsp.text()
+        if (rsp.status === 409) {
+          setDupMessage(text || "You’ve already RSVP’d.")
+          throw new Error(text || "Duplicate submission")
+        }
+        throw new Error(text || "Failed to submit RSVP")
+      }
+      setShowSuccess(true)
       setSuccess("Thanks! Your RSVP has been recorded.")
     } catch (e) {
       setError("Something went wrong. Please try again.")
@@ -124,22 +136,28 @@ export default function MixerRSVPPage() {
             {/* Honeypot */}
             <input type="text" name="website" className="hidden" tabIndex={-1} autoComplete="off" />
 
-            {success && (
-              <div className="rounded-lg border border-green-400/30 bg-green-500/10 px-4 py-3 text-green-300">
-                {success}
-              </div>
-            )}
-            {error && (
-              <div className="rounded-lg border border-red-400/30 bg-red-500/10 px-4 py-3 text-red-300">
-                {error}
-              </div>
-            )}
+          {dupMessage && (
+            <div className="rounded-lg border border-amber-400/30 bg-amber-500/10 px-4 py-3 text-amber-300 animate-in fade-in slide-in-from-top-2">
+              {dupMessage}
+            </div>
+          )}
+          {success && (
+            <div className="rounded-lg border border-green-400/30 bg-green-500/10 px-4 py-3 text-green-300">
+              {success}
+            </div>
+          )}
+          {error && (
+            <div className="rounded-lg border border-red-400/30 bg-red-500/10 px-4 py-3 text-red-300">
+              {error}
+            </div>
+          )}
 
             <Button type="submit" disabled={submitting} className="w-full">
               {submitting ? "Submitting..." : "Submit RSVP"}
             </Button>
           </form>
         </Card>
+      <SubmitSuccess open={showSuccess} onClose={() => setShowSuccess(false)} title="RSVP received!" subtitle="See you at the mixer." />
       </div>
     </div>
   )
