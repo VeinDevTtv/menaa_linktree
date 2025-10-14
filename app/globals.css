@@ -525,6 +525,10 @@
 
 /* Reduce motion for users who prefer it */
 @media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+    transition: none !important;
+  }
   .animate-float-3d,
   .animate-float-3d-reverse,
   .animate-rotate-3d,

@@ -7,6 +7,7 @@ import "./globals.css"
 import { Suspense } from "react"
 import { Toaster } from "sonner"
 import { AnnouncementToast } from "@/components/announcement-toast"
+import { MotionProvider, RouteProgress } from "@/components/motion-provider"
 
 export const metadata: Metadata = {
   title: "DE ANZA MENAA - Middle East & North African Association",
@@ -22,7 +23,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`font-sans ${GeistSans.variable} ${GeistMono.variable}`}>
-        <Suspense fallback={null}>{children}</Suspense>
+        <RouteProgress />
+        <Suspense fallback={null}>
+          <MotionProvider>{children}</MotionProvider>
+        </Suspense>
         <AnnouncementToast />
         <Analytics />
         <Toaster richColors position="top-center" />

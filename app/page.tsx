@@ -10,6 +10,8 @@ import {
   PartyPopper, Clock, MapPinned, Gamepad2, Film, Trophy, Calendar, ArrowRight, UserPlus
 } from "lucide-react"
 import { ArabesquePatterns } from "@/components/arabesque-patterns"
+import { motion } from "framer-motion"
+import { InteractiveCard } from "@/components/interactive-card"
 
 // Custom Discord Icon component matching lucide-react style
 const DiscordIcon = ({ className }: { className?: string }) => (
@@ -190,41 +192,47 @@ export default function Home() {
 
           {/* Prominent CTAs */}
           <div className="mt-12 flex flex-wrap items-center justify-center gap-4">
-            <Link 
-              href="/events"
-              className={`group inline-flex items-center gap-3 px-10 py-5 bg-gradient-to-r from-orange-600 via-yellow-600 to-amber-600 hover:from-orange-500 hover:via-yellow-500 hover:to-amber-500 rounded-2xl text-white font-bold text-xl shadow-2xl hover:shadow-orange-500/50 transform hover:scale-105 transition-all duration-300 ${
-                mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
-              }`}
-              style={{ transitionDelay: "200ms" }}
-            >
-              <Calendar className="w-7 h-7 group-hover:rotate-12 transition-transform duration-300" />
-              <span>View Upcoming Events</span>
-              <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform duration-300" />
-            </Link>
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.97 }}>
+              <Link 
+                href="/events"
+                className={`group inline-flex items-center gap-3 px-10 py-5 bg-gradient-to-r from-orange-600 via-yellow-600 to-amber-600 hover:from-orange-500 hover:via-yellow-500 hover:to-amber-500 rounded-2xl text-white font-bold text-xl shadow-2xl hover:shadow-orange-500/50 transform transition-all duration-300 ${
+                  mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
+                }`}
+                style={{ transitionDelay: "200ms" }}
+              >
+                <Calendar className="w-7 h-7 group-hover:rotate-12 transition-transform duration-300" />
+                <span>View Upcoming Events</span>
+                <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform duration-300" />
+              </Link>
+            </motion.div>
 
-            <Link 
-              href="/apply-officer"
-              className={`group inline-flex items-center gap-3 px-10 py-5 bg-gradient-to-r from-amber-600 via-yellow-600 to-orange-600 hover:from-amber-500 hover:via-yellow-500 hover:to-orange-500 rounded-2xl text-white font-bold text-xl shadow-2xl hover:shadow-yellow-500/50 transform hover:scale-105 transition-all duration-300 ${
-                mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
-              }`}
-              style={{ transitionDelay: "300ms" }}
-            >
-              <UserPlus className="w-7 h-7 group-hover:rotate-12 transition-transform duration-300" />
-              <span>Apply for Officer</span>
-              <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform duration-300" />
-            </Link>
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.97 }}>
+              <Link 
+                href="/apply-officer"
+                className={`group inline-flex items-center gap-3 px-10 py-5 bg-gradient-to-r from-amber-600 via-yellow-600 to-orange-600 hover:from-amber-500 hover:via-yellow-500 hover:to-orange-500 rounded-2xl text-white font-bold text-xl shadow-2xl hover:shadow-yellow-500/50 transform transition-all duration-300 ${
+                  mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
+                }`}
+                style={{ transitionDelay: "300ms" }}
+              >
+                <UserPlus className="w-7 h-7 group-hover:rotate-12 transition-transform duration-300" />
+                <span>Apply for Officer</span>
+                <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform duration-300" />
+              </Link>
+            </motion.div>
 
-            <Link 
-              href="/member-form"
-              className={`group inline-flex items-center gap-3 px-10 py-5 bg-gradient-to-r from-yellow-600 via-amber-600 to-orange-600 hover:from-yellow-500 hover:via-amber-500 hover:to-orange-500 rounded-2xl text-white font-bold text-xl shadow-2xl hover:shadow-amber-500/50 transform hover:scale-105 transition-all duration-300 ${
-                mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
-              }`}
-              style={{ transitionDelay: "400ms" }}
-            >
-              <Users className="w-7 h-7 group-hover:rotate-12 transition-transform duration-300" />
-              <span>Member Form</span>
-              <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform duration-300" />
-            </Link>
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.97 }}>
+              <Link 
+                href="/member-form"
+                className={`group inline-flex items-center gap-3 px-10 py-5 bg-gradient-to-r from-yellow-600 via-amber-600 to-orange-600 hover:from-yellow-500 hover:via-amber-500 hover:to-orange-500 rounded-2xl text-white font-bold text-xl shadow-2xl hover:shadow-amber-500/50 transform transition-all duration-300 ${
+                  mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
+                }`}
+                style={{ transitionDelay: "400ms" }}
+              >
+                <Users className="w-7 h-7 group-hover:rotate-12 transition-transform duration-300" />
+                <span>Member Form</span>
+                <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform duration-300" />
+              </Link>
+            </motion.div>
           </div>
         </div>
 
@@ -243,14 +251,14 @@ export default function Home() {
             {missionValues.map((item, index) => {
               const Icon = item.icon
               return (
-                <div
+                <motion.div
                   key={index}
-                  className={`transition-all duration-700 ${
-                    mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
-                  }`}
-                  style={{ transitionDelay: `${(index + 4) * 100}ms` }}
+                  initial={{ opacity: 0, y: 24 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "-100px" }}
+                  transition={{ duration: 0.45, ease: "easeOut", delay: index * 0.08 }}
                 >
-                  <Card className="group relative overflow-hidden border-orange-500/10 bg-gradient-to-br from-orange-950/20 to-amber-950/30 backdrop-blur-md transition-all duration-500 hover:scale-[1.02] hover:border-orange-400/30 h-full card-spotlight">
+                  <InteractiveCard className="group relative overflow-hidden border-orange-500/10 bg-gradient-to-br from-orange-950/20 to-amber-950/30 backdrop-blur-md transition-all duration-500 hover:scale-[1.02] hover:border-orange-400/30 h-full">
                     <div
                       className={`absolute inset-0 bg-gradient-to-br ${item.gradient} opacity-0 group-hover:opacity-20 transition-all duration-500 animate-border-flow`}
                     />
@@ -283,8 +291,8 @@ export default function Home() {
                     <div
                       className={`absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r ${item.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-500`}
                     />
-                  </Card>
-                </div>
+                  </InteractiveCard>
+                </motion.div>
               )
             })}
           </div>
@@ -379,14 +387,14 @@ export default function Home() {
             {upcomingEvents.map((event, index) => {
               const Icon = event.icon
               return (
-                <div
+                <motion.div
                   key={index}
-                  className={`transition-all duration-700 ${
-                    mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
-                  }`}
-                  style={{ transitionDelay: `${(index + 9) * 100}ms` }}
+                  initial={{ opacity: 0, y: 24 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "-100px" }}
+                  transition={{ duration: 0.45, ease: "easeOut", delay: index * 0.08 }}
                 >
-                  <Card className="group relative overflow-hidden border-orange-500/10 bg-gradient-to-br from-orange-950/20 to-amber-950/30 backdrop-blur-md transition-all duration-500 hover:scale-[1.02] hover:border-orange-400/30 h-full card-spotlight">
+                  <InteractiveCard className="group relative overflow-hidden border-orange-500/10 bg-gradient-to-br from-orange-950/20 to-amber-950/30 backdrop-blur-md transition-all duration-500 hover:scale-[1.02] hover:border-orange-400/30 h-full">
                     <div className={`absolute inset-0 bg-gradient-to-br ${event.gradient} opacity-0 group-hover:opacity-100 transition-all duration-500`} />
 
                     <div className="relative p-6">
@@ -398,7 +406,7 @@ export default function Home() {
                           <h3 className="text-lg font-bold text-white">{event.title}</h3>
                           <div className="flex items-center gap-1 text-sm text-orange-300">
                             <Clock className="w-3 h-3" />
-                            <span>{event.date}</span>
+                            <span>{event.date === "TBA" ? "More info coming soon" : event.date}</span>
                           </div>
                         </div>
                       </div>
@@ -407,8 +415,8 @@ export default function Home() {
                         {event.description}
                       </p>
                     </div>
-                  </Card>
-                </div>
+                  </InteractiveCard>
+                </motion.div>
               )
             })}
           </div>

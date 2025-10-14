@@ -10,6 +10,8 @@ import {
   Star, Zap, Music, Gift, Coffee
 } from "lucide-react"
 import { ArabesquePatterns } from "@/components/arabesque-patterns"
+import { motion } from "framer-motion"
+import { InteractiveCard } from "@/components/interactive-card"
 
 export default function EventsPage() {
   const [mounted, setMounted] = useState(false)
@@ -297,16 +299,16 @@ export default function EventsPage() {
             const isHovered = hoveredEvent === index
             
             return (
-              <div
+              <motion.div
                 key={index}
-                className={`transition-all duration-1000 ${
-                  mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-20"
-                }`}
-                style={{ transitionDelay: `${(index + 2) * 150}ms` }}
+                initial={{ opacity: 0, y: 28 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-120px" }}
+                transition={{ duration: 0.5, ease: "easeOut", delay: index * 0.08 }}
                 onMouseEnter={() => setHoveredEvent(index)}
                 onMouseLeave={() => setHoveredEvent(null)}
               >
-                <Card className="group relative overflow-hidden border-orange-500/10 bg-gradient-to-br from-orange-950/20 to-amber-950/30 backdrop-blur-xl transition-all duration-700 hover:scale-[1.02] hover:border-orange-400/30 hover:shadow-2xl card-spotlight">
+                <InteractiveCard className="group relative overflow-hidden border-orange-500/10 bg-gradient-to-br from-orange-950/20 to-amber-950/30 backdrop-blur-xl transition-all duration-700 hover:scale-[1.02] hover:border-orange-400/30 hover:shadow-2xl">
                   {/* Animated gradient background */}
                   <div
                     className={`absolute inset-0 bg-gradient-to-br ${event.gradient} opacity-0 group-hover:opacity-30 transition-all duration-700 animate-border-flow`}
@@ -388,7 +390,7 @@ export default function EventsPage() {
                               </div>
                               <div>
                                 <p className="text-xs text-white/50 uppercase tracking-wider">Date</p>
-                                <p className="text-lg font-bold text-white">{event.date}</p>
+                                <p className="text-lg font-bold text-white">{event.date === "TBA" ? "More info coming soon" : event.date}</p>
                               </div>
                             </div>
                           </div>
@@ -421,20 +423,27 @@ export default function EventsPage() {
 
                           {/* RSVP Button */}
                           {"rsvpLink" in event && event.rsvpLink ? (
-                            <Link
-                              href={event.rsvpLink}
-                              className={`w-full mt-4 px-6 py-4 rounded-2xl bg-gradient-to-r ${event.gradient} text-white font-bold text-lg shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-500 hover:brightness-110 flex items-center justify-center gap-2`}
-                            >
-                              <Zap className="w-5 h-5" />
-                              {event.rsvpText || "RSVP Now"}
-                            </Link>
+                            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.97 }}>
+                              <Link
+                                href={event.rsvpLink}
+                                className={`w-full mt-4 px-6 py-4 rounded-2xl bg-gradient-to-r ${event.gradient} text-white font-bold text-lg shadow-xl hover:shadow-2xl transform transition-all duration-500 hover:brightness-110 flex items-center justify-center gap-2`}
+                              >
+                                <Zap className="w-5 h-5" />
+                                {event.rsvpText || "RSVP Now"}
+                              </Link>
+                            </motion.div>
                           ) : (
-                            <button
-                              className={`w-full mt-4 px-6 py-4 rounded-2xl bg-gradient-to-r ${event.gradient} text-white font-bold text-lg shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-500 hover:brightness-110 flex items-center justify-center gap-2`}
-                            >
-                              <Zap className="w-5 h-5" />
-                              Stay Tuned!
-                            </button>
+                            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.97 }}>
+                              <a
+                                href="https://instagram.com/deanzamenaa"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className={`w-full mt-4 px-6 py-4 rounded-2xl bg-gradient-to-r ${event.gradient} text-white font-bold text-lg shadow-xl hover:shadow-2xl transform transition-all duration-500 hover:brightness-110 flex items-center justify-center gap-2`}
+                              >
+                                <Zap className="w-5 h-5" />
+                                Follow for updates
+                              </a>
+                            </motion.div>
                           )}
                         </div>
                       </div>
@@ -453,8 +462,8 @@ export default function EventsPage() {
                   <div className="absolute bottom-4 right-4 w-12 h-12 opacity-20 group-hover:opacity-40 transition-opacity duration-500">
                     <div className={`w-full h-full border-b-2 border-r-2 border-${event.accentColor}-400 rounded-br-2xl`} />
                   </div>
-                </Card>
-              </div>
+                </InteractiveCard>
+              </motion.div>
             )
           })}
         </div>
