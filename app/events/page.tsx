@@ -63,7 +63,7 @@ export default function EventsPage() {
         "🎨 Henna & glitter tattoos",
         "🎲 Games & snacks",
         "✨ Good vibes and community!",
-        "✅ RSVP here: tinyurl.com/menaamixer",
+        "✅ RSVP here",
         "Don’t miss it — see you there! 🌙"
       ],
       decorativeIcons: [PartyPopper, Star, Sparkles, Heart],
