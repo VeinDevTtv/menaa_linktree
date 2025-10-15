@@ -251,7 +251,7 @@ export default function EventsPage() {
         >
           {/* Animated Logo */}
           <div className="mb-8 flex justify-center">
-            <div className="relative group">
+            <Link href="/" aria-label="Go to home" className="relative group rounded-3xl focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-400">
               <div className="absolute inset-0 bg-gradient-to-r from-orange-500 via-yellow-500 to-amber-600 rounded-3xl blur-2xl opacity-75 group-hover:opacity-100 animate-border-flow" />
               <div className="absolute inset-0 bg-gradient-to-r from-orange-500 via-yellow-500 to-amber-600 rounded-3xl animate-rotate-slow opacity-50" />
               
@@ -267,7 +267,7 @@ export default function EventsPage() {
                   />
                 </div>
               </div>
-            </div>
+            </Link>
           </div>
 
           <h1 className="text-5xl md:text-7xl font-bold mb-4 bg-gradient-to-r from-orange-400 via-yellow-400 to-amber-400 bg-clip-text text-transparent animate-border-flow text-balance leading-tight">
