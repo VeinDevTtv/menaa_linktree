@@ -367,10 +367,12 @@ export function MixerRSVPView({ simulateNow = null, simulatePhase = null }: Prop
           </AnimatePresence>
         </LayoutGroup>
 
-        <div className="mt-10 text-center text-white/70 text-sm flex items-center justify-center gap-2">
-          <Sparkles className="w-4 h-4 text-yellow-400" />
-          Smooth transitions kick in 1 hour before the event
-        </div>
+        {phase === "form" && (
+          <div className="mt-10 text-center text-white/70 text-sm flex items-center justify-center gap-2">
+            <Sparkles className="w-4 h-4 text-yellow-400" />
+            Smooth transitions kick in 1 hour before the event
+          </div>
+        )}
       </div>
     </div>
   )
