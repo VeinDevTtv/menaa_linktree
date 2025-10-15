@@ -42,12 +42,15 @@ This app can post event reminders to a Discord channel via webhook.
 1. Set the environment variable in Vercel:
 
    - `DISCORD_EVENT_WEBHOOK_URL` = your Discord webhook URL
+   - (Hobby workaround) `QSTASH_TOKEN` = Upstash QStash REST token
+   - (Optional) `NEXT_PUBLIC_BASE_URL` = e.g. `https://your-app.vercel.app` (used to build callback URLs)
 
-2. Cron schedules are defined in `vercel.json` to hit the following routes:
+2. Cron schedules are defined in `vercel.json`.
 
-   - `GET /api/announce-2pm` → "Only 1 hour left!"
-   - `GET /api/announce-3pm` → "It's 3PM — event is starting now!"
-   - `GET /api/announce-5pm` → "That's a wrap! It was fun having everyone — see you next time!"
+   - Hobby plan: Single daily cron
+     - `GET /api/announce-sequence` at 21:00 UTC (2PM PT during PDT)
+     - Immediately sends the 2PM message, then schedules 3PM (+1h) and 5PM (+3h) via Upstash QStash
+   - Pro plan: You may instead use multiple crons calling `GET /api/announce` or individual routes
 
 3. Timezone
 

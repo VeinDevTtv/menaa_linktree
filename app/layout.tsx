@@ -8,6 +8,7 @@ import { Suspense } from "react"
 import { Toaster } from "sonner"
 import { AnnouncementToast } from "@/components/announcement-toast"
 import { MotionProvider, RouteProgress } from "@/components/motion-provider"
+import { EventAnnouncer } from "@/components/event-announcer"
 
 export const metadata: Metadata = {
   title: "DE ANZA MENAA - Middle East & North African Association",
@@ -28,6 +29,7 @@ export default function RootLayout({
           <MotionProvider>{children}</MotionProvider>
         </Suspense>
         <AnnouncementToast />
+        <EventAnnouncer />
         <Analytics />
         <Toaster richColors position="top-center" />
       </body>

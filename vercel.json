@@ -1,6 +1,6 @@
 {
   "crons": [
-    { "path": "/api/announce", "schedule": "0 21,22,0 * * *" }
+    { "path": "/api/announce-sequence", "schedule": "0 21 * * *" }
   ]
 }
 
