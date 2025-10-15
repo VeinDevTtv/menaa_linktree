@@ -90,13 +90,14 @@ export function MixerRSVPView({ simulateNow = null, simulatePhase = null }: Prop
         const text = await rsp.text()
         if (rsp.status === 409) {
           setDupMessage(text || "You’ve already RSVP’d.")
-          throw new Error(text || "Duplicate submission")
+          // Do not throw; we handled the duplicate gracefully.
+          return
         }
         throw new Error(text || "Failed to submit RSVP")
       }
       setShowSuccess(true)
       setSuccess("Thanks! Your RSVP has been recorded.")
-    } catch (e) {
+    } catch {
       setError("Something went wrong. Please try again.")
     } finally {
       setSubmitting(false)
@@ -238,21 +239,17 @@ export function MixerRSVPView({ simulateNow = null, simulatePhase = null }: Prop
                     </div>
                   </div>
                   <input type="text" name="website" className="hidden" tabIndex={-1} autoComplete="off" />
-                  {dupMessage && (
-                    <div className="rounded-lg border border-amber-400/30 bg-amber-500/10 px-4 py-3 text-amber-300 animate-in fade-in slide-in-from-top-2">
-                      {dupMessage}
-                    </div>
-                  )}
-                  {success && (
-                    <div className="rounded-lg border border-green-400/30 bg-green-500/10 px-4 py-3 text-green-300">
-                      {success}
-                    </div>
-                  )}
-                  {error && (
-                    <div className="rounded-lg border border-red-400/30 bg-red-500/10 px-4 py-3 text-red-300">
-                      {error}
-                    </div>
-                  )}
+                  <AnimatePresence>
+                    {dupMessage && (
+                      <FeedbackBanner key="dup" variant="duplicate" message={dupMessage} />
+                    )}
+                  </AnimatePresence>
+                  <AnimatePresence>
+                    {success && <FeedbackBanner key="ok" variant="success" message={success} />}
+                  </AnimatePresence>
+                  <AnimatePresence>
+                    {error && <FeedbackBanner key="err" variant="error" message={error} />}
+                  </AnimatePresence>
                   <Button type="submit" disabled={submitting} className="w-full">
                     {submitting ? "Submitting..." : "Submit RSVP"}
                   </Button>
@@ -386,6 +383,123 @@ function InfoPill({ children, icon }: { children: React.ReactNode; icon?: React.
 function DecorativeGlow() {
   return (
     <div className="pointer-events-none absolute -inset-1 -z-10 rounded-3xl bg-gradient-to-r from-orange-500/20 via-amber-500/20 to-yellow-500/20 blur-2xl" />
+  )
+}
+
+function FeedbackBanner({
+  variant,
+  message,
+}: {
+  variant: "success" | "duplicate" | "error"
+  message: string
+}) {
+  const isSuccess = variant === "success"
+  const isDup = variant === "duplicate"
+
+  const baseClasses =
+    "relative overflow-hidden rounded-xl px-4 py-3 border shadow-sm"
+  const palette = isSuccess
+    ? {
+        border: "border-green-400/30",
+        bg: "bg-gradient-to-br from-green-500/15 to-emerald-500/10",
+        text: "text-green-200",
+      }
+    : isDup
+    ? {
+        border: "border-amber-400/30",
+        bg: "bg-gradient-to-br from-amber-500/15 to-yellow-500/10",
+        text: "text-amber-200",
+      }
+    : {
+        border: "border-red-400/30",
+        bg: "bg-gradient-to-br from-red-500/15 to-rose-500/10",
+        text: "text-rose-200",
+      }
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: -8, scale: 0.98 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      exit={{ opacity: 0, y: -8, scale: 0.98 }}
+      transition={{ duration: 0.35, ease: "easeOut" }}
+      className={[baseClasses, palette.border, palette.bg, palette.text].join(" ")}
+      layout
+    >
+      {isSuccess && <ConfettiBurst />}
+      {isDup && <GlowRings />}
+      <div className="relative z-10 flex items-center gap-3">
+        {isSuccess ? (
+          <PartyPopper className="h-5 w-5" />
+        ) : isDup ? (
+          <Sparkles className="h-5 w-5" />
+        ) : (
+          <Frown className="h-5 w-5" />
+        )}
+        <div className="font-medium tracking-wide">{message}</div>
+      </div>
+    </motion.div>
+  )
+}
+
+function ConfettiBurst() {
+  // Deterministic layout (no Math.random) to avoid hydration mismatches
+  const colors = [
+    "#F59E0B",
+    "#EAB308",
+    "#84CC16",
+    "#22C55E",
+    "#06B6D4",
+    "#A78BFA",
+    "#F472B6",
+  ]
+  const pieces = new Array(14).fill(null).map((_, i) => i)
+  return (
+    <div className="pointer-events-none absolute inset-0">
+      {pieces.map((i) => {
+        const left = `${(i * 67) % 100}%`
+        const delay = 0.02 * (i % 7)
+        const color = colors[i % colors.length]
+        const rotate = (i % 2 === 0 ? 1 : -1) * (30 + (i % 6) * 8)
+        return (
+          <motion.span
+            key={`confetti-${i}`}
+            aria-hidden
+            className="absolute top-1/2 block h-2 w-2 rounded-sm"
+            style={{ left, backgroundColor: color, filter: "saturate(1.1)" }}
+            initial={{ y: 0, opacity: 0, rotate: 0 }}
+            animate={{ y: -42 - i, opacity: [0, 1, 0.8, 0], rotate }}
+            transition={{ duration: 0.9 + (i % 5) * 0.08, delay, ease: "easeOut" }}
+          />
+        )
+      })}
+    </div>
+  )
+}
+
+function GlowRings() {
+  return (
+    <div className="pointer-events-none absolute inset-0">
+      <motion.div
+        aria-hidden
+        className="absolute inset-0 rounded-xl"
+        style={{ boxShadow: "0 0 0 2px rgba(251,191,36,0.25), 0 0 40px rgba(251,191,36,0.12) inset" }}
+        initial={{ opacity: 0.0, scale: 0.98 }}
+        animate={{ opacity: [0.0, 0.7, 0.35, 0.6, 0.0], scale: [0.98, 1.02, 1.0] }}
+        transition={{ duration: 1.2, ease: "easeOut" }}
+      />
+      <motion.div
+        aria-hidden
+        className="absolute -inset-1 rounded-[1.1rem]"
+        style={{
+          background:
+            "radial-gradient(240px 90px at 20% 50%, rgba(251,191,36,0.20), transparent 60%), radial-gradient(240px 90px at 80% 50%, rgba(253,186,116,0.16), transparent 60%)",
+          filter: "blur(12px)",
+        }}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: [0, 0.7, 0.25, 0.55, 0] }}
+        transition={{ duration: 1.2, ease: "easeOut" }}
+      />
+    </div>
   )
 }
 

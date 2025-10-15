@@ -53,9 +53,10 @@ async function readFromBlob(): Promise<Registry> {
     const { head } = await import("@vercel/blob")
     const info = await head(BLOB_KEY, { token: BLOB_TOKEN }).catch(() => null)
     if (!info || !info.downloadUrl) {
-      // Initialize empty registry
-      await writeToBlob(DEFAULT_REGISTRY)
-      return DEFAULT_REGISTRY
+      // Seed from local registry if available; otherwise start with default
+      const seed = await readFromLocal().catch(() => DEFAULT_REGISTRY)
+      await writeToBlob(seed)
+      return seed
     }
     const rsp = await fetch(info.downloadUrl)
     if (!rsp.ok) throw new Error("Failed to download registry blob")
