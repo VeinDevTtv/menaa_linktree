@@ -14,10 +14,10 @@ import { ArabesquePatterns } from "@/components/arabesque-patterns"
 
 type Props = {
   simulateNow?: string | null
-  simulatePhase?: "form" | "countdown" | "live" | null
+  simulatePhase?: "form" | "countdown" | "live" | "ended" | null
 }
 
-type Phase = "form" | "countdown" | "live"
+type Phase = "form" | "countdown" | "live" | "ended"
 
 export function MixerRSVPView({ simulateNow = null, simulatePhase = null }: Props) {
   const [submitting, setSubmitting] = useState(false)
@@ -44,7 +44,7 @@ export function MixerRSVPView({ simulateNow = null, simulatePhase = null }: Prop
   }, [simulateNow, simulatePhase])
 
   const [now, setNow] = useState<Date>(() => nowDate())
-  const [phase, setPhase] = useState<Phase>(() => determinePhase(nowDate(), eventStart))
+  const [phase, setPhase] = useState<Phase>(() => determinePhase(nowDate(), eventStart, eventEnd))
 
   useEffect(() => {
     // If simulatePhase explicitly set, honor it
@@ -52,18 +52,18 @@ export function MixerRSVPView({ simulateNow = null, simulatePhase = null }: Prop
       setPhase(simulatePhase)
       return
     }
-    setPhase(determinePhase(nowDate(), eventStart))
-  }, [simulatePhase, nowDate, eventStart])
+    setPhase(determinePhase(nowDate(), eventStart, eventEnd))
+  }, [simulatePhase, nowDate, eventStart, eventEnd])
 
   useEffect(() => {
     if (simulatePhase) return
     const id = window.setInterval(() => {
       const current = nowDate()
       setNow(current)
-      setPhase(determinePhase(current, eventStart))
+      setPhase(determinePhase(current, eventStart, eventEnd))
     }, 1000)
     return () => window.clearInterval(id)
-  }, [nowDate, eventStart, simulatePhase])
+  }, [nowDate, eventStart, eventEnd, simulatePhase])
 
   async function onSubmit(formData: FormData) {
     setSubmitting(true)
@@ -141,7 +141,9 @@ export function MixerRSVPView({ simulateNow = null, simulatePhase = null }: Prop
                 ? "radial-gradient(60rem 60rem at 20% 20%, rgba(249,115,22,0.25), transparent 70%)"
                 : phase === "countdown"
                 ? "radial-gradient(60rem 60rem at 50% 0%, rgba(234,179,8,0.28), transparent 70%)"
-                : "radial-gradient(60rem 60rem at 80% 80%, rgba(245,158,11,0.3), transparent 70%)",
+                : phase === "live"
+                ? "radial-gradient(60rem 60rem at 80% 80%, rgba(245,158,11,0.3), transparent 70%)"
+                : "radial-gradient(60rem 60rem at 50% 80%, rgba(120,113,108,0.28), transparent 70%)",
           }}
         />
       </AnimatePresence>
@@ -330,6 +332,38 @@ export function MixerRSVPView({ simulateNow = null, simulatePhase = null }: Prop
                 </Card>
               </motion.div>
             )}
+
+            {phase === "ended" && (
+              <motion.div
+                key="phase-ended"
+                initial={{ opacity: 0, y: 24, scale: 0.98 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: -16, scale: 0.98 }}
+                transition={{ duration: 0.5, ease: "easeOut" }}
+                layout
+              >
+                <Card className="relative overflow-hidden border-white/10 bg-gradient-to-br from-stone-900/60 to-amber-900/30 backdrop-blur-xl p-10 text-center" data-phase="ended">
+                <div className="absolute inset-0 bg-gradient-to-br from-stone-500/10 via-amber-500/10 to-yellow-500/10 animate-border-flow" />
+                <div className="relative z-10">
+                  <div className="inline-flex items-center justify-center w-24 h-24 rounded-full bg-gradient-to-br from-amber-600 via-orange-600 to-yellow-500 mb-6 animate-pulse-3d">
+                    <Sparkles className="w-12 h-12 text-white" />
+                  </div>
+                  <h2 className="text-3xl md:text-4xl font-bold mb-3 bg-gradient-to-r from-amber-200 via-yellow-200 to-orange-200 bg-clip-text text-transparent">
+                    That’s a wrap — thank you!
+                  </h2>
+                  <p className="text-white/80 mb-6">We loved having everyone. See you at the next MENAA event!</p>
+                  <div className="flex flex-wrap justify-center gap-3">
+                    <Link
+                      href="/events"
+                      className="inline-flex items-center gap-2 px-6 py-3 rounded-2xl bg-white/10 border border-white/10 font-semibold hover:bg-white/15 transition-all"
+                    >
+                      <ArrowLeft className="w-5 h-5" /> Back to Events
+                    </Link>
+                  </div>
+                </div>
+                </Card>
+              </motion.div>
+            )}
           </AnimatePresence>
         </LayoutGroup>
 
@@ -342,10 +376,12 @@ export function MixerRSVPView({ simulateNow = null, simulatePhase = null }: Prop
   )
 }
 
-function determinePhase(now: Date, start: Date): Phase {
-  const diffMs = start.getTime() - now.getTime()
-  if (diffMs <= 0) return "live"
-  if (diffMs <= 60 * 60 * 1000) return "countdown"
+function determinePhase(now: Date, start: Date, end: Date): Phase {
+  const untilStartMs = start.getTime() - now.getTime()
+  const untilEndMs = end.getTime() - now.getTime()
+  if (untilEndMs <= 0) return "ended"
+  if (untilStartMs <= 0) return "live"
+  if (untilStartMs <= 60 * 60 * 1000) return "countdown"
   return "form"
 }
 
