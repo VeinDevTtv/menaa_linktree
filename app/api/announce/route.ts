@@ -4,10 +4,11 @@ import { markAnnouncementOnce } from "@/lib/submissions"
 export async function GET(req: Request) {
   const url = new URL(req.url)
   const phaseParam = url.searchParams.get("phase")
+  const eventUrl = "https://deanzamenaa.vercel.app/events/mixer-rsvp"
 
   const content =
     phaseParam === "pre"
-      ? "Only 1 hour left!"
+      ? `Countdown has started — check the website [here](${eventUrl}) to see it! Only 1 hour left!`
       : phaseParam === "start"
       ? "It's 3PM — event is starting now!"
       : phaseParam === "end"
