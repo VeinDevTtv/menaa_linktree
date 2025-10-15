@@ -11,7 +11,7 @@ type Registry = {
 
 const DEFAULT_REGISTRY: Registry = { officer: [], member: [], rsvp: [] }
 
-const BLOB_TOKEN = process.env.BLOB_READ_WRITE_TOKEN
+const BLOB_TOKEN = process.env.BLOBDUPE_READ_WRITE_TOKEN
 const BLOB_KEY = "submissions/registry.json"
 
 async function readFromLocal(): Promise<Registry> {
