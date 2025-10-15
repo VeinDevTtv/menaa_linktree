@@ -51,10 +51,10 @@ export default function EventsPage() {
     {
       title: "MENAA Social Mixer",
       tagline: "📢 MENAA Social Mixer — Wednesday, October 15th!",
-      description: "Our first event of the quarter is happening this Wednesday from 3–5 PM at Fireside 🌿",
+      description: "Our first event of the quarter is happening this Wednesday from 3–5 PM at Fireside Room 🌿",
       date: "Wednesday, Oct 15",
       time: "3 PM – 5 PM",
-      location: "Fireside",
+      location: "Fireside Room, De Anza College",
       icon: Users,
       gradient: "from-amber-600 via-orange-600 to-yellow-600",
       accentColor: "amber",

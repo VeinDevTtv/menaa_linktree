@@ -160,7 +160,7 @@ export function MixerRSVPView({ simulateNow = null, simulatePhase = null }: Prop
           </p>
           <div className="mt-4 flex flex-wrap items-center gap-3">
             <InfoPill icon={<Clock className="h-4 w-4" />}>3:00–5:00 PM PT</InfoPill>
-            <InfoPill icon={<MapPin className="h-4 w-4" />}>Fireside</InfoPill>
+            <InfoPill icon={<MapPin className="h-4 w-4" />}>Fireside Room</InfoPill>
             <div className="ml-auto">
               <AddToCalendar
                 title={eventTitle}
@@ -308,10 +308,10 @@ export function MixerRSVPView({ simulateNow = null, simulatePhase = null }: Prop
                   <h2 className="text-3xl md:text-4xl font-bold mb-3 bg-gradient-to-r from-orange-300 via-yellow-300 to-amber-300 bg-clip-text text-transparent">
                     It’s happening now!
                   </h2>
-                  <p className="text-white/85 mb-6">Join us at Fireside. We’re here 3:00–5:00 PM PT.</p>
+                  <p className="text-white/85 mb-6">Join us at Fireside Room. We’re here 3:00–5:00 PM PT.</p>
                   <div className="flex flex-wrap justify-center gap-3">
                     <a
-                      href="https://maps.apple.com/?q=Fireside+De+Anza+College"
+                      href="https://maps.apple.com/?q=Hinson+Campus+Center+De+Anza+College"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="inline-flex items-center gap-2 px-6 py-3 rounded-2xl bg-gradient-to-r from-orange-500 to-amber-600 font-semibold hover:brightness-110 hover:scale-[1.02] transition-all shadow-lg"
