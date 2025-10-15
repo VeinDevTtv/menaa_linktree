@@ -27,5 +27,3 @@ export async function GET(req: Request) {
   if (!rsp.ok) return new Response("Discord error", { status: 502 })
   return new Response("OK", { status: 200 })
 }
-
-
