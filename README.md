@@ -35,28 +35,21 @@ The easiest way to deploy your Next.js app is to use the [Vercel Platform](https
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
 
-## Scheduled Discord announcements
+## Discord announcements (frontend-triggered)
 
-This app can post event reminders to a Discord channel via webhook.
+This app posts event reminders to a Discord channel via webhook, triggered from the browser.
 
-1. Set the environment variable in Vercel:
+1. Set environment variable (Project Settings → Environment Variables):
 
    - `DISCORD_EVENT_WEBHOOK_URL` = your Discord webhook URL
-   - (Hobby workaround) `QSTASH_TOKEN` = Upstash QStash REST token
-   - (Optional) `NEXT_PUBLIC_BASE_URL` = e.g. `https://your-app.vercel.app` (used to build callback URLs)
 
-2. Cron schedules are defined in `vercel.json`.
+2. How it works
 
-   - Hobby plan: Single daily cron
-     - `GET /api/announce-sequence` at 21:00 UTC (2PM PT during PDT)
-     - Immediately sends the 2PM message, then schedules 3PM (+1h) and 5PM (+3h) via Upstash QStash
-   - Pro plan: You may instead use multiple crons calling `GET /api/announce` or individual routes
+   - `components/event-announcer.tsx` runs client-side and schedules three GETs to `/api/announce` at 2PM, 3PM, and 5PM PT.
+   - The API route `GET /api/announce?phase=pre|start|end` sends the corresponding message to Discord.
+   - LocalStorage is used to avoid duplicate sends on the same device.
 
 3. Timezone
 
-   Vercel Cron uses UTC by default. This project targets San Francisco time (`America/Los_Angeles`).
-
-   - Current (PDT, UTC−7): 2PM → 21:00 UTC, 3PM → 22:00 UTC, 5PM → 00:00 UTC (next day)
-   - Standard time (PST, UTC−8): 2PM → 22:00 UTC, 3PM → 23:00 UTC, 5PM → 01:00 UTC (next day)
-
-   If DST changes, update `vercel.json` accordingly.
+   - Hardcoded for the mixer date: 2PM, 3PM, 5PM in `America/Los_Angeles`.
+   - Adjust dates/times in `components/event-announcer.tsx` for future events.
