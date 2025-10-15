@@ -5,6 +5,7 @@ export async function GET(req: Request) {
   const url = new URL(req.url)
   const phaseParam = url.searchParams.get("phase")
   const eventUrl = "https://deanzamenaa.vercel.app/events/mixer-rsvp"
+  const force = url.searchParams.get("force") === "1"
 
   const content =
     phaseParam === "pre"
@@ -17,11 +18,13 @@ export async function GET(req: Request) {
 
   if (!content) return new Response("Bad request", { status: 400 })
 
-  // Idempotency: ensure each phase is sent once per event key (date)
-  // Event key matches the mixer date; adjust for future events if needed
-  const eventKey = "2025-10-15"
-  const claimed = await markAnnouncementOnce(eventKey, phaseParam!)
-  if (!claimed) return new Response("Already sent", { status: 409 })
+  if (!force) {
+    // Idempotency: ensure each phase is sent once per event key (date)
+    // Event key matches the mixer date; adjust for future events if needed
+    const eventKey = "2025-10-15"
+    const claimed = await markAnnouncementOnce(eventKey, phaseParam!)
+    if (!claimed) return new Response("Already sent", { status: 409 })
+  }
 
   const rsp = await postToDiscord({ content })
   if (!rsp.ok) return new Response("Discord error", { status: 502 })
