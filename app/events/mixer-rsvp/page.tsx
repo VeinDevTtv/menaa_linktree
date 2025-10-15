@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 import { PartyPopper, Frown } from "lucide-react"
 import { SubmitSuccess } from "@/components/submit-success"
+import { AddToCalendar } from "@/components/add-to-calendar"
 
 export default function MixerRSVPPage() {
   const [submitting, setSubmitting] = useState(false)
@@ -15,6 +16,14 @@ export default function MixerRSVPPage() {
   const [error, setError] = useState<string | null>(null)
   const [showSuccess, setShowSuccess] = useState(false)
   const [dupMessage, setDupMessage] = useState<string | null>(null)
+  // Event metadata for Add to Calendar
+  const eventTitle = "MENAA Social Mixer"
+  const eventDescription = "MENAA Social Mixer — connect with the community!"
+  const eventLocation = "Fireside, De Anza College"
+  // Oct 15, 2025 3:00 PM – 5:00 PM America/Los_Angeles
+  const eventStart = new Date("2025-10-15T15:00:00-07:00")
+  const eventEnd = new Date("2025-10-15T17:00:00-07:00")
+  const eventTimezone = "America/Los_Angeles"
 
   async function onSubmit(formData: FormData) {
     setSubmitting(true)
@@ -70,6 +79,16 @@ export default function MixerRSVPPage() {
           <p className="text-white/80">
             Join us for our first social mixer of the quarter—connect, vibe, and make new friends across the MENAA community. Light refreshments provided.
           </p>
+          <div className="mt-4">
+            <AddToCalendar
+              title={eventTitle}
+              description={eventDescription}
+              location={eventLocation}
+              start={eventStart}
+              end={eventEnd}
+              timezone={eventTimezone}
+            />
+          </div>
         </div>
 
         <Card className="relative overflow-hidden border-orange-500/20 bg-white/5 backdrop-blur-lg p-6 md:p-8">
