@@ -3,6 +3,7 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* Ensure correct root selector; previous ::root breaks variable application */
 :root {
   --background: oklch(0.98 0.01 85);
   --foreground: oklch(0.15 0.02 85);
@@ -133,8 +134,19 @@
   * {
     @apply border-border outline-ring/50;
   }
+  html, body {
+    /* Cover viewport including iOS safe areas and overscroll */
+    height: 100%;
+    background-color: oklch(0.145 0 0); /* fallback matches dark gradient base */
+    overscroll-behavior-y: none;
+    color-scheme: dark;
+  }
   body {
     @apply bg-background text-foreground;
+    /* iOS notch safe-area support for full-bleed backgrounds */
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+    min-height: 100dvh; /* dynamic viewport height to prevent white bars */
   }
 }
 
