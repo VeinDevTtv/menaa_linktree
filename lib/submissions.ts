@@ -7,9 +7,10 @@ type Registry = {
   officer: string[]
   member: string[]
   rsvp: string[]
+  announcements?: Record<string, Record<string, boolean>>
 }
 
-const DEFAULT_REGISTRY: Registry = { officer: [], member: [], rsvp: [] }
+const DEFAULT_REGISTRY: Registry = { officer: [], member: [], rsvp: [], announcements: {} }
 
 const BLOB_TOKEN = process.env.BLOBDUPE_READ_WRITE_TOKEN
 const BLOB_KEY = "submissions/registry.json"
@@ -21,7 +22,7 @@ async function readFromLocal(): Promise<Registry> {
     const raw = await fs.readFile(file, "utf8")
     const parsed = JSON.parse(raw)
     return normalizeRegistry(parsed)
-  } catch (err) {
+  } catch {
     // Ensure directory and file exist
     await fs.mkdir(dir, { recursive: true }).catch(() => {})
     await fs.writeFile(file, JSON.stringify(DEFAULT_REGISTRY, null, 2), "utf8").catch(() => {})
@@ -43,6 +44,7 @@ function normalizeRegistry(value: unknown): Registry {
     officer: Array.isArray(obj.officer) ? obj.officer.map(String) : base.officer,
     member: Array.isArray(obj.member) ? obj.member.map(String) : base.member,
     rsvp: Array.isArray(obj.rsvp) ? obj.rsvp.map(String) : base.rsvp,
+    announcements: obj.announcements && typeof obj.announcements === "object" ? (obj.announcements as Record<string, Record<string, boolean>>) : {},
   }
 }
 
@@ -106,6 +108,26 @@ export async function addEmail(kind: SubmissionKind, emailRaw: string): Promise<
       await new Promise((r) => setTimeout(r, 50 * (attempt + 1)))
     }
   }
+}
+
+export async function markAnnouncementOnce(eventKey: string, phase: string): Promise<boolean> {
+  // Returns true if this call claims the announcement (first writer), false if already sent
+  for (let attempt = 0; attempt < 3; attempt++) {
+    const registry = await readRegistry()
+    const nextAnnouncements = { ...(registry.announcements || {}) }
+    const phases = { ...(nextAnnouncements[eventKey] || {}) }
+    if (phases[phase]) return false
+    phases[phase] = true
+    nextAnnouncements[eventKey] = phases
+    const next: Registry = { ...registry, announcements: nextAnnouncements }
+    try {
+      await writeToBlob(next)
+      return true
+    } catch {
+      await new Promise((r) => setTimeout(r, 50 * (attempt + 1)))
+    }
+  }
+  return false
 }
 
 
