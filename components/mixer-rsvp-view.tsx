@@ -8,8 +8,9 @@ import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 import { AddToCalendar } from "@/components/add-to-calendar"
 import { SubmitSuccess } from "@/components/submit-success"
-import { motion, AnimatePresence } from "framer-motion"
+import { motion, AnimatePresence, LayoutGroup } from "framer-motion"
 import { PartyPopper, Frown, Users, Clock, MapPin, Sparkles, ArrowLeft } from "lucide-react"
+import { ArabesquePatterns } from "@/components/arabesque-patterns"
 
 type Props = {
   simulateNow?: string | null
@@ -105,8 +106,46 @@ export function MixerRSVPView({ simulateNow = null, simulatePhase = null }: Prop
   const { hours, minutes, seconds } = useMemo(() => getCountdownParts(now, eventStart), [now, eventStart])
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-stone-950 via-amber-950 to-orange-950 text-white">
-      <div className="container max-w-3xl mx-auto px-4 py-10 md:py-16">
+    <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-stone-950 via-amber-950 to-orange-950 text-white">
+      {/* Subtle aesthetic background */}
+      <div className="absolute inset-0 pointer-events-none">
+        <ArabesquePatterns />
+        {/* Ambient gradient blobs */}
+        <motion.div
+          aria-hidden
+          className="absolute -top-20 right-10 w-72 h-72 rounded-full bg-gradient-to-br from-orange-500/20 to-amber-600/20 blur-3xl"
+          animate={{ y: [0, -10, 0] }}
+          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
+        />
+        <motion.div
+          aria-hidden
+          className="absolute bottom-[-5rem] left-[-3rem] w-[22rem] h-[22rem] rounded-full bg-gradient-to-br from-yellow-500/15 to-orange-600/15 blur-3xl"
+          animate={{ y: [0, 12, 0] }}
+          transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
+        />
+      </div>
+
+      {/* Phase aura tied to current phase */}
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={`aura-${phase}`}
+          className="absolute inset-0 pointer-events-none"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 0.15 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
+          style={{
+            background:
+              phase === "form"
+                ? "radial-gradient(60rem 60rem at 20% 20%, rgba(249,115,22,0.25), transparent 70%)"
+                : phase === "countdown"
+                ? "radial-gradient(60rem 60rem at 50% 0%, rgba(234,179,8,0.28), transparent 70%)"
+                : "radial-gradient(60rem 60rem at 80% 80%, rgba(245,158,11,0.3), transparent 70%)",
+          }}
+        />
+      </AnimatePresence>
+
+      <div className="relative z-10 container max-w-3xl mx-auto px-4 py-10 md:py-16">
         <Link href="/events" className="inline-block mb-6 text-amber-300 hover:text-amber-200">
           ← Back to Events
         </Link>
@@ -134,16 +173,18 @@ export function MixerRSVPView({ simulateNow = null, simulatePhase = null }: Prop
           </div>
         </div>
 
-        <AnimatePresence mode="wait">
-          {phase === "form" && (
-            <motion.div
-              key="phase-form"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.4 }}
-            >
-              <Card className="relative overflow-hidden border-orange-500/20 bg-white/5 backdrop-blur-lg p-6 md:p-8">
+        <LayoutGroup>
+          <AnimatePresence mode="wait">
+            {phase === "form" && (
+              <motion.div
+                key="phase-form"
+                initial={{ opacity: 0, y: 24, scale: 0.99 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: -16, scale: 0.99 }}
+                transition={{ duration: 0.45, ease: "easeOut" }}
+                layout
+              >
+                <Card className="relative overflow-hidden border-orange-500/20 bg-white/5 backdrop-blur-lg p-6 md:p-8" data-phase="form" >
                 <div className="pointer-events-none absolute inset-0 rounded-xl bg-gradient-to-br from-orange-500/10 via-amber-500/10 to-yellow-500/10 animate-border-flow" />
                 <form
                   action={async (formData) => {
@@ -216,20 +257,21 @@ export function MixerRSVPView({ simulateNow = null, simulatePhase = null }: Prop
                     {submitting ? "Submitting..." : "Submit RSVP"}
                   </Button>
                 </form>
-                <SubmitSuccess open={showSuccess} onClose={() => setShowSuccess(false)} title="RSVP received!" subtitle="See you at the mixer." />
-              </Card>
-            </motion.div>
-          )}
+                  <SubmitSuccess open={showSuccess} onClose={() => setShowSuccess(false)} title="RSVP received!" subtitle="See you at the mixer." />
+                </Card>
+              </motion.div>
+            )}
 
-          {phase === "countdown" && (
-            <motion.div
-              key="phase-countdown"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.4 }}
-            >
-              <Card className="relative overflow-hidden border-amber-400/30 bg-gradient-to-br from-orange-950/60 to-amber-900/40 backdrop-blur-xl p-8 text-center">
+            {phase === "countdown" && (
+              <motion.div
+                key="phase-countdown"
+                initial={{ opacity: 0, y: 20, scale: 0.99 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: -16, scale: 0.99 }}
+                transition={{ duration: 0.45, ease: "easeOut" }}
+                layout
+              >
+                <Card className="relative overflow-hidden border-amber-400/30 bg-gradient-to-br from-orange-950/60 to-amber-900/40 backdrop-blur-xl p-8 text-center" data-phase="countdown">
                 <div className="absolute inset-0 bg-gradient-to-br from-orange-500/10 via-yellow-500/10 to-amber-500/10 animate-border-flow" />
                 <div className="relative z-10">
                   <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-br from-orange-500 via-yellow-500 to-amber-600 mb-6 animate-pulse-3d">
@@ -247,19 +289,20 @@ export function MixerRSVPView({ simulateNow = null, simulatePhase = null }: Prop
                     </div>
                   </div>
                 </div>
-              </Card>
-            </motion.div>
-          )}
+                </Card>
+              </motion.div>
+            )}
 
-          {phase === "live" && (
-            <motion.div
-              key="phase-live"
-              initial={{ opacity: 0, scale: 0.98, y: 10 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.98, y: -10 }}
-              transition={{ duration: 0.45 }}
-            >
-              <Card className="relative overflow-hidden border-green-400/20 bg-gradient-to-br from-orange-900/60 to-amber-900/40 backdrop-blur-xl p-10 text-center">
+            {phase === "live" && (
+              <motion.div
+                key="phase-live"
+                initial={{ opacity: 0, scale: 0.98, y: 10 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.98, y: -10 }}
+                transition={{ duration: 0.5, ease: "easeOut" }}
+                layout
+              >
+                <Card className="relative overflow-hidden border-green-400/20 bg-gradient-to-br from-orange-900/60 to-amber-900/40 backdrop-blur-xl p-10 text-center" data-phase="live">
                 <div className="absolute inset-0 bg-gradient-to-r from-orange-500/15 via-yellow-500/15 to-amber-500/15 animate-border-flow" />
                 <div className="relative z-10">
                   <div className="inline-flex items-center justify-center w-24 h-24 rounded-full bg-gradient-to-br from-orange-500 via-yellow-500 to-amber-600 mb-6 animate-pulse-3d">
@@ -287,10 +330,11 @@ export function MixerRSVPView({ simulateNow = null, simulatePhase = null }: Prop
                   </div>
                 </div>
                 <DecorativeGlow />
-              </Card>
-            </motion.div>
-          )}
-        </AnimatePresence>
+                </Card>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </LayoutGroup>
 
         <div className="mt-10 text-center text-white/70 text-sm flex items-center justify-center gap-2">
           <Sparkles className="w-4 h-4 text-yellow-400" />
