@@ -78,11 +78,11 @@ export default function Home() {
 
   const upcomingEvents = [
     {
-      title: "MENAA Bingo",
-      date: "TBA",
-      description: "Join us for an exciting evening of MENAA-themed bingo! Get ready for laughter, prizes, and unforgettable moments with your friends.",
-      icon: Trophy,
-      gradient: "from-orange-500 via-orange-600 to-orange-700",
+      title: "MENAA Social Mixer",
+      date: "Wednesday, Oct 15",
+      description: "Our first event of the quarter — connect, vibe, and make new friends across the MENAA community. 3–5 PM at the Fireside Room.",
+      icon: Users,
+      gradient: "from-amber-600 via-orange-600 to-yellow-600",
     },
     {
       title: "FIFA/Henna Night",
