@@ -37,7 +37,7 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 
 ## Discord announcements (frontend-triggered)
 
-This app posts event reminders to a Discord channel via webhook, triggered from the browser.
+This app can post event reminders to a Discord channel via webhook, triggered from the browser.
 
 1. Set environment variable (Project Settings → Environment Variables):
 
@@ -45,11 +45,12 @@ This app posts event reminders to a Discord channel via webhook, triggered from 
 
 2. How it works
 
-   - `components/event-announcer.tsx` runs client-side and schedules three GETs to `/api/announce` at 2PM, 3PM, and 5PM PT.
+   - `components/event-announcer.tsx` can run client-side and schedule GETs to `/api/announce` at specific times.
    - The API route `GET /api/announce?phase=pre|start|end` sends the corresponding message to Discord.
    - LocalStorage is used to avoid duplicate sends on the same device.
 
-3. Timezone
+3. Setup for new events
 
-   - Hardcoded for the mixer date: 2PM, 3PM, 5PM in `America/Los_Angeles`.
-   - Adjust dates/times in `components/event-announcer.tsx` for future events.
+   - Update the event details in `/api/announce/route.ts` (event URL, key, start time)
+   - Update the announcement times in `components/event-announcer.tsx` for the specific event
+   - Times are configured for `America/Los_Angeles` timezone

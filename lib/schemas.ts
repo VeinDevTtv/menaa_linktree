@@ -44,7 +44,7 @@ export const memberRegistrationSchema = z.object({
 export type MemberRegistrationInput = z.infer<typeof memberRegistrationSchema>
 
 
-// Event RSVP (e.g., MENAA Social Mixer)
+// Event RSVP schema for future events
 export const eventRSVPSchema = z.object({
   fullName: z.string().min(1, "Full name is required"),
   email: z.string().email("Invalid email"),

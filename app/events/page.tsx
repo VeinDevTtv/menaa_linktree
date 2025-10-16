@@ -49,46 +49,6 @@ export default function EventsPage() {
 
   const events = [
     {
-      title: "MENAA Social Mixer",
-      tagline: "📢 MENAA Social Mixer — Wednesday, October 15th!",
-      description: "Our first event of the quarter is happening this Wednesday from 3–5 PM at Fireside Room 🌿",
-      date: "Wednesday, Oct 15",
-      time: "3 PM – 5 PM",
-      location: "Fireside Room, De Anza College",
-      icon: Users,
-      gradient: "from-amber-600 via-orange-600 to-yellow-600",
-      accentColor: "amber",
-      highlights: [
-        "🎯 MENA Bingo",
-        "🎨 Henna & glitter tattoos",
-        "🎲 Games & snacks",
-        "✨ Good vibes and community!",
-        "✅ RSVP here",
-        "Don’t miss it — see you there! 🌙"
-      ],
-      decorativeIcons: [PartyPopper, Star, Sparkles, Heart],
-      rsvpLink: "https://tinyurl.com/menaamixer",
-      rsvpText: "RSVP Here"
-    },
-    // {
-    //   title: "MENAA Bingo",
-    //   tagline: "Win Prizes, Make Memories!",
-    //   description: "Join us for an exciting evening of MENAA-themed bingo! Get ready for laughter, prizes, and unforgettable moments with your friends. Traditional snacks and refreshments will be served.",
-    //   date: "TBA",
-    //   time: "Evening",
-    //   location: "De Anza College",
-    //   icon: Trophy,
-    //   gradient: "from-orange-500 via-orange-600 to-orange-700",
-    //   accentColor: "orange",
-    //   highlights: [
-    //     "Amazing prizes to be won",
-    //     "Traditional MENAA snacks",
-    //     "Fun games & activities",
-    //     "Meet new friends"
-    //   ],
-    //   decorativeIcons: [Gift, Star, Sparkles, PartyPopper]
-    // },
-    {
       title: "FIFA/Henna Night",
       tagline: "Game & Glamour Combined!",
       description: "Experience the perfect blend of competitive FIFA gaming and beautiful henna art. Show off your gaming skills or get stunning henna designs - or both! An evening celebrating MENAA culture and modern fun.",
@@ -422,29 +382,17 @@ export default function EventsPage() {
                           </div>
 
                           {/* RSVP Button */}
-                          {"rsvpLink" in event && event.rsvpLink ? (
-                            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.97 }}>
-                              <Link
-                                href={event.rsvpLink}
-                                className={`w-full mt-4 px-6 py-4 rounded-2xl bg-gradient-to-r ${event.gradient} text-white font-bold text-lg shadow-xl hover:shadow-2xl transform transition-all duration-500 hover:brightness-110 flex items-center justify-center gap-2`}
-                              >
-                                <Zap className="w-5 h-5" />
-                                {event.rsvpText || "RSVP Now"}
-                              </Link>
-                            </motion.div>
-                          ) : (
-                            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.97 }}>
-                              <a
-                                href="https://instagram.com/deanzamenaa"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className={`w-full mt-4 px-6 py-4 rounded-2xl bg-gradient-to-r ${event.gradient} text-white font-bold text-lg shadow-xl hover:shadow-2xl transform transition-all duration-500 hover:brightness-110 flex items-center justify-center gap-2`}
-                              >
-                                <Zap className="w-5 h-5" />
-                                Follow for updates
-                              </a>
-                            </motion.div>
-                          )}
+                          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.97 }}>
+                            <a
+                              href="https://instagram.com/deanzamenaa"
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className={`w-full mt-4 px-6 py-4 rounded-2xl bg-gradient-to-r ${event.gradient} text-white font-bold text-lg shadow-xl hover:shadow-2xl transform transition-all duration-500 hover:brightness-110 flex items-center justify-center gap-2`}
+                            >
+                              <Zap className="w-5 h-5" />
+                              Follow for updates
+                            </a>
+                          </motion.div>
                         </div>
                       </div>
                     </div>

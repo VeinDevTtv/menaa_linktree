@@ -11,15 +11,16 @@ export async function POST(req: Request) {
   const data = parsed.data
   if (data.website) return new Response("Bad request", { status: 400 })
 
-  // Use the dedicated RSVP webhook
+  // TODO: Update this webhook and event details when setting up a new event RSVP
   const webhook = "https://discord.com/api/webhooks/1427370612401242232/rut_6p-3W9ns228YE_E2jmRPWVuiTyOcAyj8_Exhom_LBlEaqgFJHxOH_NgrdbC3rdRO"
+  const eventName = "MENAA Event" // Update this for each new event
 
   if (!webhook) return new Response("Server misconfigured", { status: 500 })
 
-  const content = `New RSVP: MENAA Social Mixer`
+  const content = `New RSVP: ${eventName}`
   const embeds = [
     {
-      title: "MENAA Social Mixer RSVP",
+      title: `${eventName} RSVP`,
       color: 0xF59E0B,
       fields: [
         { name: "Full Name", value: data.fullName, inline: true },

@@ -78,13 +78,6 @@ export default function Home() {
 
   const upcomingEvents = [
     {
-      title: "MENAA Social Mixer",
-      date: "Wednesday, Oct 15",
-      description: "Our first event of the quarter — connect, vibe, and make new friends across the MENAA community. 3–5 PM at the Fireside Room.",
-      icon: Users,
-      gradient: "from-amber-600 via-orange-600 to-yellow-600",
-    },
-    {
       title: "FIFA/Henna Night",
       date: "TBA",
       description: "Experience the perfect blend of competitive FIFA gaming and beautiful henna art. Show off your gaming skills or get stunning henna designs!",

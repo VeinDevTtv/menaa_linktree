@@ -4,14 +4,18 @@ import { markAnnouncementOnce } from "@/lib/submissions"
 export async function GET(req: Request) {
   const url = new URL(req.url)
   const phaseParam = url.searchParams.get("phase")
-  const eventUrl = "https://deanzamenaa.vercel.app/events/mixer-rsvp"
   const force = url.searchParams.get("force") === "1"
+
+  // TODO: Update these values when setting up announcements for a new event
+  const eventUrl = "https://deanzamenaa.vercel.app/events/your-event-page" // Update with new event page URL
+  const eventKey = "YYYY-MM-DD" // Update with event date
+  const eventStartTime = "X:XX PM" // Update with event start time
 
   const content =
     phaseParam === "pre"
       ? `Countdown has started — check the website [here](${eventUrl}) to see it! Only 1 hour left!`
       : phaseParam === "start"
-      ? "It's 3PM — event is starting now!"
+      ? `It's ${eventStartTime} — event is starting now!`
       : phaseParam === "end"
       ? "That's a wrap! It was fun having everyone — see you next time!"
       : null
@@ -20,8 +24,6 @@ export async function GET(req: Request) {
 
   if (!force) {
     // Idempotency: ensure each phase is sent once per event key (date)
-    // Event key matches the mixer date; adjust for future events if needed
-    const eventKey = "2025-10-15"
     const claimed = await markAnnouncementOnce(eventKey, phaseParam!)
     if (!claimed) return new Response("Already sent", { status: 409 })
   }
