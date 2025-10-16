@@ -7,7 +7,7 @@ import { Card } from "@/components/ui/card"
 import { 
   Calendar, Heart, ArrowLeft, Sparkles, Users, 
   Film, Gamepad2, PartyPopper, Clock, MapPin,
-  Star, Zap, Music, Coffee
+  Star, Zap, Music, Coffee, ImageIcon, CheckCircle2
 } from "lucide-react"
 import { ArabesquePatterns } from "@/components/arabesque-patterns"
 import { motion } from "framer-motion"
@@ -476,6 +476,122 @@ export default function EventsPage() {
               />
             ))}
           </Card>
+        </div>
+
+        {/* Past Events Section */}
+        <div className="mt-20">
+          <h2 
+            className={`text-3xl md:text-4xl font-bold text-center mb-12 bg-gradient-to-r from-orange-300 via-yellow-300 to-amber-300 bg-clip-text text-transparent transition-all duration-1000 ${
+              mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
+            }`}
+            style={{ transitionDelay: "900ms" }}
+          >
+            Past Events
+          </h2>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {/* Social Mixer Event */}
+            <motion.div
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-100px" }}
+              transition={{ duration: 0.45, ease: "easeOut" }}
+            >
+              <InteractiveCard className="group relative overflow-hidden border-orange-500/10 bg-gradient-to-br from-orange-950/20 to-amber-950/30 backdrop-blur-md transition-all duration-500 hover:scale-[1.02] hover:border-orange-400/30 h-full">
+                <div className="absolute inset-0 bg-gradient-to-br from-amber-600 via-orange-600 to-yellow-600 opacity-0 group-hover:opacity-20 transition-all duration-500 animate-border-flow" />
+
+                {/* Image Placeholder */}
+                <div className="relative h-64 bg-gradient-to-br from-orange-900/40 to-amber-900/40 overflow-hidden">
+                  <div className="absolute inset-0 flex flex-col items-center justify-center">
+                    <ImageIcon className="w-16 h-16 text-orange-400/40 mb-3" />
+                    <p className="text-white/40 text-sm">Photos coming soon!</p>
+                  </div>
+                  {/* Decorative overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-stone-950 via-transparent to-transparent opacity-60" />
+                </div>
+
+                <div className="relative p-6">
+                  <div className="flex items-start gap-4 mb-4">
+                    <div className="relative flex-shrink-0">
+                      <div className="absolute inset-0 bg-gradient-to-br from-amber-600 via-orange-600 to-yellow-600 rounded-2xl blur-lg opacity-50 group-hover:opacity-100 transition-opacity duration-500" />
+                      <div className="relative w-16 h-16 rounded-2xl bg-gradient-to-br from-amber-600 via-orange-600 to-yellow-600 flex items-center justify-center transform group-hover:scale-110 group-hover:rotate-6 transition-all duration-500">
+                        <Users className="w-8 h-8 text-white drop-shadow-lg" />
+                      </div>
+                    </div>
+
+                    <div className="flex-1">
+                      <h3 className="text-2xl font-bold text-white mb-2 flex items-center gap-2">
+                        MENAA Social Mixer
+                        <CheckCircle2 className="w-5 h-5 text-green-400" />
+                      </h3>
+                      <div className="flex items-center gap-2 text-sm text-orange-300 mb-2">
+                        <Calendar className="w-4 h-4" />
+                        <span>Wednesday, October 15, 2025</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <p className="text-white/70 text-sm leading-relaxed mb-4">
+                    Our first social mixer of the quarter! Students connected, vibed, and made new friends across the MENAA community. Features included MENA Bingo, henna & glitter tattoos, games, snacks, and amazing vibes.
+                  </p>
+
+                  <div className="flex flex-wrap gap-2">
+                    <span className="px-3 py-1 rounded-full bg-orange-500/20 text-orange-300 text-xs font-medium border border-orange-500/30">
+                      🎯 MENA Bingo
+                    </span>
+                    <span className="px-3 py-1 rounded-full bg-amber-500/20 text-amber-300 text-xs font-medium border border-amber-500/30">
+                      🎨 Henna Art
+                    </span>
+                    <span className="px-3 py-1 rounded-full bg-yellow-500/20 text-yellow-300 text-xs font-medium border border-yellow-500/30">
+                      ✨ Community
+                    </span>
+                  </div>
+                </div>
+
+                <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-amber-600 via-orange-600 to-yellow-600 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+              </InteractiveCard>
+            </motion.div>
+
+            {/* Placeholder for more past events */}
+            <motion.div
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-100px" }}
+              transition={{ duration: 0.45, ease: "easeOut", delay: 0.08 }}
+            >
+              <InteractiveCard className="group relative overflow-hidden border-orange-500/10 bg-gradient-to-br from-orange-950/20 to-amber-950/30 backdrop-blur-md transition-all duration-500 hover:scale-[1.02] hover:border-orange-400/30 h-full">
+                <div className="absolute inset-0 bg-gradient-to-br from-orange-500/5 to-amber-500/5" />
+
+                <div className="relative h-full flex flex-col items-center justify-center p-8 min-h-[400px]">
+                  <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-br from-orange-500/20 via-yellow-500/20 to-amber-600/20 mb-6 animate-pulse">
+                    <ImageIcon className="w-10 h-10 text-orange-400/60" />
+                  </div>
+                  
+                  <h3 className="text-2xl font-bold text-white/80 mb-3 text-center">
+                    More Events Coming Soon!
+                  </h3>
+                  
+                  <p className="text-white/60 text-center max-w-xs leading-relaxed">
+                    Check back here after our next events to see photos and highlights from our community gatherings.
+                  </p>
+                </div>
+              </InteractiveCard>
+            </motion.div>
+          </div>
+
+          <div className="mt-8 text-center">
+            <p className="text-white/50 text-sm">
+              Want to see your photos here? Tag us on Instagram{" "}
+              <a 
+                href="https://instagram.com/deanzamenaa" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-orange-400 hover:text-orange-300 transition-colors font-semibold"
+              >
+                @deanzamenaa
+              </a>
+            </p>
+          </div>
         </div>
 
         {/* Footer */}
