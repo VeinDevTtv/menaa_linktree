@@ -489,95 +489,178 @@ export default function EventsPage() {
             Past Events
           </h2>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {/* Social Mixer Event */}
-            <motion.div
-              initial={{ opacity: 0, y: 24 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-100px" }}
-              transition={{ duration: 0.45, ease: "easeOut" }}
-            >
-              <InteractiveCard className="group relative overflow-hidden border-orange-500/10 bg-gradient-to-br from-orange-950/20 to-amber-950/30 backdrop-blur-md transition-all duration-500 hover:scale-[1.02] hover:border-orange-400/30 h-full">
-                <div className="absolute inset-0 bg-gradient-to-br from-amber-600 via-orange-600 to-yellow-600 opacity-0 group-hover:opacity-20 transition-all duration-500 animate-border-flow" />
+          {/* Social Mixer Event Card */}
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.45, ease: "easeOut" }}
+            className="mb-12"
+          >
+            <InteractiveCard className="group relative overflow-hidden border-orange-500/10 bg-gradient-to-br from-orange-950/20 to-amber-950/30 backdrop-blur-md transition-all duration-500 hover:border-orange-400/30">
+              <div className="absolute inset-0 bg-gradient-to-br from-amber-600 via-orange-600 to-yellow-600 opacity-0 group-hover:opacity-10 transition-all duration-500 animate-border-flow" />
 
-                {/* Image Placeholder */}
-                <div className="relative h-64 bg-gradient-to-br from-orange-900/40 to-amber-900/40 overflow-hidden">
-                  <div className="absolute inset-0 flex flex-col items-center justify-center">
-                    <ImageIcon className="w-16 h-16 text-orange-400/40 mb-3" />
-                    <p className="text-white/40 text-sm">Photos coming soon!</p>
-                  </div>
-                  {/* Decorative overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-stone-950 via-transparent to-transparent opacity-60" />
-                </div>
-
-                <div className="relative p-6">
-                  <div className="flex items-start gap-4 mb-4">
-                    <div className="relative flex-shrink-0">
-                      <div className="absolute inset-0 bg-gradient-to-br from-amber-600 via-orange-600 to-yellow-600 rounded-2xl blur-lg opacity-50 group-hover:opacity-100 transition-opacity duration-500" />
-                      <div className="relative w-16 h-16 rounded-2xl bg-gradient-to-br from-amber-600 via-orange-600 to-yellow-600 flex items-center justify-center transform group-hover:scale-110 group-hover:rotate-6 transition-all duration-500">
-                        <Users className="w-8 h-8 text-white drop-shadow-lg" />
-                      </div>
-                    </div>
-
-                    <div className="flex-1">
-                      <h3 className="text-2xl font-bold text-white mb-2 flex items-center gap-2">
-                        MENAA Social Mixer
-                        <CheckCircle2 className="w-5 h-5 text-green-400" />
-                      </h3>
-                      <div className="flex items-center gap-2 text-sm text-orange-300 mb-2">
-                        <Calendar className="w-4 h-4" />
-                        <span>Wednesday, October 15, 2025</span>
-                      </div>
+              <div className="relative p-6 md:p-8">
+                <div className="flex flex-col md:flex-row items-start gap-4 mb-6">
+                  <div className="relative flex-shrink-0">
+                    <div className="absolute inset-0 bg-gradient-to-br from-amber-600 via-orange-600 to-yellow-600 rounded-2xl blur-lg opacity-50 group-hover:opacity-100 transition-opacity duration-500" />
+                    <div className="relative w-16 h-16 rounded-2xl bg-gradient-to-br from-amber-600 via-orange-600 to-yellow-600 flex items-center justify-center transform group-hover:scale-110 group-hover:rotate-6 transition-all duration-500">
+                      <Users className="w-8 h-8 text-white drop-shadow-lg" />
                     </div>
                   </div>
 
-                  <p className="text-white/70 text-sm leading-relaxed mb-4">
-                    Our first social mixer of the quarter! Students connected, vibed, and made new friends across the MENAA community. Features included MENA Bingo, henna & glitter tattoos, games, snacks, and amazing vibes.
-                  </p>
-
-                  <div className="flex flex-wrap gap-2">
-                    <span className="px-3 py-1 rounded-full bg-orange-500/20 text-orange-300 text-xs font-medium border border-orange-500/30">
-                      🎯 MENA Bingo
-                    </span>
-                    <span className="px-3 py-1 rounded-full bg-amber-500/20 text-amber-300 text-xs font-medium border border-amber-500/30">
-                      🎨 Henna Art
-                    </span>
-                    <span className="px-3 py-1 rounded-full bg-yellow-500/20 text-yellow-300 text-xs font-medium border border-yellow-500/30">
-                      ✨ Community
-                    </span>
+                  <div className="flex-1">
+                    <h3 className="text-2xl md:text-3xl font-bold text-white mb-2 flex items-center gap-2">
+                      MENAA Social Mixer
+                      <CheckCircle2 className="w-5 h-5 text-green-400" />
+                    </h3>
+                    <div className="flex items-center gap-2 text-sm text-orange-300 mb-3">
+                      <Calendar className="w-4 h-4" />
+                      <span>Wednesday, October 15, 2025</span>
+                    </div>
+                    <p className="text-white/70 text-sm md:text-base leading-relaxed mb-4">
+                      Our first social mixer of the quarter! Students connected, vibed, and made new friends across the MENAA community. Features included MENA Bingo, henna & glitter tattoos, games, snacks, and amazing vibes.
+                    </p>
+                    <div className="flex flex-wrap gap-2">
+                      <span className="px-3 py-1 rounded-full bg-orange-500/20 text-orange-300 text-xs font-medium border border-orange-500/30">
+                        🎯 MENA Bingo
+                      </span>
+                      <span className="px-3 py-1 rounded-full bg-amber-500/20 text-amber-300 text-xs font-medium border border-amber-500/30">
+                        🎨 Henna Art
+                      </span>
+                      <span className="px-3 py-1 rounded-full bg-yellow-500/20 text-yellow-300 text-xs font-medium border border-yellow-500/30">
+                        ✨ Community
+                      </span>
+                    </div>
                   </div>
                 </div>
 
-                <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-amber-600 via-orange-600 to-yellow-600 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
-              </InteractiveCard>
-            </motion.div>
+                {/* Event Photos Gallery */}
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 md:gap-4">
+                  {[1, 2, 3, 4, 5].map((num, index) => (
+                    <motion.div
+                      key={num}
+                      initial={{ opacity: 0, scale: 0.8, rotateY: -90 }}
+                      whileInView={{ opacity: 1, scale: 1, rotateY: 0 }}
+                      viewport={{ once: true, margin: "-50px" }}
+                      transition={{ 
+                        duration: 0.6, 
+                        delay: index * 0.1,
+                        ease: [0.34, 1.56, 0.64, 1]
+                      }}
+                      whileHover={{ 
+                        scale: 1.05,
+                        zIndex: 10,
+                        transition: { duration: 0.3 }
+                      }}
+                      className="group/img relative aspect-square rounded-2xl overflow-hidden cursor-pointer"
+                    >
+                      {/* Main Image */}
+                      <div className="relative w-full h-full">
+                        <Image
+                          src={`/events/menaaevent1_${num}${num === 3 ? 'jpg' : ''}.jpg`}
+                          alt={`MENAA Social Mixer Event Photo ${num}`}
+                          fill
+                          className="object-cover transition-all duration-700 group-hover/img:scale-110 group-hover/img:brightness-110"
+                          sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 20vw"
+                        />
+                        
+                        {/* Gradient Overlay */}
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/0 to-black/0 opacity-0 group-hover/img:opacity-100 transition-opacity duration-500" />
+                        
+                        {/* Shimmer Effect on Hover */}
+                        <div className="absolute inset-0 opacity-0 group-hover/img:opacity-100 transition-opacity duration-700">
+                          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent translate-x-[-200%] group-hover/img:translate-x-[200%] transition-transform duration-1000" />
+                        </div>
 
-            {/* Placeholder for more past events */}
-            <motion.div
-              initial={{ opacity: 0, y: 24 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-100px" }}
-              transition={{ duration: 0.45, ease: "easeOut", delay: 0.08 }}
-            >
-              <InteractiveCard className="group relative overflow-hidden border-orange-500/10 bg-gradient-to-br from-orange-950/20 to-amber-950/30 backdrop-blur-md transition-all duration-500 hover:scale-[1.02] hover:border-orange-400/30 h-full">
-                <div className="absolute inset-0 bg-gradient-to-br from-orange-500/5 to-amber-500/5" />
+                        {/* Border Glow Effect */}
+                        <div className="absolute inset-0 rounded-2xl border-2 border-transparent group-hover/img:border-orange-400/50 group-hover/img:shadow-xl group-hover/img:shadow-orange-500/30 transition-all duration-500" />
 
-                <div className="relative h-full flex flex-col items-center justify-center p-8 min-h-[400px]">
-                  <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-br from-orange-500/20 via-yellow-500/20 to-amber-600/20 mb-6 animate-pulse">
-                    <ImageIcon className="w-10 h-10 text-orange-400/60" />
-                  </div>
-                  
-                  <h3 className="text-2xl font-bold text-white/80 mb-3 text-center">
-                    More Events Coming Soon!
-                  </h3>
-                  
-                  <p className="text-white/60 text-center max-w-xs leading-relaxed">
-                    Check back here after our next events to see photos and highlights from our community gatherings.
-                  </p>
+                        {/* Watermark Logo - Bottom Right Corner */}
+                        <motion.div 
+                          className="absolute bottom-2 right-2 w-8 h-8 md:w-10 md:h-10 opacity-60 group-hover/img:opacity-90 transition-all duration-500"
+                          initial={{ opacity: 0, scale: 0 }}
+                          whileInView={{ opacity: 0.6, scale: 1 }}
+                          viewport={{ once: true }}
+                          transition={{ delay: index * 0.1 + 0.3, duration: 0.5 }}
+                        >
+                          <div className="relative w-full h-full rounded-lg overflow-hidden shadow-2xl shadow-black/50 ring-1 ring-white/20 backdrop-blur-sm bg-black/20">
+                            <Image
+                              src="/MENAA_LOGO.jpg"
+                              alt="MENAA Logo"
+                              fill
+                              className="object-cover"
+                              sizes="40px"
+                            />
+                            {/* Logo glow effect */}
+                            <div className="absolute inset-0 bg-gradient-to-br from-orange-500/20 via-yellow-500/20 to-amber-500/20 mix-blend-overlay" />
+                          </div>
+                        </motion.div>
+
+                        {/* Sparkle Effects on Hover */}
+                        <div className="absolute top-2 left-2 opacity-0 group-hover/img:opacity-100 transition-opacity duration-500">
+                          <Sparkles className="w-5 h-5 text-yellow-400 animate-pulse" />
+                        </div>
+                      </div>
+
+                      {/* Floating particle effect */}
+                      <div className="absolute inset-0 pointer-events-none opacity-0 group-hover/img:opacity-100 transition-opacity duration-700">
+                        {[...Array(3)].map((_, i) => (
+                          <motion.div
+                            key={i}
+                            className="absolute w-1 h-1 rounded-full bg-yellow-400"
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{
+                              opacity: [0, 1, 0],
+                              y: [20, -20],
+                              x: [0, (i - 1) * 10]
+                            }}
+                            transition={{
+                              duration: 1.5,
+                              repeat: Infinity,
+                              delay: i * 0.3
+                            }}
+                            style={{
+                              left: `${30 + i * 20}%`,
+                              bottom: '10%'
+                            }}
+                          />
+                        ))}
+                      </div>
+                    </motion.div>
+                  ))}
                 </div>
-              </InteractiveCard>
-            </motion.div>
-          </div>
+              </div>
+
+              <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-amber-600 via-orange-600 to-yellow-600 opacity-50 group-hover:opacity-100 transition-opacity duration-700" />
+            </InteractiveCard>
+          </motion.div>
+
+          {/* Coming Soon Placeholder */}
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.45, ease: "easeOut", delay: 0.2 }}
+          >
+            <InteractiveCard className="group relative overflow-hidden border-orange-500/10 bg-gradient-to-br from-orange-950/20 to-amber-950/30 backdrop-blur-md transition-all duration-500 hover:scale-[1.01] hover:border-orange-400/30">
+              <div className="absolute inset-0 bg-gradient-to-br from-orange-500/5 to-amber-500/5" />
+
+              <div className="relative flex flex-col items-center justify-center p-8 md:p-12 min-h-[300px]">
+                <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-br from-orange-500/20 via-yellow-500/20 to-amber-600/20 mb-6 animate-pulse">
+                  <ImageIcon className="w-10 h-10 text-orange-400/60" />
+                </div>
+                
+                <h3 className="text-2xl font-bold text-white/80 mb-3 text-center">
+                  More Events Coming Soon!
+                </h3>
+                
+                <p className="text-white/60 text-center max-w-xs leading-relaxed">
+                  Check back here after our next events to see photos and highlights from our community gatherings.
+                </p>
+              </div>
+            </InteractiveCard>
+          </motion.div>
 
           <div className="mt-8 text-center">
             <p className="text-white/50 text-sm">
