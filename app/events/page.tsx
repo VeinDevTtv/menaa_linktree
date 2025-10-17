@@ -7,7 +7,8 @@ import { Card } from "@/components/ui/card"
 import { 
   Calendar, Heart, ArrowLeft, Sparkles, Users, 
   Film, Gamepad2, PartyPopper, Clock, MapPin,
-  Star, Zap, Music, Coffee, ImageIcon, CheckCircle2
+  Star, Zap, Music, Coffee, ImageIcon, CheckCircle2,
+  Pause, Play
 } from "lucide-react"
 import { ArabesquePatterns } from "@/components/arabesque-patterns"
 import { motion } from "framer-motion"
@@ -27,6 +28,8 @@ export default function EventsPage() {
   const [storyProgress, setStoryProgress] = useState(0)
   const [touchStart, setTouchStart] = useState({ x: 0, y: 0, time: 0 })
   const [swipeDirection, setSwipeDirection] = useState<'left' | 'right' | null>(null)
+  const [isPaused, setIsPaused] = useState(false)
+  const [slideDirection, setSlideDirection] = useState<'next' | 'prev'>('next')
 
   useEffect(() => {
     setMounted(true)
@@ -57,8 +60,7 @@ export default function EventsPage() {
 
   // Story progress animation
   useEffect(() => {
-    if (selectedImage !== null) {
-      setStoryProgress(0)
+    if (selectedImage !== null && !isPaused) {
       const interval = setInterval(() => {
         setStoryProgress(prev => {
           if (prev >= 100) {
@@ -71,7 +73,7 @@ export default function EventsPage() {
       
       return () => clearInterval(interval)
     }
-  }, [selectedImage])
+  }, [selectedImage, isPaused])
 
   // Reset image transformations when image changes
   useEffect(() => {
@@ -92,6 +94,9 @@ export default function EventsPage() {
         handlePrevImage()
       } else if (e.key === 'ArrowRight') {
         handleNextImage()
+      } else if (e.key === ' ') {
+        e.preventDefault()
+        setIsPaused(prev => !prev)
       } else if (e.key === '+' || e.key === '=') {
         setImageScale(prev => Math.min(prev + 0.2, 3))
       } else if (e.key === '-') {
@@ -105,17 +110,22 @@ export default function EventsPage() {
 
   const openImageViewer = (index: number) => {
     setSelectedImage(index)
+    setIsPaused(false)
+    setStoryProgress(0)
     document.body.style.overflow = 'hidden'
   }
 
   const closeImageViewer = () => {
     setSelectedImage(null)
     setStoryProgress(0)
+    setIsPaused(false)
     document.body.style.overflow = 'unset'
   }
 
   const handleNextImage = () => {
     if (selectedImage !== null) {
+      setSlideDirection('next')
+      setStoryProgress(0)
       if (selectedImage < 4) {
         setSelectedImage(selectedImage + 1)
       } else {
@@ -126,6 +136,8 @@ export default function EventsPage() {
 
   const handlePrevImage = () => {
     if (selectedImage !== null && selectedImage > 0) {
+      setSlideDirection('prev')
+      setStoryProgress(0)
       setSelectedImage(selectedImage - 1)
     }
   }
@@ -874,9 +886,16 @@ export default function EventsPage() {
           {/* Story Progress Bars */}
           <div className="absolute top-4 left-4 right-4 flex gap-2 z-50">
             {[0, 1, 2, 3, 4].map((index) => (
-              <div key={index} className="flex-1 h-1 bg-white/20 rounded-full overflow-hidden backdrop-blur-sm">
+              <div 
+                key={index} 
+                className={`flex-1 h-1 bg-white/20 rounded-full overflow-hidden backdrop-blur-sm transition-all duration-300 ${
+                  isPaused && index === selectedImage ? 'ring-1 ring-white/30' : ''
+                }`}
+              >
                 <motion.div
-                  className="h-full bg-gradient-to-r from-orange-400 via-yellow-400 to-amber-400 rounded-full"
+                  className={`h-full bg-gradient-to-r from-orange-400 via-yellow-400 to-amber-400 rounded-full ${
+                    isPaused && index === selectedImage ? 'opacity-80' : ''
+                  }`}
                   style={{
                     width: index < selectedImage ? '100%' : index === selectedImage ? `${storyProgress}%` : '0%'
                   }}
@@ -908,13 +927,31 @@ export default function EventsPage() {
               </div>
             </div>
             
-            <button
-              onClick={closeImageViewer}
-              className="w-10 h-10 rounded-full bg-white/10 backdrop-blur-md hover:bg-white/20 transition-all flex items-center justify-center group"
-              aria-label="Close viewer"
-            >
-              <div className="text-white text-2xl group-hover:rotate-90 transition-transform duration-300">×</div>
-            </button>
+            <div className="flex items-center gap-2">
+              {/* Pause/Play Button */}
+              <motion.button
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+                onClick={() => setIsPaused(!isPaused)}
+                className="w-10 h-10 rounded-full bg-white/10 backdrop-blur-md hover:bg-white/20 transition-all flex items-center justify-center group"
+                aria-label={isPaused ? "Play" : "Pause"}
+              >
+                {isPaused ? (
+                  <Play className="w-5 h-5 text-white fill-white" />
+                ) : (
+                  <Pause className="w-5 h-5 text-white fill-white" />
+                )}
+              </motion.button>
+
+              {/* Close Button */}
+              <button
+                onClick={closeImageViewer}
+                className="w-10 h-10 rounded-full bg-white/10 backdrop-blur-md hover:bg-white/20 transition-all flex items-center justify-center group"
+                aria-label="Close viewer"
+              >
+                <div className="text-white text-2xl group-hover:rotate-90 transition-transform duration-300">×</div>
+              </button>
+            </div>
           </div>
 
           {/* Main Image Container */}
@@ -929,6 +966,21 @@ export default function EventsPage() {
             onTouchMove={handleTouchMove}
             onTouchEnd={handleTouchEnd}
           >
+            {/* Paused Indicator */}
+            {isPaused && (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.8, y: 20 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.8, y: 20 }}
+                className="absolute top-24 left-1/2 -translate-x-1/2 z-50 mt-16"
+              >
+                <div className="flex items-center gap-2 px-4 py-2 bg-black/60 backdrop-blur-lg rounded-full border border-white/20 shadow-2xl">
+                  <Pause className="w-4 h-4 text-white" />
+                  <span className="text-white text-sm font-medium">Paused</span>
+                </div>
+              </motion.div>
+            )}
+
             {/* Swipe Direction Indicator */}
             {swipeDirection && (
               <motion.div
@@ -945,10 +997,27 @@ export default function EventsPage() {
 
             <motion.div
               key={selectedImage}
-              initial={{ opacity: 0, scale: 0.8, x: 100 }}
-              animate={{ opacity: 1, scale: 1, x: 0 }}
-              exit={{ opacity: 0, scale: 0.8, x: -100 }}
-              transition={{ type: "spring", damping: 25, stiffness: 200 }}
+              initial={{ 
+                x: slideDirection === 'next' ? '100%' : '-100%',
+                opacity: 0,
+                scale: 0.9
+              }}
+              animate={{ 
+                x: 0,
+                opacity: 1,
+                scale: 1
+              }}
+              exit={{ 
+                x: slideDirection === 'next' ? '-30%' : '30%',
+                opacity: 0,
+                scale: 0.95
+              }}
+              transition={{ 
+                type: "spring", 
+                damping: 30, 
+                stiffness: 300,
+                opacity: { duration: 0.3 }
+              }}
               className="relative max-w-5xl max-h-full w-full h-full"
               style={{
                 cursor: imageScale > 1 ? (isDragging ? 'grabbing' : 'grab') : 'default'
@@ -1086,7 +1155,8 @@ export default function EventsPage() {
               className="text-white/40 text-xs space-y-1 bg-black/30 backdrop-blur-sm rounded-lg px-3 py-2"
             >
               <p>← → Arrow keys to navigate</p>
-              <p>+/− to zoom • ESC to close</p>
+              <p>SPACE to pause • +/− to zoom</p>
+              <p>ESC to close</p>
             </motion.div>
           </div>
 
