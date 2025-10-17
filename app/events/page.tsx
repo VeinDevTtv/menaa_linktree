@@ -19,6 +19,14 @@ export default function EventsPage() {
   const [hoveredEvent, setHoveredEvent] = useState<number | null>(null)
   const containerRef = useRef<HTMLDivElement>(null)
   const [scrollY, setScrollY] = useState(0)
+  const [selectedImage, setSelectedImage] = useState<number | null>(null)
+  const [imageScale, setImageScale] = useState(1)
+  const [imagePosition, setImagePosition] = useState({ x: 0, y: 0 })
+  const [isDragging, setIsDragging] = useState(false)
+  const [dragStart, setDragStart] = useState({ x: 0, y: 0 })
+  const [storyProgress, setStoryProgress] = useState(0)
+  const [touchStart, setTouchStart] = useState({ x: 0, y: 0, time: 0 })
+  const [swipeDirection, setSwipeDirection] = useState<'left' | 'right' | null>(null)
 
   useEffect(() => {
     setMounted(true)
@@ -46,6 +54,166 @@ export default function EventsPage() {
       window.removeEventListener("scroll", handleScroll)
     }
   }, [])
+
+  // Story progress animation
+  useEffect(() => {
+    if (selectedImage !== null) {
+      setStoryProgress(0)
+      const interval = setInterval(() => {
+        setStoryProgress(prev => {
+          if (prev >= 100) {
+            handleNextImage()
+            return 0
+          }
+          return prev + 0.5
+        })
+      }, 30) // 6 seconds per image (100 / 0.5 * 30ms)
+      
+      return () => clearInterval(interval)
+    }
+  }, [selectedImage])
+
+  // Reset image transformations when image changes
+  useEffect(() => {
+    if (selectedImage !== null) {
+      setImageScale(1)
+      setImagePosition({ x: 0, y: 0 })
+    }
+  }, [selectedImage])
+
+  // Handle keyboard navigation
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (selectedImage === null) return
+      
+      if (e.key === 'Escape') {
+        closeImageViewer()
+      } else if (e.key === 'ArrowLeft') {
+        handlePrevImage()
+      } else if (e.key === 'ArrowRight') {
+        handleNextImage()
+      } else if (e.key === '+' || e.key === '=') {
+        setImageScale(prev => Math.min(prev + 0.2, 3))
+      } else if (e.key === '-') {
+        setImageScale(prev => Math.max(prev - 0.2, 0.5))
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [selectedImage])
+
+  const openImageViewer = (index: number) => {
+    setSelectedImage(index)
+    document.body.style.overflow = 'hidden'
+  }
+
+  const closeImageViewer = () => {
+    setSelectedImage(null)
+    setStoryProgress(0)
+    document.body.style.overflow = 'unset'
+  }
+
+  const handleNextImage = () => {
+    if (selectedImage !== null) {
+      if (selectedImage < 4) {
+        setSelectedImage(selectedImage + 1)
+      } else {
+        closeImageViewer()
+      }
+    }
+  }
+
+  const handlePrevImage = () => {
+    if (selectedImage !== null && selectedImage > 0) {
+      setSelectedImage(selectedImage - 1)
+    }
+  }
+
+  const handleZoom = (delta: number) => {
+    setImageScale(prev => Math.max(0.5, Math.min(3, prev + delta)))
+  }
+
+  const handleMouseDown = (e: React.MouseEvent) => {
+    if (imageScale > 1) {
+      setIsDragging(true)
+      setDragStart({ x: e.clientX - imagePosition.x, y: e.clientY - imagePosition.y })
+    }
+  }
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (isDragging && imageScale > 1) {
+      setImagePosition({
+        x: e.clientX - dragStart.x,
+        y: e.clientY - dragStart.y
+      })
+    }
+  }
+
+  const handleMouseUp = () => {
+    setIsDragging(false)
+  }
+
+  const handleWheel = (e: React.WheelEvent) => {
+    e.preventDefault()
+    const delta = e.deltaY > 0 ? -0.1 : 0.1
+    handleZoom(delta)
+  }
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    if (e.touches.length === 1) {
+      setTouchStart({ 
+        x: e.touches[0].clientX, 
+        y: e.touches[0].clientY,
+        time: Date.now()
+      })
+      
+      if (imageScale > 1) {
+        setIsDragging(true)
+        setDragStart({ 
+          x: e.touches[0].clientX - imagePosition.x, 
+          y: e.touches[0].clientY - imagePosition.y 
+        })
+      }
+    }
+  }
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (e.touches.length === 1) {
+      if (isDragging && imageScale > 1) {
+        setImagePosition({
+          x: e.touches[0].clientX - dragStart.x,
+          y: e.touches[0].clientY - dragStart.y
+        })
+      } else if (imageScale === 1) {
+        // Show swipe indicator
+        const deltaX = e.touches[0].clientX - touchStart.x
+        if (Math.abs(deltaX) > 50) {
+          setSwipeDirection(deltaX > 0 ? 'right' : 'left')
+        }
+      }
+    }
+  }
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (imageScale === 1 && e.changedTouches.length === 1) {
+      const deltaX = e.changedTouches[0].clientX - touchStart.x
+      const deltaY = e.changedTouches[0].clientY - touchStart.y
+      const deltaTime = Date.now() - touchStart.time
+      
+      // Swipe detection (horizontal swipe should be larger than vertical)
+      if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 50 && deltaTime < 500) {
+        if (deltaX > 0 && selectedImage !== null && selectedImage > 0) {
+          handlePrevImage()
+        } else if (deltaX < 0 && selectedImage !== null && selectedImage < 4) {
+          handleNextImage()
+        }
+      }
+    }
+    
+    setIsDragging(false)
+    setSwipeDirection(null)
+  }
 
   const events = [
     {
@@ -553,6 +721,7 @@ export default function EventsPage() {
                         zIndex: 10,
                         transition: { duration: 0.3 }
                       }}
+                      onClick={() => openImageViewer(index)}
                       className="group/img relative aspect-square rounded-2xl overflow-hidden cursor-pointer"
                     >
                       {/* Main Image */}
@@ -690,6 +859,264 @@ export default function EventsPage() {
           <p className="text-xs text-white/30">© 2025 De Anza MENAA. All rights reserved.</p>
         </div>
       </div>
+
+      {/* Stories-Style Image Viewer Modal */}
+      {selectedImage !== null && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 z-[100] bg-black/95 backdrop-blur-xl"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) closeImageViewer()
+          }}
+        >
+          {/* Story Progress Bars */}
+          <div className="absolute top-4 left-4 right-4 flex gap-2 z-50">
+            {[0, 1, 2, 3, 4].map((index) => (
+              <div key={index} className="flex-1 h-1 bg-white/20 rounded-full overflow-hidden backdrop-blur-sm">
+                <motion.div
+                  className="h-full bg-gradient-to-r from-orange-400 via-yellow-400 to-amber-400 rounded-full"
+                  style={{
+                    width: index < selectedImage ? '100%' : index === selectedImage ? `${storyProgress}%` : '0%'
+                  }}
+                  transition={{ duration: 0.1 }}
+                />
+              </div>
+            ))}
+          </div>
+
+          {/* Header with Logo and Close Button */}
+          <div className="absolute top-8 left-4 right-4 flex items-center justify-between z-50 mt-6">
+            <div className="flex items-center gap-3">
+              <motion.div
+                initial={{ scale: 0, rotate: -180 }}
+                animate={{ scale: 1, rotate: 0 }}
+                className="w-12 h-12 rounded-full overflow-hidden ring-2 ring-orange-400/50 shadow-xl"
+              >
+                <Image
+                  src="/MENAA_LOGO.jpg"
+                  alt="MENAA Logo"
+                  width={48}
+                  height={48}
+                  className="object-cover"
+                />
+              </motion.div>
+              <div>
+                <h3 className="text-white font-bold text-sm">MENAA Social Mixer</h3>
+                <p className="text-white/60 text-xs">October 15, 2025</p>
+              </div>
+            </div>
+            
+            <button
+              onClick={closeImageViewer}
+              className="w-10 h-10 rounded-full bg-white/10 backdrop-blur-md hover:bg-white/20 transition-all flex items-center justify-center group"
+              aria-label="Close viewer"
+            >
+              <div className="text-white text-2xl group-hover:rotate-90 transition-transform duration-300">×</div>
+            </button>
+          </div>
+
+          {/* Main Image Container */}
+          <div 
+            className="absolute inset-0 flex items-center justify-center p-4 pt-24 pb-32"
+            onMouseDown={handleMouseDown}
+            onMouseMove={handleMouseMove}
+            onMouseUp={handleMouseUp}
+            onMouseLeave={handleMouseUp}
+            onWheel={handleWheel}
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
+          >
+            {/* Swipe Direction Indicator */}
+            {swipeDirection && (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.5 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.5 }}
+                className={`absolute ${swipeDirection === 'left' ? 'right-20' : 'left-20'} top-1/2 -translate-y-1/2 z-40`}
+              >
+                <div className="w-16 h-16 rounded-full bg-orange-500/80 backdrop-blur-md flex items-center justify-center">
+                  <ArrowLeft className={`w-8 h-8 text-white ${swipeDirection === 'left' ? 'rotate-180' : ''}`} />
+                </div>
+              </motion.div>
+            )}
+
+            <motion.div
+              key={selectedImage}
+              initial={{ opacity: 0, scale: 0.8, x: 100 }}
+              animate={{ opacity: 1, scale: 1, x: 0 }}
+              exit={{ opacity: 0, scale: 0.8, x: -100 }}
+              transition={{ type: "spring", damping: 25, stiffness: 200 }}
+              className="relative max-w-5xl max-h-full w-full h-full"
+              style={{
+                cursor: imageScale > 1 ? (isDragging ? 'grabbing' : 'grab') : 'default'
+              }}
+            >
+              {/* Click zones for navigation (like Instagram stories) */}
+              {imageScale === 1 && (
+                <>
+                  {selectedImage > 0 && (
+                    <div
+                      onClick={handlePrevImage}
+                      className="absolute left-0 top-0 bottom-0 w-1/3 cursor-w-resize z-10"
+                      aria-label="Previous image zone"
+                    />
+                  )}
+                  {selectedImage < 4 && (
+                    <div
+                      onClick={handleNextImage}
+                      className="absolute right-0 top-0 bottom-0 w-1/3 cursor-e-resize z-10"
+                      aria-label="Next image zone"
+                    />
+                  )}
+                </>
+              )}
+
+              <div 
+                className="relative w-full h-full"
+                style={{
+                  transform: `scale(${imageScale}) translate(${imagePosition.x / imageScale}px, ${imagePosition.y / imageScale}px)`,
+                  transition: isDragging ? 'none' : 'transform 0.3s ease-out'
+                }}
+              >
+                <Image
+                  src={`/events/menaaevent1_${selectedImage + 1}${selectedImage === 2 ? 'jpg' : ''}.jpg`}
+                  alt={`MENAA Event Photo ${selectedImage + 1}`}
+                  fill
+                  className="object-contain"
+                  sizes="100vw"
+                  priority
+                />
+              </div>
+            </motion.div>
+          </div>
+
+          {/* Navigation Arrows */}
+          {selectedImage > 0 && (
+            <motion.button
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              onClick={handlePrevImage}
+              className="absolute left-4 top-1/2 -translate-y-1/2 w-14 h-14 rounded-full bg-white/10 backdrop-blur-md hover:bg-white/20 transition-all flex items-center justify-center group z-50"
+              aria-label="Previous image"
+            >
+              <ArrowLeft className="w-6 h-6 text-white group-hover:scale-110 transition-transform" />
+            </motion.button>
+          )}
+
+          {selectedImage < 4 && (
+            <motion.button
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              onClick={handleNextImage}
+              className="absolute right-4 top-1/2 -translate-y-1/2 w-14 h-14 rounded-full bg-white/10 backdrop-blur-md hover:bg-white/20 transition-all flex items-center justify-center group z-50 rotate-180"
+              aria-label="Next image"
+            >
+              <ArrowLeft className="w-6 h-6 text-white group-hover:scale-110 transition-transform" />
+            </motion.button>
+          )}
+
+          {/* Bottom Controls */}
+          <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex items-center gap-4 z-50">
+            {/* Zoom Controls */}
+            <div className="flex items-center gap-2 bg-white/10 backdrop-blur-md rounded-full px-4 py-2">
+              <button
+                onClick={() => handleZoom(-0.2)}
+                className="w-8 h-8 rounded-full hover:bg-white/20 transition-all flex items-center justify-center text-white font-bold"
+                aria-label="Zoom out"
+              >
+                −
+              </button>
+              <span className="text-white text-sm font-medium min-w-[3rem] text-center">
+                {Math.round(imageScale * 100)}%
+              </span>
+              <button
+                onClick={() => handleZoom(0.2)}
+                className="w-8 h-8 rounded-full hover:bg-white/20 transition-all flex items-center justify-center text-white font-bold"
+                aria-label="Zoom in"
+              >
+                +
+              </button>
+            </div>
+
+            {/* Reset Zoom Button */}
+            {imageScale !== 1 && (
+              <motion.button
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                onClick={() => {
+                  setImageScale(1)
+                  setImagePosition({ x: 0, y: 0 })
+                }}
+                className="px-4 py-2 rounded-full bg-orange-500/80 backdrop-blur-md hover:bg-orange-500 transition-all text-white text-sm font-medium"
+              >
+                Reset
+              </motion.button>
+            )}
+
+            {/* Image Counter */}
+            <div className="bg-white/10 backdrop-blur-md rounded-full px-4 py-2">
+              <span className="text-white text-sm font-medium">
+                {selectedImage + 1} / 5
+              </span>
+            </div>
+          </div>
+
+          {/* Swipe Indicator for Mobile */}
+          <div className="absolute bottom-32 left-1/2 -translate-x-1/2 md:hidden">
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5 }}
+              className="text-white/60 text-xs text-center"
+            >
+              <p>Swipe or tap sides to navigate</p>
+              <p className="mt-1">Pinch to zoom</p>
+            </motion.div>
+          </div>
+
+          {/* Keyboard Shortcuts Hint for Desktop */}
+          <div className="absolute bottom-4 left-4 hidden md:block">
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5 }}
+              className="text-white/40 text-xs space-y-1 bg-black/30 backdrop-blur-sm rounded-lg px-3 py-2"
+            >
+              <p>← → Arrow keys to navigate</p>
+              <p>+/− to zoom • ESC to close</p>
+            </motion.div>
+          </div>
+
+          {/* Decorative Elements */}
+          <div className="absolute inset-0 pointer-events-none overflow-hidden">
+            {[...Array(5)].map((_, i) => (
+              <motion.div
+                key={i}
+                className="absolute w-2 h-2 rounded-full bg-gradient-to-r from-orange-400 to-yellow-400"
+                initial={{ opacity: 0, scale: 0 }}
+                animate={{
+                  opacity: [0, 0.6, 0],
+                  scale: [0, 1, 0],
+                  x: [0, (i - 2) * 30],
+                  y: [0, -50]
+                }}
+                transition={{
+                  duration: 2,
+                  repeat: Infinity,
+                  delay: i * 0.4
+                }}
+                style={{
+                  left: '50%',
+                  top: '50%'
+                }}
+              />
+            ))}
+          </div>
+        </motion.div>
+      )}
     </div>
   )
 }
