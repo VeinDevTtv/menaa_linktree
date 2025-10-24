@@ -304,9 +304,9 @@ export default function FifaNightRSVPPage() {
             Event Details
           </h3>
           <div className="space-y-2 text-white/80">
-            <p><strong>Date:</strong> TBA</p>
-            <p><strong>Time:</strong> Evening</p>
-            <p><strong>Location:</strong> De Anza College</p>
+            <p><strong>Date:</strong> Wednesday, November 5, 2025</p>
+            <p><strong>Time:</strong> 4:00 PM - 6:00 PM</p>
+            <p><strong>Location:</strong> L73, Social and Humanities Village</p>
             <p><strong>Format:</strong> FIFA tournament with prizes</p>
             <p><strong>What to expect:</strong> Competitive gaming, refreshments, and epic matches!</p>
           </div>

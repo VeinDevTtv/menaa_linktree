@@ -26,10 +26,13 @@ export async function POST(req: Request) {
         { name: "Full Name", value: data.fullName, inline: true },
         { name: "Email", value: data.email, inline: true },
         { name: "Attending", value: data.attending === "yes" ? "Yes ⚽" : "No", inline: true },
+        { name: "Event Date", value: "Wednesday, November 5, 2025", inline: true },
+        { name: "Time", value: "4:00 PM - 6:00 PM", inline: true },
+        { name: "Location", value: "L73, Social and Humanities Village", inline: true },
       ],
       timestamp: new Date().toISOString(),
       footer: {
-        text: "FIFA NIGHT Registration",
+        text: "FIFA NIGHT Registration - Nov 5, 2025",
         icon_url: "https://cdn-icons-png.flaticon.com/512/53/53283.png"
       }
     },
