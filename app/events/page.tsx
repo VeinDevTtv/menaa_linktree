@@ -244,7 +244,9 @@ export default function EventsPage() {
         "Refreshments & music",
         "Chill vibes & gaming"
       ],
-      decorativeIcons: [Gamepad2, Star, Music, Sparkles]
+      decorativeIcons: [Gamepad2, Star, Music, Sparkles],
+      registrationOpen: true,
+      registrationUrl: "/events/fifa-night-rsvp"
     },
     {
       title: "Movie Night",
@@ -563,15 +565,25 @@ export default function EventsPage() {
 
                           {/* RSVP Button */}
                           <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.97 }}>
-                            <a
-                              href="https://instagram.com/deanzamenaa"
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className={`w-full mt-4 px-6 py-4 rounded-2xl bg-gradient-to-r ${event.gradient} text-white font-bold text-lg shadow-xl hover:shadow-2xl transform transition-all duration-500 hover:brightness-110 flex items-center justify-center gap-2`}
-                            >
-                              <Zap className="w-5 h-5" />
-                              Follow for updates
-                            </a>
+                            {event.registrationOpen ? (
+                              <Link
+                                href={event.registrationUrl || "#"}
+                                className={`w-full mt-4 px-6 py-4 rounded-2xl bg-gradient-to-r ${event.gradient} text-white font-bold text-lg shadow-xl hover:shadow-2xl transform transition-all duration-500 hover:brightness-110 flex items-center justify-center gap-2`}
+                              >
+                                <Gamepad2 className="w-5 h-5" />
+                                Register Now ⚽
+                              </Link>
+                            ) : (
+                              <a
+                                href="https://instagram.com/deanzamenaa"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className={`w-full mt-4 px-6 py-4 rounded-2xl bg-gradient-to-r ${event.gradient} text-white font-bold text-lg shadow-xl hover:shadow-2xl transform transition-all duration-500 hover:brightness-110 flex items-center justify-center gap-2`}
+                              >
+                                <Zap className="w-5 h-5" />
+                                Follow for updates
+                              </a>
+                            )}
                           </motion.div>
                         </div>
                       </div>

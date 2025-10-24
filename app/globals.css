@@ -613,3 +613,215 @@
   backdrop-filter: blur(8px);
   border: 1px solid rgba(250, 204, 21, 0.2);
 }
+
+/* Soccer-specific animations */
+@keyframes soccer-spin {
+  0% {
+    transform: rotateY(0deg) rotateX(0deg);
+  }
+  25% {
+    transform: rotateY(90deg) rotateX(15deg);
+  }
+  50% {
+    transform: rotateY(180deg) rotateX(0deg);
+  }
+  75% {
+    transform: rotateY(270deg) rotateX(-15deg);
+  }
+  100% {
+    transform: rotateY(360deg) rotateX(0deg);
+  }
+}
+
+@keyframes goal-bounce {
+  0%, 100% {
+    transform: translateY(0) scale(1);
+  }
+  25% {
+    transform: translateY(-20px) scale(1.1);
+  }
+  50% {
+    transform: translateY(-40px) scale(1.2);
+  }
+  75% {
+    transform: translateY(-20px) scale(1.1);
+  }
+}
+
+@keyframes field-lines-animate {
+  0% {
+    stroke-dashoffset: 100;
+  }
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes trophy-shine {
+  0% {
+    filter: brightness(1) drop-shadow(0 0 4px rgba(255, 215, 0, 0.3));
+  }
+  50% {
+    filter: brightness(1.5) drop-shadow(0 0 12px rgba(255, 215, 0, 0.8));
+  }
+  100% {
+    filter: brightness(1) drop-shadow(0 0 4px rgba(255, 215, 0, 0.3));
+  }
+}
+
+@keyframes whistle-blow {
+  0%, 100% {
+    transform: scale(1) rotate(0deg);
+  }
+  25% {
+    transform: scale(1.1) rotate(5deg);
+  }
+  50% {
+    transform: scale(1.2) rotate(0deg);
+  }
+  75% {
+    transform: scale(1.1) rotate(-5deg);
+  }
+}
+
+@keyframes stadium-wave {
+  0%, 100% {
+    transform: translateY(0) scaleY(1);
+  }
+  50% {
+    transform: translateY(-10px) scaleY(1.1);
+  }
+}
+
+@keyframes goal-post-shake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-2px);
+  }
+  75% {
+    transform: translateX(2px);
+  }
+}
+
+@keyframes corner-flag-wave {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(15deg);
+  }
+  75% {
+    transform: rotate(-15deg);
+  }
+}
+
+/* Soccer theme CSS variables */
+:root {
+  --soccer-green: #00B140;
+  --soccer-green-dark: #006B24;
+  --soccer-yellow: #FFD700;
+  --field-grass: #1B5E20;
+  --stadium-lights: #FFE082;
+}
+
+/* Soccer animation classes */
+.animate-soccer-spin {
+  animation: soccer-spin 3s linear infinite;
+  will-change: transform;
+  transform-style: preserve-3d;
+}
+
+.animate-goal-bounce {
+  animation: goal-bounce 1s ease-in-out infinite;
+  will-change: transform;
+}
+
+.animate-field-lines {
+  animation: field-lines-animate 2s ease-in-out;
+  stroke-dasharray: 5, 5;
+}
+
+.animate-trophy-shine {
+  animation: trophy-shine 2s ease-in-out infinite;
+  will-change: filter;
+}
+
+.animate-whistle-blow {
+  animation: whistle-blow 0.5s ease-in-out infinite;
+  will-change: transform;
+}
+
+.animate-stadium-wave {
+  animation: stadium-wave 3s ease-in-out infinite;
+  will-change: transform;
+}
+
+.animate-goal-post-shake {
+  animation: goal-post-shake 0.3s ease-in-out infinite;
+  will-change: transform;
+}
+
+.animate-corner-flag-wave {
+  animation: corner-flag-wave 2s ease-in-out infinite;
+  will-change: transform;
+}
+
+/* Soccer-themed glassmorphism */
+.glass-soccer {
+  background: rgba(0, 177, 64, 0.1);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(0, 177, 64, 0.2);
+}
+
+.glass-soccer-light {
+  background: rgba(255, 215, 0, 0.1);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 215, 0, 0.2);
+}
+
+/* Soccer field gradient */
+.bg-soccer-field {
+  background: linear-gradient(135deg, 
+    var(--field-grass) 0%, 
+    #2E7D32 25%, 
+    var(--field-grass) 50%, 
+    #1B5E20 75%, 
+    var(--field-grass) 100%);
+}
+
+/* Stadium lighting effect */
+.stadium-lights {
+  background: radial-gradient(ellipse at center, 
+    rgba(255, 224, 130, 0.3) 0%, 
+    rgba(255, 224, 130, 0.1) 50%, 
+    transparent 100%);
+}
+
+/* Performance optimizations for soccer animations */
+@media (max-width: 768px) {
+  .animate-soccer-spin,
+  .animate-goal-bounce,
+  .animate-trophy-shine {
+    animation-duration: 4s;
+  }
+  
+  .animate-stadium-wave,
+  .animate-corner-flag-wave {
+    animation-duration: 4s;
+  }
+}
+
+/* Reduce motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .animate-soccer-spin,
+  .animate-goal-bounce,
+  .animate-trophy-shine,
+  .animate-whistle-blow,
+  .animate-stadium-wave,
+  .animate-goal-post-shake,
+  .animate-corner-flag-wave {
+    animation: none;
+  }
+}

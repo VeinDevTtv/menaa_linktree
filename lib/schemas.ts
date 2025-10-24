@@ -56,4 +56,16 @@ export const eventRSVPSchema = z.object({
 
 export type EventRSVPInput = z.infer<typeof eventRSVPSchema>
 
+// FIFA Night RSVP schema
+export const fifaNightRSVPSchema = z.object({
+  fullName: z.string().min(1, "Full name is required"),
+  email: z.string().email("Invalid email"),
+  attending: z.enum(["yes", "no"], {
+    required_error: "Please select if you are attending",
+  }),
+  website: z.string().optional(),
+})
+
+export type FifaNightRSVPInput = z.infer<typeof fifaNightRSVPSchema>
+
 
