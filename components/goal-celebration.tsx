@@ -111,7 +111,7 @@ export function GoalCelebration({ isVisible, onComplete }: GoalCelebrationProps)
             </motion.div>
           ))}
 
-          {/* Soccer ball confetti */}
+          {/* Modern 3D Soccer ball confetti */}
           {Array.from({ length: 15 }).map((_, i) => (
             <motion.div
               key={`ball-${i}`}
@@ -138,8 +138,49 @@ export function GoalCelebration({ isVisible, onComplete }: GoalCelebrationProps)
                 ease: "easeOut"
               }}
             >
-              <div className="w-3 h-3 rounded-full bg-white border border-gray-300 flex items-center justify-center">
-                <div className="w-0.5 h-0.5 bg-black rounded-full"></div>
+              <div 
+                className="w-3 h-3 rounded-full relative overflow-hidden shadow-lg"
+                style={{
+                  background: `
+                    radial-gradient(circle at 30% 30%, rgba(255,255,255,0.9) 0%, rgba(248,250,252,0.95) 20%, rgba(241,245,249,0.9) 40%, rgba(226,232,240,0.85) 60%, rgba(203,213,225,0.8) 80%, rgba(148,163,184,0.75) 100%),
+                    linear-gradient(135deg, rgba(255,255,255,0.8) 0%, rgba(241,245,249,0.9) 50%, rgba(226,232,240,0.8) 100%)
+                  `,
+                  border: "1px solid rgba(255,255,255,0.3)",
+                  boxShadow: `
+                    inset 0 1px 2px rgba(255,255,255,0.3),
+                    inset 0 -1px 2px rgba(0,0,0,0.1),
+                    0 2px 4px rgba(0,0,0,0.2)
+                  `
+                }}
+              >
+                {/* Mini pentagon pattern */}
+                <div className="absolute inset-0">
+                  <div 
+                    className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
+                    style={{
+                      width: "2px",
+                      height: "2px",
+                      background: "linear-gradient(135deg, #1a1a1a 0%, #000000 50%, #1a1a1a 100%)",
+                      clipPath: "polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%)",
+                      boxShadow: "inset 0 0.5px 1px rgba(255,255,255,0.1), 0 0.5px 1px rgba(0,0,0,0.3)"
+                    }}
+                  />
+                  <div 
+                    className="absolute top-1/4 left-1/4 w-0.5 h-0.5 rounded-full"
+                    style={{
+                      background: "radial-gradient(circle, #000000 0%, #1a1a1a 70%, #000000 100%)",
+                      boxShadow: "inset 0 0.5px 1px rgba(255,255,255,0.1), 0 0.5px 1px rgba(0,0,0,0.3)"
+                    }}
+                  />
+                </div>
+                
+                {/* Mini highlight */}
+                <div 
+                  className="absolute top-0.5 left-0.5 w-1 h-1 rounded-full blur-sm opacity-50"
+                  style={{
+                    background: "radial-gradient(ellipse, rgba(255,255,255,0.8) 0%, transparent 100%)"
+                  }}
+                />
               </div>
             </motion.div>
           ))}
