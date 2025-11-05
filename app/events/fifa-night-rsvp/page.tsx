@@ -121,9 +121,16 @@ export default function FifaNightRSVPPage() {
   // Update event state and countdown
   useEffect(() => {
     const updateState = () => {
-      const { state, timeRemaining } = getEventState()
-      setEventState(state)
-      setCountdown(timeRemaining)
+      try {
+        const { state, timeRemaining } = getEventState()
+        setEventState(state)
+        setCountdown(timeRemaining)
+      } catch (error) {
+        console.error("Error updating event state:", error)
+        // Default to active state if there's an error
+        setEventState("active")
+        setCountdown(null)
+      }
     }
 
     updateState()
@@ -429,47 +436,14 @@ export default function FifaNightRSVPPage() {
       <div className="absolute inset-0 stadium-lights pointer-events-none" />
 
       <AnimatePresence mode="wait">
-        {eventState === "countdown" && (
+        {eventState === "active" && (
           <motion.div
-            key="countdown"
+            key="active"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
+            className="relative z-10 max-w-2xl mx-auto px-4 py-12"
           >
-            {renderCountdown()}
-          </motion.div>
-        )}
-        {eventState === "happening" && (
-          <motion.div
-            key="happening"
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.9 }}
-            transition={{ duration: 0.5 }}
-          >
-            {renderHappeningNow()}
-          </motion.div>
-        )}
-        {eventState === "ended" && (
-          <motion.div
-            key="ended"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-          >
-            {renderEventEnded()}
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {eventState === "active" && (
-        <motion.div
-          key="active"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          className="relative z-10 max-w-2xl mx-auto px-4 py-12"
-        >
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -672,7 +646,39 @@ export default function FifaNightRSVPPage() {
           </div>
         </motion.div>
         </motion.div>
-      )}
+        )}
+        {eventState === "countdown" && (
+          <motion.div
+            key="countdown"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            {renderCountdown()}
+          </motion.div>
+        )}
+        {eventState === "happening" && (
+          <motion.div
+            key="happening"
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.9 }}
+            transition={{ duration: 0.5 }}
+          >
+            {renderHappeningNow()}
+          </motion.div>
+        )}
+        {eventState === "ended" && (
+          <motion.div
+            key="ended"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            {renderEventEnded()}
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Code of Conduct Dialog */}
       <Dialog.Root open={cocOpen} onOpenChange={setCocOpen}>
