@@ -12,8 +12,85 @@ import { SoccerBall3D } from "@/components/soccer-ball-3d"
 import { SoccerFieldBg } from "@/components/soccer-field-bg"
 import { SoccerParticles } from "@/components/soccer-particles"
 import * as Dialog from "@radix-ui/react-dialog"
-import { motion } from "framer-motion"
-import { ArrowLeft, Trophy, Target, Medal, Zap, Star } from "lucide-react"
+import { motion, AnimatePresence } from "framer-motion"
+import { ArrowLeft, Trophy, Target, Medal, Zap, Star, Clock, CheckCircle2, Sparkles } from "lucide-react"
+
+// Event time states
+type EventState = "active" | "countdown" | "happening" | "ended"
+
+const getEventState = (): { state: EventState; timeRemaining: number | null } => {
+  const now = new Date()
+  
+  // Get PST time components
+  const pstFormatter = new Intl.DateTimeFormat("en-US", {
+    timeZone: "America/Los_Angeles",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: false,
+  })
+  
+  const pstParts = pstFormatter.formatToParts(now)
+  const pstDate = {
+    year: parseInt(pstParts.find(p => p.type === "year")?.value || "0"),
+    month: parseInt(pstParts.find(p => p.type === "month")?.value || "0") - 1,
+    day: parseInt(pstParts.find(p => p.type === "day")?.value || "0"),
+    hour: parseInt(pstParts.find(p => p.type === "hour")?.value || "0"),
+    minute: parseInt(pstParts.find(p => p.type === "minute")?.value || "0"),
+    second: parseInt(pstParts.find(p => p.type === "second")?.value || "0"),
+  }
+  
+  // Get current time in milliseconds since midnight PST
+  const currentTimeMs = pstDate.hour * 3600000 + pstDate.minute * 60000 + pstDate.second * 1000
+  
+  // For testing, use today's date. For production, use eventDate (Nov 5, 2025)
+  const useToday = true // Set to false for production
+  const eventYear = useToday ? pstDate.year : 2025
+  const eventMonth = useToday ? pstDate.month : 10 // November (0-indexed)
+  const eventDay = useToday ? pstDate.day : 5
+  
+  // Check if we're on the event date
+  const isEventDate = pstDate.year === eventYear && pstDate.month === eventMonth && pstDate.day === eventDay
+  
+  if (!isEventDate) {
+    // If not on event date, check if we're before or after
+    const currentDate = new Date(pstDate.year, pstDate.month, pstDate.day)
+    const eventDateObj = new Date(eventYear, eventMonth, eventDay)
+    if (currentDate < eventDateObj) {
+      return { state: "active", timeRemaining: null }
+    } else {
+      return { state: "ended", timeRemaining: null }
+    }
+  }
+  
+  // On event date - check time
+  const deactivateTimeMs = 15 * 3600000 // 3PM PST = 15:00:00
+  const startTimeMs = 16 * 3600000 // 4PM PST = 16:00:00
+  const endTimeMs = 18 * 3600000 // 6PM PST = 18:00:00
+  
+  if (currentTimeMs < deactivateTimeMs) {
+    return { state: "active", timeRemaining: null }
+  } else if (currentTimeMs >= deactivateTimeMs && currentTimeMs < startTimeMs) {
+    const remaining = startTimeMs - currentTimeMs
+    return { state: "countdown", timeRemaining: remaining }
+  } else if (currentTimeMs >= startTimeMs && currentTimeMs < endTimeMs) {
+    return { state: "happening", timeRemaining: null }
+  } else {
+    return { state: "ended", timeRemaining: null }
+  }
+}
+
+const formatCountdown = (ms: number): string => {
+  const totalSeconds = Math.floor(ms / 1000)
+  const hours = Math.floor(totalSeconds / 3600)
+  const minutes = Math.floor((totalSeconds % 3600) / 60)
+  const seconds = totalSeconds % 60
+  
+  return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`
+}
 
 export default function FifaNightRSVPPage() {
   const [submitting, setSubmitting] = useState(false)
@@ -24,6 +101,8 @@ export default function FifaNightRSVPPage() {
   const [cocUnlocked, setCocUnlocked] = useState(false)
   const [scrolledToBottom, setScrolledToBottom] = useState(false)
   const scrollRef = useRef<HTMLDivElement | null>(null)
+  const [eventState, setEventState] = useState<EventState>("active")
+  const [countdown, setCountdown] = useState<number | null>(null)
   
   const { register, handleSubmit, formState: { errors }, reset, setValue } = useForm<FifaNightRSVPInput>({
     resolver: zodResolver(fifaNightRSVPSchema),
@@ -46,6 +125,20 @@ export default function FifaNightRSVPPage() {
       document.body.style.overflow = ""
     }
   }, [cocOpen])
+
+  // Update event state and countdown
+  useEffect(() => {
+    const updateState = () => {
+      const { state, timeRemaining } = getEventState()
+      setEventState(state)
+      setCountdown(timeRemaining)
+    }
+
+    updateState()
+    const interval = setInterval(updateState, 1000) // Update every second
+
+    return () => clearInterval(interval)
+  }, [])
 
   const handleScrollCheck = () => {
     const el = scrollRef.current
@@ -94,6 +187,240 @@ export default function FifaNightRSVPPage() {
     }
   }
 
+  // Render countdown view
+  const renderCountdown = () => (
+    <div className="relative z-10 max-w-2xl mx-auto px-4 py-12">
+      <motion.div
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.5 }}
+        className="text-center"
+      >
+        <Link 
+          href="/events" 
+          className="inline-flex items-center gap-2 text-white/70 hover:text-white transition-colors mb-6"
+        >
+          <ArrowLeft size={16} />
+          Back to Events
+        </Link>
+        
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+          className="glass-soccer rounded-2xl p-12 backdrop-blur-xl"
+        >
+          <Clock className="w-20 h-20 text-yellow-400 mx-auto mb-6 animate-pulse" />
+          <h2 className="text-3xl md:text-4xl font-bold mb-4 text-white">
+            Registration Closed
+          </h2>
+          <p className="text-white/80 text-lg mb-8">
+            The event is starting soon! Join us when it begins.
+          </p>
+          
+          <div className="bg-gradient-to-br from-yellow-500/20 to-orange-500/20 rounded-xl p-8 border border-yellow-400/30">
+            <p className="text-white/70 mb-4">Event starts in:</p>
+            <motion.div
+              key={countdown}
+              initial={{ scale: 1.2 }}
+              animate={{ scale: 1 }}
+              transition={{ duration: 0.3 }}
+              className="text-6xl md:text-7xl font-bold bg-gradient-to-r from-yellow-400 via-orange-400 to-yellow-400 bg-clip-text text-transparent"
+            >
+              {countdown !== null ? formatCountdown(countdown) : "00:00:00"}
+            </motion.div>
+          </div>
+        </motion.div>
+      </motion.div>
+    </div>
+  )
+
+  // Render "event is happening now" view
+  const renderHappeningNow = () => (
+    <div className="relative z-10 max-w-2xl mx-auto px-4 py-12">
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.5 }}
+        className="text-center"
+      >
+        <Link 
+          href="/events" 
+          className="inline-flex items-center gap-2 text-white/70 hover:text-white transition-colors mb-6"
+        >
+          <ArrowLeft size={16} />
+          Back to Events
+        </Link>
+        
+        <motion.div
+          initial={{ scale: 0.8, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ 
+            type: "spring",
+            stiffness: 100,
+            damping: 10,
+            delay: 0.2
+          }}
+          className="glass-soccer rounded-2xl p-12 backdrop-blur-xl relative overflow-hidden"
+        >
+          {/* Animated background particles */}
+          <div className="absolute inset-0 overflow-hidden">
+            {[...Array(20)].map((_, i) => (
+              <motion.div
+                key={i}
+                className="absolute w-2 h-2 bg-yellow-400 rounded-full"
+                initial={{
+                  x: Math.random() * 100 + "%",
+                  y: Math.random() * 100 + "%",
+                  opacity: 0,
+                }}
+                animate={{
+                  y: [null, Math.random() * 100 + "%"],
+                  opacity: [0, 1, 0],
+                  scale: [0, 1.5, 0],
+                }}
+                transition={{
+                  duration: 2 + Math.random() * 2,
+                  repeat: Infinity,
+                  delay: Math.random() * 2,
+                }}
+              />
+            ))}
+          </div>
+
+          <div className="relative z-10">
+            <motion.div
+              animate={{
+                rotate: [0, 10, -10, 0],
+                scale: [1, 1.1, 1],
+              }}
+              transition={{
+                duration: 2,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
+            >
+              <Sparkles className="w-24 h-24 text-yellow-400 mx-auto mb-6" />
+            </motion.div>
+            
+            <motion.h2
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4 }}
+              className="text-4xl md:text-5xl font-bold mb-4"
+            >
+              <motion.span
+                className="bg-gradient-to-r from-yellow-400 via-orange-400 via-yellow-400 to-orange-400 bg-clip-text text-transparent"
+                style={{
+                  backgroundSize: "200% auto",
+                }}
+                animate={{
+                  backgroundPosition: ["0% center", "200% center", "0% center"],
+                }}
+                transition={{
+                  duration: 3,
+                  repeat: Infinity,
+                  ease: "linear",
+                }}
+              >
+                EVENT IS HAPPENING NOW!
+              </motion.span>
+            </motion.h2>
+            
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.6 }}
+              className="text-white/90 text-xl mb-6"
+            >
+              ⚽ Join us at L73, Social and Humanities Village! ⚽
+            </motion.p>
+            
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.8, type: "spring" }}
+              className="flex items-center justify-center gap-4 text-white/80"
+            >
+              <Trophy className="w-6 h-6 text-yellow-400" />
+              <span>Come play FIFA and compete for prizes!</span>
+              <Trophy className="w-6 h-6 text-yellow-400" />
+            </motion.div>
+          </div>
+        </motion.div>
+      </motion.div>
+    </div>
+  )
+
+  // Render "event has ended" view
+  const renderEventEnded = () => (
+    <div className="relative z-10 max-w-2xl mx-auto px-4 py-12">
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.5 }}
+        className="text-center"
+      >
+        <Link 
+          href="/events" 
+          className="inline-flex items-center gap-2 text-white/70 hover:text-white transition-colors mb-6"
+        >
+          <ArrowLeft size={16} />
+          Back to Events
+        </Link>
+        
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="glass-soccer rounded-2xl p-12 backdrop-blur-xl"
+        >
+          <motion.div
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            transition={{ 
+              type: "spring",
+              stiffness: 200,
+              damping: 15,
+              delay: 0.2
+            }}
+          >
+            <CheckCircle2 className="w-24 h-24 text-green-400 mx-auto mb-6" />
+          </motion.div>
+          
+          <motion.h2
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4 }}
+            className="text-3xl md:text-4xl font-bold mb-4 text-white"
+          >
+            Event Has Ended
+          </motion.h2>
+          
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.6 }}
+            className="text-white/80 text-lg mb-6"
+          >
+            We had fun meeting everyone! ⚽
+          </motion.p>
+          
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.8 }}
+            className="flex items-center justify-center gap-2 text-white/70"
+          >
+            <Star className="w-5 h-5 text-yellow-400" />
+            <span>Thank you for joining us for FIFA NIGHT!</span>
+            <Star className="w-5 h-5 text-yellow-400" />
+          </motion.div>
+        </motion.div>
+      </motion.div>
+    </div>
+  )
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-950 via-emerald-900 to-teal-950 text-white relative overflow-hidden">
       {/* Background Elements */}
@@ -109,7 +436,48 @@ export default function FifaNightRSVPPage() {
       {/* Stadium Lighting Effect */}
       <div className="absolute inset-0 stadium-lights pointer-events-none" />
 
-      <div className="relative z-10 max-w-2xl mx-auto px-4 py-12">
+      <AnimatePresence mode="wait">
+        {eventState === "countdown" && (
+          <motion.div
+            key="countdown"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            {renderCountdown()}
+          </motion.div>
+        )}
+        {eventState === "happening" && (
+          <motion.div
+            key="happening"
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.9 }}
+            transition={{ duration: 0.5 }}
+          >
+            {renderHappeningNow()}
+          </motion.div>
+        )}
+        {eventState === "ended" && (
+          <motion.div
+            key="ended"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            {renderEventEnded()}
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {eventState === "active" && (
+        <motion.div
+          key="active"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="relative z-10 max-w-2xl mx-auto px-4 py-12"
+        >
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -311,7 +679,8 @@ export default function FifaNightRSVPPage() {
             <p><strong>What to expect:</strong> Competitive gaming, refreshments, and epic matches!</p>
           </div>
         </motion.div>
-      </div>
+        </motion.div>
+      )}
 
       {/* Code of Conduct Dialog */}
       <Dialog.Root open={cocOpen} onOpenChange={setCocOpen}>
