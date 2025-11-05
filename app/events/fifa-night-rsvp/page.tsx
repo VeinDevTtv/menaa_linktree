@@ -13,7 +13,7 @@ import { SoccerFieldBg } from "@/components/soccer-field-bg"
 import { SoccerParticles } from "@/components/soccer-particles"
 import * as Dialog from "@radix-ui/react-dialog"
 import { motion, AnimatePresence } from "framer-motion"
-import { ArrowLeft, Trophy, Target, Medal, Zap, Star, Clock, CheckCircle2, Sparkles } from "lucide-react"
+import { ArrowLeft, Trophy, Target, Star, Clock, CheckCircle2, Sparkles } from "lucide-react"
 
 // Event time states
 type EventState = "active" | "countdown" | "happening" | "ended"
@@ -46,27 +46,7 @@ const getEventState = (): { state: EventState; timeRemaining: number | null } =>
   // Get current time in milliseconds since midnight PST
   const currentTimeMs = pstDate.hour * 3600000 + pstDate.minute * 60000 + pstDate.second * 1000
   
-  // For testing, use today's date. For production, use eventDate (Nov 5, 2025)
-  const useToday = true // Set to false for production
-  const eventYear = useToday ? pstDate.year : 2025
-  const eventMonth = useToday ? pstDate.month : 10 // November (0-indexed)
-  const eventDay = useToday ? pstDate.day : 5
-  
-  // Check if we're on the event date
-  const isEventDate = pstDate.year === eventYear && pstDate.month === eventMonth && pstDate.day === eventDay
-  
-  if (!isEventDate) {
-    // If not on event date, check if we're before or after
-    const currentDate = new Date(pstDate.year, pstDate.month, pstDate.day)
-    const eventDateObj = new Date(eventYear, eventMonth, eventDay)
-    if (currentDate < eventDateObj) {
-      return { state: "active", timeRemaining: null }
-    } else {
-      return { state: "ended", timeRemaining: null }
-    }
-  }
-  
-  // On event date - check time
+  // Event is TODAY - check time
   const deactivateTimeMs = 15 * 3600000 // 3PM PST = 15:00:00
   const startTimeMs = 16 * 3600000 // 4PM PST = 16:00:00
   const endTimeMs = 18 * 3600000 // 6PM PST = 18:00:00
@@ -90,6 +70,18 @@ const formatCountdown = (ms: number): string => {
   const seconds = totalSeconds % 60
   
   return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`
+}
+
+const getTodayDateString = (): string => {
+  const now = new Date()
+  const pstFormatter = new Intl.DateTimeFormat("en-US", {
+    timeZone: "America/Los_Angeles",
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  })
+  return pstFormatter.format(now)
 }
 
 export default function FifaNightRSVPPage() {
@@ -180,7 +172,7 @@ export default function FifaNightRSVPPage() {
       }, 3000)
       
       reset()
-    } catch (error) {
+    } catch {
       toast.error("Registration failed. Please try again.")
     } finally {
       setSubmitting(false)
@@ -588,7 +580,7 @@ export default function FifaNightRSVPPage() {
                   />
                   <div className="flex items-center gap-2">
                     <span className="text-lg">⚽</span>
-                    <span className="text-white group-hover:text-green-400 transition-colors">Yes, I'm ready to play!</span>
+                    <span className="text-white group-hover:text-green-400 transition-colors">Yes, I&apos;m ready to play!</span>
                   </div>
                 </label>
                 <label className="flex items-center space-x-3 cursor-pointer group">
@@ -600,7 +592,7 @@ export default function FifaNightRSVPPage() {
                   />
                   <div className="flex items-center gap-2">
                     <span className="text-lg">😔</span>
-                    <span className="text-white group-hover:text-red-400 transition-colors">No, I can't make it</span>
+                    <span className="text-white group-hover:text-red-400 transition-colors">No, I can&apos;t make it</span>
                   </div>
                 </label>
               </div>
@@ -672,8 +664,8 @@ export default function FifaNightRSVPPage() {
             Event Details
           </h3>
           <div className="space-y-2 text-white/80">
-            <p><strong>Date:</strong> Wednesday, November 5, 2025</p>
-            <p><strong>Time:</strong> 4:00 PM - 6:00 PM</p>
+            <p><strong>Date:</strong> {getTodayDateString()}</p>
+            <p><strong>Time:</strong> 4:00 PM - 6:00 PM PST</p>
             <p><strong>Location:</strong> L73, Social and Humanities Village</p>
             <p><strong>Format:</strong> FIFA tournament with prizes</p>
             <p><strong>What to expect:</strong> Competitive gaming, refreshments, and epic matches!</p>
