@@ -1,14 +1,14 @@
 "use client"
 
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect, useRef, useCallback } from "react"
 import Link from "next/link"
 import Image from "next/image"
 import { Card } from "@/components/ui/card"
 import { 
   Calendar, Heart, ArrowLeft, Sparkles, Users, 
   Film, Gamepad2, PartyPopper, Clock, MapPin,
-  Star, Zap, Music, Coffee, ImageIcon, CheckCircle2,
-  Pause, Play
+  Star, Zap, Coffee, ImageIcon, CheckCircle2,
+  Pause, Play, Camera, Trophy
 } from "lucide-react"
 import { ArabesquePatterns } from "@/components/arabesque-patterns"
 import { motion } from "framer-motion"
@@ -30,6 +30,42 @@ export default function EventsPage() {
   const [swipeDirection, setSwipeDirection] = useState<'left' | 'right' | null>(null)
   const [isPaused, setIsPaused] = useState(false)
   const [slideDirection, setSlideDirection] = useState<'next' | 'prev'>('next')
+
+  const openImageViewer = useCallback((index: number) => {
+    setSelectedImage(index)
+    setIsPaused(false)
+    setStoryProgress(0)
+    document.body.style.overflow = 'hidden'
+  }, [])
+
+  const closeImageViewer = useCallback(() => {
+    setSelectedImage(null)
+    setStoryProgress(0)
+    setIsPaused(false)
+    document.body.style.overflow = 'unset'
+  }, [])
+
+  const handleNextImage = useCallback(() => {
+    setSlideDirection('next')
+    setStoryProgress(0)
+    setSelectedImage(prev => {
+      if (prev === null) return prev
+      if (prev < 4) {
+        return prev + 1
+      }
+      closeImageViewer()
+      return prev
+    })
+  }, [closeImageViewer])
+
+  const handlePrevImage = useCallback(() => {
+    setSlideDirection('prev')
+    setStoryProgress(0)
+    setSelectedImage(prev => {
+      if (prev === null || prev === 0) return prev
+      return prev - 1
+    })
+  }, [])
 
   useEffect(() => {
     setMounted(true)
@@ -73,7 +109,7 @@ export default function EventsPage() {
       
       return () => clearInterval(interval)
     }
-  }, [selectedImage, isPaused])
+  }, [selectedImage, isPaused, handleNextImage])
 
   // Reset image transformations when image changes
   useEffect(() => {
@@ -81,7 +117,7 @@ export default function EventsPage() {
       setImageScale(1)
       setImagePosition({ x: 0, y: 0 })
     }
-  }, [selectedImage])
+  }, [selectedImage, closeImageViewer, handlePrevImage, handleNextImage])
 
   // Handle keyboard navigation
   useEffect(() => {
@@ -106,41 +142,7 @@ export default function EventsPage() {
 
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [selectedImage])
-
-  const openImageViewer = (index: number) => {
-    setSelectedImage(index)
-    setIsPaused(false)
-    setStoryProgress(0)
-    document.body.style.overflow = 'hidden'
-  }
-
-  const closeImageViewer = () => {
-    setSelectedImage(null)
-    setStoryProgress(0)
-    setIsPaused(false)
-    document.body.style.overflow = 'unset'
-  }
-
-  const handleNextImage = () => {
-    if (selectedImage !== null) {
-      setSlideDirection('next')
-      setStoryProgress(0)
-      if (selectedImage < 4) {
-        setSelectedImage(selectedImage + 1)
-      } else {
-        closeImageViewer()
-      }
-    }
-  }
-
-  const handlePrevImage = () => {
-    if (selectedImage !== null && selectedImage > 0) {
-      setSlideDirection('prev')
-      setStoryProgress(0)
-      setSelectedImage(selectedImage - 1)
-    }
-  }
+  }, [selectedImage, closeImageViewer, handlePrevImage, handleNextImage])
 
   const handleZoom = (delta: number) => {
     setImageScale(prev => Math.max(0.5, Math.min(3, prev + delta)))
@@ -229,26 +231,6 @@ export default function EventsPage() {
 
   const events = [
     {
-      title: "FIFA/Henna Night",
-      tagline: "Game & Glamour Combined!",
-      description: "Experience the perfect blend of competitive FIFA gaming and beautiful henna art. Show off your gaming skills or get stunning henna designs - or both! An evening celebrating MENAA culture and modern fun.",
-      date: "Wednesday, November 5, 2025",
-      time: "4:00 PM - 6:00 PM",
-      location: "L73, Social and Humanities Village",
-      icon: Gamepad2,
-      gradient: "from-amber-600 via-yellow-600 to-amber-700",
-      accentColor: "amber",
-      highlights: [
-        "FIFA tournament with prizes",
-        "Professional henna artists",
-        "Refreshments & music",
-        "Chill vibes & gaming"
-      ],
-      decorativeIcons: [Gamepad2, Star, Music, Sparkles],
-      registrationOpen: true,
-      registrationUrl: "/events/fifa-night-rsvp"
-    },
-    {
       title: "Movie Night",
       tagline: "Cinema Under the Stars!",
       description: "Grab your friends and join us for a cozy movie night featuring a beloved MENAA film. Complete with popcorn, snacks, and great company. A perfect way to relax and connect with your community.",
@@ -258,6 +240,8 @@ export default function EventsPage() {
       icon: Film,
       gradient: "from-yellow-600 via-amber-600 to-orange-600",
       accentColor: "yellow",
+      registrationOpen: false,
+      registrationUrl: undefined,
       highlights: [
         "Carefully selected MENAA film",
         "Popcorn & refreshments",
@@ -680,6 +664,149 @@ export default function EventsPage() {
           >
             Past Events
           </h2>
+
+          {/* FIFA Night Event Card */}
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.45, ease: "easeOut" }}
+            className="mb-12"
+          >
+            <InteractiveCard className="group relative overflow-hidden border-amber-500/15 bg-gradient-to-br from-stone-950/50 via-emerald-950/40 to-teal-950/40 backdrop-blur-md transition-all duration-500 hover:border-emerald-400/40">
+              {/* Animated pitch glow */}
+              <div className="absolute inset-0 bg-gradient-radial from-emerald-500/15 via-green-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+              <div className="absolute inset-0 bg-[url('/textures/pitch-lines.svg')] opacity-10 mix-blend-screen animate-pulse-slow" />
+
+              <div className="relative p-6 md:p-10">
+                <div className="flex flex-col lg:flex-row items-start gap-6 mb-8">
+                  {/* Icon & gradient */}
+                  <div className="relative flex-shrink-0">
+                    <div className="absolute inset-0 bg-gradient-to-br from-emerald-500 via-lime-500 to-yellow-400 rounded-3xl blur-2xl opacity-60 group-hover:opacity-100 transition-all duration-700" />
+                    <div className="relative w-24 h-24 rounded-3xl bg-gradient-to-br from-emerald-500 via-lime-500 to-yellow-400 flex items-center justify-center transform group-hover:scale-110 group-hover:-rotate-6 transition-all duration-700 shadow-2xl shadow-emerald-500/40">
+                      <Gamepad2 className="w-12 h-12 text-white drop-shadow-2xl" />
+                    </div>
+                  </div>
+
+                  <div className="flex-1 min-w-0">
+                    <div className="flex flex-wrap items-center gap-3 mb-3">
+                      <h3 className="text-3xl md:text-4xl font-bold text-white drop-shadow-2xl">
+                        MENAA FIFA Night ⚽
+                      </h3>
+                      <motion.span
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        whileInView={{ opacity: 1, scale: 1 }}
+                        viewport={{ once: true }}
+                        transition={{ delay: 0.2, duration: 0.4 }}
+                        className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/20 border border-emerald-400/30 text-emerald-200 text-sm font-semibold"
+                      >
+                        <CheckCircle2 className="w-4 h-4" />
+                        Event Completed
+                      </motion.span>
+                    </div>
+
+                    <div className="flex flex-wrap items-center gap-4 text-sm text-emerald-200/80 mb-6">
+                      <div className="inline-flex items-center gap-2">
+                        <Calendar className="w-4 h-4" />
+                        <span>Wednesday, November 5, 2025</span>
+                      </div>
+                      <div className="inline-flex items-center gap-2">
+                        <Clock className="w-4 h-4" />
+                        <span>4:00 PM – 6:00 PM</span>
+                      </div>
+                      <div className="inline-flex items-center gap-2">
+                        <MapPin className="w-4 h-4" />
+                        <span>L73, Social & Humanities Village</span>
+                      </div>
+                    </div>
+
+                    <p className="text-white/75 text-base md:text-lg leading-relaxed mb-6">
+                      A night of electric goals, MENAA energy, and community spirit! Teams battled it out in our FIFA tournament while supporters cheered, celebrated, and connected. From golden goals to vibrant fan chants, the pitch was alive with MENAA pride.
+                    </p>
+
+                    {/* Highlight chips */}
+                    <div className="flex flex-wrap gap-3 mb-6">
+                      {[
+                        "⚡ Knockout FIFA tournament",
+                        "🎶 Live hype playlist",
+                        "🍪 Refreshments & sweets",
+                        "🧣 MENAA fan zone"
+                      ].map((highlight, index) => (
+                        <motion.span
+                          key={highlight}
+                          initial={{ opacity: 0, y: 12 }}
+                          whileInView={{ opacity: 1, y: 0 }}
+                          viewport={{ once: true }}
+                          transition={{ delay: 0.1 * index, duration: 0.35 }}
+                          className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/15 text-emerald-100 text-sm border border-emerald-400/30"
+                        >
+                          {highlight}
+                        </motion.span>
+                      ))}
+                    </div>
+
+                    {/* Event stats */}
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+                      {[
+                        { label: "Players Registered", value: "32", icon: Users },
+                        { label: "Matches Played", value: "18", icon: Trophy },
+                        { label: "Goal Celebrations", value: "Countless", icon: Sparkles }
+                      ].map(({ label, value, icon: StatIcon }, i) => (
+                        <motion.div
+                          key={label}
+                          initial={{ opacity: 0, y: 10 }}
+                          whileInView={{ opacity: 1, y: 0 }}
+                          viewport={{ once: true }}
+                          transition={{ delay: 0.15 * i, duration: 0.3 }}
+                          className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-white/10 to-white/5 border border-white/10 px-4 py-5 backdrop-blur-xl"
+                        >
+                          <div className="absolute inset-0 bg-gradient-to-br from-emerald-400/10 via-transparent to-emerald-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                          <div className="relative flex items-center gap-3">
+                            <div className="w-10 h-10 rounded-xl bg-emerald-500/20 flex items-center justify-center text-emerald-200">
+                              <StatIcon className="w-5 h-5" />
+                            </div>
+                            <div>
+                              <p className="text-xs uppercase tracking-[0.2em] text-emerald-200/70">{label}</p>
+                              <p className="text-lg font-semibold text-white">{value}</p>
+                            </div>
+                          </div>
+                        </motion.div>
+                      ))}
+                    </div>
+
+                    {/* Photos coming soon */}
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      {[1, 2, 3].map((placeholder, index) => (
+                        <motion.div
+                          key={placeholder}
+                          initial={{ opacity: 0, y: 16 }}
+                          whileInView={{ opacity: 1, y: 0 }}
+                          viewport={{ once: true }}
+                          transition={{ delay: 0.1 * index + 0.2, duration: 0.35 }}
+                          className="relative h-40 rounded-2xl overflow-hidden border border-emerald-400/20 bg-gradient-to-br from-green-600/20 via-emerald-500/15 to-lime-500/10 flex flex-col items-center justify-center text-center"
+                        >
+                          <motion.div
+                            className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent"
+                            animate={{ x: ["-100%", "100%"] }}
+                            transition={{ duration: 2.5, repeat: Infinity }}
+                          />
+                          <div className="relative z-10 flex flex-col items-center gap-2">
+                            <div className="w-14 h-14 rounded-full bg-emerald-500/20 flex items-center justify-center">
+                              <Camera className="w-6 h-6 text-emerald-200" />
+                            </div>
+                            <p className="text-sm font-medium text-emerald-100">Event photos coming soon</p>
+                            <span className="text-xs text-emerald-100/60">Captured moments will drop here</span>
+                          </div>
+                        </motion.div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-emerald-500 via-lime-400 to-yellow-400 opacity-60 group-hover:opacity-100 transition-opacity duration-700" />
+            </InteractiveCard>
+          </motion.div>
 
           {/* Social Mixer Event Card */}
           <motion.div
