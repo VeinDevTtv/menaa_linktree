@@ -721,7 +721,7 @@ export default function EventsPage() {
                     </div>
 
                     <p className="text-white/75 text-base md:text-lg leading-relaxed mb-6">
-                      A night of electric goals, MENAA energy, and community spirit! Teams battled it out in our FIFA tournament while supporters cheered, celebrated, and connected. From golden goals to vibrant fan chants, the pitch was alive with MENAA pride.
+                      A night of electric goals, MENAA energy, and community spirit! Forty-two players battled through our FIFA tournament while supporters cheered, celebrated, and connected. Adam clinched the title — earning a free jersey — with Ahmed right behind him after a gripping finale.
                     </p>
 
                     {/* Highlight chips */}
@@ -729,8 +729,8 @@ export default function EventsPage() {
                       {[
                         "⚡ Knockout FIFA tournament",
                         "🎶 Live hype playlist",
-                        "🍪 Refreshments & sweets",
-                        "🧣 MENAA fan zone"
+                        "🏆 Adam crowned champion (free jersey reward)",
+                        "🥈 Ahmed runner-up after overtime heroics"
                       ].map((highlight, index) => (
                         <motion.span
                           key={highlight}
@@ -748,9 +748,9 @@ export default function EventsPage() {
                     {/* Event stats */}
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
                       {[
-                        { label: "Players Registered", value: "32", icon: Users },
-                        { label: "Matches Played", value: "18", icon: Trophy },
-                        { label: "Goal Celebrations", value: "Countless", icon: Sparkles }
+                        { label: "Players Registered", value: "42", icon: Users },
+                        { label: "Champion", value: "Adam", icon: Trophy },
+                        { label: "Runner-Up", value: "Ahmed", icon: Star }
                       ].map(({ label, value, icon: StatIcon }, i) => (
                         <motion.div
                           key={label}

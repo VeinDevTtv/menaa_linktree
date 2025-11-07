@@ -11,9 +11,9 @@ import { SoccerFieldBg } from "@/components/soccer-field-bg"
 import { SoccerParticles } from "@/components/soccer-particles"
 
 const highlightStats = [
-  { label: "Players Registered", value: "32", subtitle: "Across 8 fierce squads", icon: Users },
-  { label: "Match Highlights", value: "18", subtitle: "Knockout showdowns & nail-biters", icon: Trophy },
-  { label: "Fan Energy", value: "Limitless", subtitle: "MENAA spirit across the pitch", icon: Sparkles },
+  { label: "Players", value: "+15", subtitle: "MENAA gamers across 10 squads", icon: Users },
+  { label: "Champion", value: "Adam", subtitle: "Won a free jersey of his choice", icon: Trophy },
+  { label: "Runner-Up", value: "Ahmed", subtitle: "Fought through every elimination round, sorry lil bro", icon: Star },
 ]
 
 const timeline = [
@@ -34,23 +34,23 @@ const timeline = [
   },
   {
     title: "Winner’s Circle",
-    description: "Champions lifted the trophy as confetti, sparkles, and goal celebrations lit up the MENAA pitch.",
+    description: "Adam sealed the title, Ahmed claimed runner-up honors, and the champion walked away with a free jersey of his choice.",
     time: "5:50 PM",
   },
 ]
 
 const shoutouts = [
   {
-    title: "Golden Boot Moment",
-    detail: "Youssef scored the match-winning brace in overtime – pure magic off the crossbar!",
+    title: "Champion Highlight",
+    detail: "Adam delivered the clinching goal, lifted the trophy, and chose a dream jersey as his prize.",
+  },
+  {
+    title: "Runner-Up Salute",
+    detail: "Ahmed pushed every match to the limit and kept the final buzzing until the last whistle.",
   },
   {
     title: "Fan MVP",
     detail: "The supporter squad with drums & scarves made the space feel like an international stadium.",
-  },
-  {
-    title: "Squad Spirit Award",
-    detail: "Team Atlas brought custom jerseys and coordinated celebrations for every single goal.",
   },
 ]
 
@@ -168,7 +168,7 @@ export default function FifaNightRecapPage() {
                 </div>
                 <h2 className="text-2xl font-bold text-emerald-100">Champions Crowned</h2>
                 <p className="text-sm text-emerald-100/70 leading-relaxed">
-                  Team Atlas raised the trophy after a clutch overtime goal. Every team brought their best — and every fan brought MENAA pride.
+                  Adam raised the trophy after a clutch overtime strike, earning a free jersey of his choice while Ahmed took home runner-up honors. Every team brought their best — and every fan brought MENAA pride.
                 </p>
                 <Link
                   href="/events"
