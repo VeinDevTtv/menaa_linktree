@@ -722,7 +722,7 @@ export default function EventsPage() {
                     </div>
 
                     <p className="text-white/75 text-base md:text-lg leading-relaxed mb-6">
-                      A night of electric goals, MENAA energy, and community spirit! Forty-two players battled through our FIFA tournament while supporters cheered, celebrated, and connected. Adam clinched the title — earning a free jersey — with Ahmed right behind him after a gripping finale.
+                      A night of electric goals, MENAA energy, and community spirit! +10 players battled through our FIFA tournament while supporters cheered, celebrated, and connected. Adam clinched the title — earning a free jersey — with Ahmed right behind him after a gripping finale.
                     </p>
 
                     {/* Highlight chips */}

@@ -78,13 +78,6 @@ export default function Home() {
 
   const upcomingEvents = [
     {
-      title: "FIFA/Henna Night",
-      date: "TBA",
-      description: "Experience the perfect blend of competitive FIFA gaming and beautiful henna art. Show off your gaming skills or get stunning henna designs!",
-      icon: Gamepad2,
-      gradient: "from-amber-600 via-yellow-600 to-amber-700",
-    },
-    {
       title: "Movie Night",
       date: "TBA",
       description: "Grab your friends and join us for a cozy movie night featuring a beloved MENAA film. Complete with popcorn, snacks, and great company.",
@@ -376,7 +369,7 @@ export default function Home() {
             Upcoming Events
           </h2>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-4xl mx-auto">
             {upcomingEvents.map((event, index) => {
               const Icon = event.icon
               return (
