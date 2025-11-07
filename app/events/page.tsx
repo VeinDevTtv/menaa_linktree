@@ -730,7 +730,7 @@ export default function EventsPage() {
                         "⚡ Knockout FIFA tournament",
                         "🎶 Live hype playlist",
                         "🏆 Adam crowned champion (free jersey reward)",
-                        "🥈 Ahmed runner-up after overtime heroics"
+                        "🥈 Ahmed runner-up"
                       ].map((highlight, index) => (
                         <motion.span
                           key={highlight}
@@ -748,7 +748,7 @@ export default function EventsPage() {
                     {/* Event stats */}
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
                       {[
-                        { label: "Players Registered", value: "42", icon: Users },
+                        { label: "Players in the tournament", value: "+10", icon: Users },
                         { label: "Champion", value: "Adam", icon: Trophy },
                         { label: "Runner-Up", value: "Ahmed", icon: Star }
                       ].map(({ label, value, icon: StatIcon }, i) => (
