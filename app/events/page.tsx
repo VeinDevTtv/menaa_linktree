@@ -673,7 +673,8 @@ export default function EventsPage() {
             transition={{ duration: 0.45, ease: "easeOut" }}
             className="mb-12"
           >
-            <InteractiveCard className="group relative overflow-hidden border-amber-500/15 bg-gradient-to-br from-stone-950/50 via-emerald-950/40 to-teal-950/40 backdrop-blur-md transition-all duration-500 hover:border-emerald-400/40">
+            <Link href="/events/fifa-night-gallery" className="block">
+              <InteractiveCard className="group relative overflow-hidden border-amber-500/15 bg-gradient-to-br from-stone-950/50 via-emerald-950/40 to-teal-950/40 backdrop-blur-md transition-all duration-500 hover:border-emerald-400/40 cursor-pointer hover:scale-[1.01]">
               {/* Animated pitch glow */}
               <div className="absolute inset-0 bg-gradient-radial from-emerald-500/15 via-green-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
               <div className="absolute inset-0 bg-[url('/textures/pitch-lines.svg')] opacity-10 mix-blend-screen animate-pulse-slow" />
@@ -774,38 +775,63 @@ export default function EventsPage() {
                       ))}
                     </div>
 
-                    {/* Photos coming soon */}
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                      {[1, 2, 3].map((placeholder, index) => (
+                    {/* Event Photos Preview */}
+                    <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3">
+                      {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map((num, index) => (
                         <motion.div
-                          key={placeholder}
-                          initial={{ opacity: 0, y: 16 }}
-                          whileInView={{ opacity: 1, y: 0 }}
+                          key={num}
+                          initial={{ opacity: 0, scale: 0.8, rotateY: -90 }}
+                          whileInView={{ opacity: 1, scale: 1, rotateY: 0 }}
                           viewport={{ once: true }}
-                          transition={{ delay: 0.1 * index + 0.2, duration: 0.35 }}
-                          className="relative h-40 rounded-2xl overflow-hidden border border-emerald-400/20 bg-gradient-to-br from-green-600/20 via-emerald-500/15 to-lime-500/10 flex flex-col items-center justify-center text-center"
+                          transition={{ 
+                            delay: 0.05 * index, 
+                            duration: 0.5,
+                            ease: [0.34, 1.56, 0.64, 1]
+                          }}
+                          whileHover={{ 
+                            scale: 1.05,
+                            rotateY: 5,
+                            zIndex: 10,
+                            transition: { duration: 0.3 }
+                          }}
+                          className="relative aspect-square rounded-xl overflow-hidden border border-emerald-400/20 group/img cursor-pointer"
+                          style={{ transformStyle: "preserve-3d", perspective: "1000px" }}
                         >
-                          <motion.div
-                            className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent"
-                            animate={{ x: ["-100%", "100%"] }}
-                            transition={{ duration: 2.5, repeat: Infinity }}
+                          <Image
+                            src={`/events/menaaevent2_${num}.jpg`}
+                            alt={`MENAA FIFA Night Event Photo ${num}`}
+                            fill
+                            className="object-cover transition-all duration-500 group-hover/img:scale-110 group-hover/img:brightness-110"
+                            sizes="(max-width: 768px) 50vw, (max-width: 1024px) 25vw, 16vw"
                           />
-                          <div className="relative z-10 flex flex-col items-center gap-2">
-                            <div className="w-14 h-14 rounded-full bg-emerald-500/20 flex items-center justify-center">
-                              <Camera className="w-6 h-6 text-emerald-200" />
-                            </div>
-                            <p className="text-sm font-medium text-emerald-100">Event photos coming soon</p>
-                            <span className="text-xs text-emerald-100/60">Captured moments will drop here</span>
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/0 to-black/0 opacity-0 group-hover/img:opacity-100 transition-opacity duration-500" />
+                          <div className="absolute inset-0 opacity-0 group-hover/img:opacity-100 transition-opacity duration-700">
+                            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent translate-x-[-200%] group-hover/img:translate-x-[200%] transition-transform duration-1000" />
                           </div>
+                          <div className="absolute inset-0 rounded-xl border-2 border-transparent group-hover/img:border-emerald-400/50 group-hover/img:shadow-xl group-hover/img:shadow-emerald-500/30 transition-all duration-500" />
                         </motion.div>
                       ))}
                     </div>
+                    <motion.div
+                      initial={{ opacity: 0, y: 10 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: 0.6, duration: 0.4 }}
+                      className="mt-4 text-center"
+                    >
+                      <p className="text-sm text-emerald-200/70 inline-flex items-center gap-2">
+                        <Camera className="w-4 h-4" />
+                        <span>Click to view full gallery</span>
+                        <ArrowLeft className="w-4 h-4 rotate-180" />
+                      </p>
+                    </motion.div>
                   </div>
                 </div>
               </div>
 
               <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-emerald-500 via-lime-400 to-yellow-400 opacity-60 group-hover:opacity-100 transition-opacity duration-700" />
-            </InteractiveCard>
+              </InteractiveCard>
+            </Link>
           </motion.div>
 
           {/* Social Mixer Event Card */}
