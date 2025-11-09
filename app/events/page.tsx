@@ -200,7 +200,7 @@ export default function EventsPage() {
           >
             RSVP your club for a{" "}
             <span className="bg-gradient-to-r from-amber-300 via-rose-200 to-emerald-200 bg-clip-text text-transparent">
-              MENA-inspired Friendsgiving
+              MENA Friendsgiving
             </span>
             .
           </motion.h1>
