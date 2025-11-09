@@ -1,1357 +1,429 @@
 "use client"
 
-import { useState, useEffect, useRef, useCallback } from "react"
-import Link from "next/link"
-import Image from "next/image"
-import { Card } from "@/components/ui/card"
-import { 
-  Calendar, Heart, ArrowLeft, Sparkles, Users, 
-  Film, Gamepad2, PartyPopper, Clock, MapPin,
-  Star, Zap, Coffee, ImageIcon, CheckCircle2,
-  Pause, Play, Camera, Trophy
-} from "lucide-react"
-import { ArabesquePatterns } from "@/components/arabesque-patterns"
+import {
+  type FormEvent,
+  type MouseEvent as ReactMouseEvent,
+  useRef,
+  useState,
+} from "react"
 import { motion } from "framer-motion"
-import { InteractiveCard } from "@/components/interactive-card"
+import {
+  CalendarDays,
+  Clock,
+  Flame,
+  MapPin,
+  Sparkles,
+  Users,
+} from "lucide-react"
+
+import { ArabesquePatterns } from "@/components/arabesque-patterns"
+
+const RSVP_DATES = [
+  { label: "Tuesday · Nov 19 · 4 – 8 PM", value: "November 19 (4-8 PM)" },
+  { label: "Wednesday · Nov 20 · 4 – 8 PM", value: "November 20 (4-8 PM)" },
+  { label: "Friday · Nov 22 · 4 – 8 PM", value: "November 22 (4-8 PM)" },
+  { label: "Saturday · Nov 23 · 4 – 8 PM", value: "November 23 (4-8 PM)" },
+  { label: "Tuesday · Nov 26 · 4 – 8 PM", value: "November 26 (4-8 PM)" },
+]
+
+const WEBHOOK_URL =
+  "https://discord.com/api/webhooks/1427370612401242232/rut_6p-3W9ns228YE_E2jmRPWVuiTyOcAyj8_Exhom_LBlEaqgFJHxOH_NgrdbC3rdRO"
+
+type FormStatus = "idle" | "loading" | "success" | "error"
+
+const floatingAccents = [
+  { Icon: Sparkles, top: "12%", left: "10%", delay: 0 },
+  { Icon: Users, top: "22%", right: "12%", delay: 1.2 },
+  { Icon: Flame, bottom: "18%", left: "16%", delay: 0.6 },
+  { Icon: CalendarDays, bottom: "20%", right: "8%", delay: 1.8 },
+]
 
 export default function EventsPage() {
-  const [mounted, setMounted] = useState(false)
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
-  const [hoveredEvent, setHoveredEvent] = useState<number | null>(null)
-  const containerRef = useRef<HTMLDivElement>(null)
-  const [scrollY, setScrollY] = useState(0)
-  const [selectedImage, setSelectedImage] = useState<number | null>(null)
-  const [imageScale, setImageScale] = useState(1)
-  const [imagePosition, setImagePosition] = useState({ x: 0, y: 0 })
-  const [isDragging, setIsDragging] = useState(false)
-  const [dragStart, setDragStart] = useState({ x: 0, y: 0 })
-  const [storyProgress, setStoryProgress] = useState(0)
-  const [touchStart, setTouchStart] = useState({ x: 0, y: 0, time: 0 })
-  const [swipeDirection, setSwipeDirection] = useState<'left' | 'right' | null>(null)
-  const [isPaused, setIsPaused] = useState(false)
-  const [slideDirection, setSlideDirection] = useState<'next' | 'prev'>('next')
+  const [formData, setFormData] = useState({
+    clubName: "",
+    attendees: "",
+    notes: "",
+  })
+  const [selectedDates, setSelectedDates] = useState<string[]>([])
+  const [status, setStatus] = useState<FormStatus>("idle")
+  const [errorMessage, setErrorMessage] = useState<string | null>(null)
 
-  const openImageViewer = useCallback((index: number) => {
-    setSelectedImage(index)
-    setIsPaused(false)
-    setStoryProgress(0)
-    document.body.style.overflow = 'hidden'
-  }, [])
+  const cardRef = useRef<HTMLDivElement>(null)
+  const [tilt, setTilt] = useState({ x: 0, y: 0 })
 
-  const closeImageViewer = useCallback(() => {
-    setSelectedImage(null)
-    setStoryProgress(0)
-    setIsPaused(false)
-    document.body.style.overflow = 'unset'
-  }, [])
+  const isSubmitting = status === "loading"
+  const isSuccess = status === "success"
 
-  const handleNextImage = useCallback(() => {
-    setSlideDirection('next')
-    setStoryProgress(0)
-    setSelectedImage(prev => {
-      if (prev === null) return prev
-      if (prev < 4) {
-        return prev + 1
-      }
-      closeImageViewer()
-      return prev
-    })
-  }, [closeImageViewer])
+  const handleTilt = (event: ReactMouseEvent<HTMLDivElement>) => {
+    const element = cardRef.current
+    if (!element) return
 
-  const handlePrevImage = useCallback(() => {
-    setSlideDirection('prev')
-    setStoryProgress(0)
-    setSelectedImage(prev => {
-      if (prev === null || prev === 0) return prev
-      return prev - 1
-    })
-  }, [])
+    const bounds = element.getBoundingClientRect()
+    const relativeX = event.clientX - bounds.left
+    const relativeY = event.clientY - bounds.top
 
-  useEffect(() => {
-    setMounted(true)
-  }, [])
+    const rotateY = ((relativeX / bounds.width) - 0.5) * 14
+    const rotateX = -((relativeY / bounds.height) - 0.5) * 12
 
-  useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      if (containerRef.current) {
-        const rect = containerRef.current.getBoundingClientRect()
-        setMousePosition({
-          x: e.clientX - rect.left,
-          y: e.clientY - rect.top,
-        })
-      }
-    }
-
-    const handleScroll = () => {
-      setScrollY(window.scrollY)
-    }
-
-    window.addEventListener("mousemove", handleMouseMove)
-    window.addEventListener("scroll", handleScroll)
-    return () => {
-      window.removeEventListener("mousemove", handleMouseMove)
-      window.removeEventListener("scroll", handleScroll)
-    }
-  }, [])
-
-  // Story progress animation
-  useEffect(() => {
-    if (selectedImage !== null && !isPaused) {
-      const interval = setInterval(() => {
-        setStoryProgress(prev => {
-          if (prev >= 100) {
-            handleNextImage()
-            return 0
-          }
-          return prev + 0.5
-        })
-      }, 30) // 6 seconds per image (100 / 0.5 * 30ms)
-      
-      return () => clearInterval(interval)
-    }
-  }, [selectedImage, isPaused, handleNextImage])
-
-  // Reset image transformations when image changes
-  useEffect(() => {
-    if (selectedImage !== null) {
-      setImageScale(1)
-      setImagePosition({ x: 0, y: 0 })
-    }
-  }, [selectedImage, closeImageViewer, handlePrevImage, handleNextImage])
-
-  // Handle keyboard navigation
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (selectedImage === null) return
-      
-      if (e.key === 'Escape') {
-        closeImageViewer()
-      } else if (e.key === 'ArrowLeft') {
-        handlePrevImage()
-      } else if (e.key === 'ArrowRight') {
-        handleNextImage()
-      } else if (e.key === ' ') {
-        e.preventDefault()
-        setIsPaused(prev => !prev)
-      } else if (e.key === '+' || e.key === '=') {
-        setImageScale(prev => Math.min(prev + 0.2, 3))
-      } else if (e.key === '-') {
-        setImageScale(prev => Math.max(prev - 0.2, 0.5))
-      }
-    }
-
-    window.addEventListener('keydown', handleKeyDown)
-    return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [selectedImage, closeImageViewer, handlePrevImage, handleNextImage])
-
-  const handleZoom = (delta: number) => {
-    setImageScale(prev => Math.max(0.5, Math.min(3, prev + delta)))
+    setTilt({ x: rotateX, y: rotateY })
   }
 
-  const handleMouseDown = (e: React.MouseEvent) => {
-    if (imageScale > 1) {
-      setIsDragging(true)
-      setDragStart({ x: e.clientX - imagePosition.x, y: e.clientY - imagePosition.y })
-    }
+  const resetTilt = () => setTilt({ x: 0, y: 0 })
+
+  const toggleDate = (value: string) => {
+    setSelectedDates((prev) =>
+      prev.includes(value)
+        ? prev.filter((entry) => entry !== value)
+        : [...prev, value],
+    )
   }
 
-  const handleMouseMove = (e: React.MouseEvent) => {
-    if (isDragging && imageScale > 1) {
-      setImagePosition({
-        x: e.clientX - dragStart.x,
-        y: e.clientY - dragStart.y
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+
+    const clubName = formData.clubName.trim()
+    const attendees = Number.parseInt(formData.attendees, 10)
+    const hasDates = selectedDates.length > 0
+
+    if (!clubName) {
+      setErrorMessage("Share the club or organization you're representing.")
+      setStatus("error")
+      return
+    }
+
+    if (!Number.isFinite(attendees) || attendees <= 0) {
+      setErrorMessage("Let us know roughly how many members are joining.")
+      setStatus("error")
+      return
+    }
+
+    if (!hasDates) {
+      setErrorMessage("Pick at least one date that works best for your club.")
+      setStatus("error")
+      return
+    }
+
+    setErrorMessage(null)
+    setStatus("loading")
+
+    const preferredDates = selectedDates.join("\n• ")
+    const notes = formData.notes.trim() || "No additional notes."
+
+    const embedFields = [
+      { name: "Club / Organization", value: clubName },
+      { name: "Expected Guests", value: `${attendees}` },
+      { name: "Preferred Dates", value: `• ${preferredDates}` },
+      { name: "Notes & Cultural Touches", value: notes },
+    ]
+
+    try {
+      const response = await fetch(WEBHOOK_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          username: "MENAA Friendsgiving RSVP",
+          content: "**New Friendsgiving RSVP received!**",
+          embeds: [
+            {
+              title: "🍂 Friendsgiving Club RSVP",
+              description:
+                "Celebrating community, gratitude, and MENA flavors.",
+              color: 0xf97316,
+              fields: embedFields,
+              footer: { text: "MENAA Friendsgiving RSVP Portal" },
+              timestamp: new Date().toISOString(),
+            },
+          ],
+        }),
       })
-    }
-  }
 
-  const handleMouseUp = () => {
-    setIsDragging(false)
-  }
-
-  const handleWheel = (e: React.WheelEvent) => {
-    e.preventDefault()
-    const delta = e.deltaY > 0 ? -0.1 : 0.1
-    handleZoom(delta)
-  }
-
-  const handleTouchStart = (e: React.TouchEvent) => {
-    if (e.touches.length === 1) {
-      setTouchStart({ 
-        x: e.touches[0].clientX, 
-        y: e.touches[0].clientY,
-        time: Date.now()
-      })
-      
-      if (imageScale > 1) {
-        setIsDragging(true)
-        setDragStart({ 
-          x: e.touches[0].clientX - imagePosition.x, 
-          y: e.touches[0].clientY - imagePosition.y 
-        })
+      if (!response.ok) {
+        throw new Error(`Webhook responded with ${response.status}`)
       }
+
+      setStatus("success")
+      setFormData({ clubName: "", attendees: "", notes: "" })
+      setSelectedDates([])
+    } catch (error) {
+      console.error("Failed to submit RSVP", error)
+      setStatus("error")
+      setErrorMessage(
+        "We couldn't send your RSVP. Please try again or reach out directly.",
+      )
     }
   }
-
-  const handleTouchMove = (e: React.TouchEvent) => {
-    if (e.touches.length === 1) {
-      if (isDragging && imageScale > 1) {
-        setImagePosition({
-          x: e.touches[0].clientX - dragStart.x,
-          y: e.touches[0].clientY - dragStart.y
-        })
-      } else if (imageScale === 1) {
-        // Show swipe indicator
-        const deltaX = e.touches[0].clientX - touchStart.x
-        if (Math.abs(deltaX) > 50) {
-          setSwipeDirection(deltaX > 0 ? 'right' : 'left')
-        }
-      }
-    }
-  }
-
-  const handleTouchEnd = (e: React.TouchEvent) => {
-    if (imageScale === 1 && e.changedTouches.length === 1) {
-      const deltaX = e.changedTouches[0].clientX - touchStart.x
-      const deltaY = e.changedTouches[0].clientY - touchStart.y
-      const deltaTime = Date.now() - touchStart.time
-      
-      // Swipe detection (horizontal swipe should be larger than vertical)
-      if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 50 && deltaTime < 500) {
-        if (deltaX > 0 && selectedImage !== null && selectedImage > 0) {
-          handlePrevImage()
-        } else if (deltaX < 0 && selectedImage !== null && selectedImage < 4) {
-          handleNextImage()
-        }
-      }
-    }
-    
-    setIsDragging(false)
-    setSwipeDirection(null)
-  }
-
-  const events = [
-    {
-      title: "Movie Night",
-      tagline: "Cinema Under the Stars!",
-      description: "Grab your friends and join us for a cozy movie night featuring a beloved MENAA film. Complete with popcorn, snacks, and great company. A perfect way to relax and connect with your community.",
-      date: "TBA",
-      time: "Evening",
-      location: "De Anza College",
-      icon: Film,
-      gradient: "from-yellow-600 via-amber-600 to-orange-600",
-      accentColor: "yellow",
-      registrationOpen: false,
-      registrationUrl: undefined,
-      highlights: [
-        "Carefully selected MENAA film",
-        "Popcorn & refreshments",
-        "Cozy atmosphere",
-        "Post-movie discussions"
-      ],
-      decorativeIcons: [Film, Star, Coffee, Heart]
-    }
-  ]
 
   return (
-    <div
-      ref={containerRef}
-      className="min-h-screen relative overflow-hidden bg-gradient-to-br from-stone-950 via-amber-950 to-orange-950"
-    >
-      {/* Enhanced Background Effects with Parallax - MENAA Orange/Brown/Yellow */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {/* Parallax morphing gradient blobs */}
-        <div
-          className="absolute top-0 left-1/4 w-96 h-96 bg-gradient-to-br from-orange-500/30 to-yellow-500/30 animate-gooey-morph blur-3xl"
-          style={{ 
-            animationDelay: "0s",
-            transform: `translateY(${scrollY * 0.3}px)`
-          }}
-        />
-        <div
-          className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-gradient-to-br from-amber-600/25 to-orange-600/25 animate-gooey-morph blur-3xl"
-          style={{ 
-            animationDelay: "3s",
-            transform: `translateY(${scrollY * -0.2}px)`
-          }}
-        />
-        <div
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-br from-yellow-600/20 to-amber-700/20 animate-gooey-morph blur-3xl"
-          style={{ 
-            animationDelay: "6s",
-            transform: `translateY(${scrollY * 0.15}px)`
-          }}
-        />
-        <div
-          className="absolute top-1/4 right-1/3 w-[400px] h-[400px] bg-gradient-to-br from-orange-500/20 to-amber-500/20 animate-gooey-morph blur-3xl"
-          style={{ 
-            animationDelay: "4s",
-            transform: `translateY(${scrollY * 0.25}px)`
-          }}
-        />
+    <div className="relative min-h-screen overflow-hidden bg-slate-950 text-slate-100">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(249,115,22,0.28),_transparent_55%),_radial-gradient(circle_at_bottom,_rgba(31,112,81,0.3),_transparent_55%)]" />
 
-        {/* Floating 3D geometric shapes with parallax */}
-        <div 
-          className="absolute top-24 right-24 w-20 h-20 bg-gradient-to-b from-orange-400 via-orange-500 to-orange-700 transform rotate-45 animate-float-3d opacity-70 shadow-2xl shadow-orange-500/50"
-          style={{ transform: `translateY(${scrollY * 0.4}px) rotate(45deg)` }}
-        />
-        <div 
-          className="absolute bottom-32 left-32 w-24 h-24 bg-gradient-to-b from-yellow-400 via-yellow-500 to-amber-700 transform rotate-12 animate-float-3d-reverse opacity-65 shadow-2xl shadow-yellow-500/50"
-          style={{ 
-            animationDelay: "2s",
-            transform: `translateY(${scrollY * -0.3}px) rotate(12deg)`
-          }}
-        />
-        <div 
-          className="absolute top-1/3 left-1/4 w-16 h-16 bg-gradient-to-br from-amber-500 to-orange-700 transform rotate-45 animate-rotate-3d opacity-55 shadow-xl shadow-amber-500/30"
-          style={{ transform: `translateY(${scrollY * 0.2}px)` }}
-        />
+      <ArabesquePatterns />
 
-        {/* Floating stars */}
-        <div 
-          className="absolute top-40 left-20 w-12 h-12"
-          style={{ transform: `translateY(${scrollY * 0.5}px)` }}
-        >
-          <div className="absolute inset-0 bg-gradient-to-br from-yellow-400 to-amber-600 opacity-70 shadow-xl shadow-yellow-500/50 animate-pulse-3d" style={{ clipPath: "polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%)" }} />
-        </div>
-        <div 
-          className="absolute bottom-40 right-20 w-14 h-14 animate-float-3d" 
-          style={{ 
-            animationDelay: "3s",
-            transform: `translateY(${scrollY * -0.4}px)`
+      {floatingAccents.map(({ Icon, delay, ...position }, index) => (
+        <motion.span
+          key={index}
+          className={`pointer-events-none absolute text-amber-200/70 drop-shadow-[0_0_12px_rgba(234,179,8,0.4)]`}
+          style={position}
+          animate={{
+            y: ["0%", "-12%", "0%"],
+            rotateZ: [0, 6, -4, 0],
+            scale: [1, 1.08, 1],
+          }}
+          transition={{
+            duration: 8,
+            repeat: Infinity,
+            ease: "easeInOut",
+            delay,
           }}
         >
-          <div className="absolute inset-0 bg-gradient-to-br from-orange-400 to-amber-600 opacity-70 shadow-xl shadow-orange-500/50" style={{ clipPath: "polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%)" }} />
-        </div>
+          <Icon className="h-10 w-10" />
+        </motion.span>
+      ))}
 
-        {/* Enhanced sparkle effects */}
-        {[...Array(30)].map((_, i) => (
-          <div
-            key={i}
-            className={`absolute w-1.5 h-1.5 rounded-full animate-sparkle ${
-              i % 3 === 0 ? 'bg-orange-400 shadow-lg shadow-orange-400/50' : 
-              i % 3 === 1 ? 'bg-yellow-400 shadow-lg shadow-yellow-400/50' : 
-              'bg-amber-400 shadow-lg shadow-amber-400/50'
-            } hidden md:block`}
-            style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              animationDelay: `${Math.random() * 3}s`,
-              animationDuration: `${2 + Math.random() * 2}s`,
-              transform: `translateY(${scrollY * (0.1 + Math.random() * 0.3)}px)`,
-            }}
-          />
-        ))}
-
-        {/* Arabesque Patterns */}
-        <ArabesquePatterns />
-
-        {/* Enhanced cursor glow */}
-        <div
-          className="absolute w-96 h-96 rounded-full pointer-events-none transition-all duration-300 ease-out"
-          style={{
-            left: mousePosition.x - 192,
-            top: mousePosition.y - 192,
-            background: "radial-gradient(circle, rgba(249, 115, 22, 0.25) 0%, rgba(234, 179, 8, 0.2) 40%, rgba(180, 83, 9, 0.15) 60%, transparent 80%)",
-            opacity: mounted ? 1 : 0,
-          }}
-        />
-      </div>
-
-      <div className="relative z-10 container max-w-7xl mx-auto px-4 py-12 md:py-20">
-        {/* Back Button with enhanced styling */}
-        <Link 
-          href="/"
-          className={`inline-flex items-center gap-2 mb-8 px-6 py-3 bg-orange-950/40 hover:bg-orange-950/60 backdrop-blur-md border border-orange-500/20 hover:border-orange-400/40 rounded-2xl text-white transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-orange-500/20 ${
-            mounted ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-10"
-          }`}
-        >
-          <ArrowLeft className="w-5 h-5" />
-          <span className="font-medium">Back to Home</span>
-        </Link>
-
-        {/* Header Section with enhanced animations */}
-        <div
-          className={`text-center mb-20 transition-all duration-1000 ${
-            mounted ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-10"
-          }`}
-        >
-          {/* Animated Logo */}
-          <div className="mb-8 flex justify-center">
-            <Link href="/" aria-label="Go to home" className="relative group rounded-3xl focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-400">
-              <div className="absolute inset-0 bg-gradient-to-r from-orange-500 via-yellow-500 to-amber-600 rounded-3xl blur-2xl opacity-75 group-hover:opacity-100 animate-border-flow" />
-              <div className="absolute inset-0 bg-gradient-to-r from-orange-500 via-yellow-500 to-amber-600 rounded-3xl animate-rotate-slow opacity-50" />
-              
-              <div className="relative w-32 h-32 bg-gradient-to-br from-orange-500 via-yellow-500 to-amber-600 rounded-3xl flex items-center justify-center shadow-2xl transform group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 overflow-hidden">
-                <div className="absolute inset-2 bg-stone-950 rounded-2xl flex items-center justify-center overflow-hidden">
-                  <Image 
-                    src="/MENAA_LOGO.jpg"
-                    alt="MENAA Logo"
-                    width={112}
-                    height={112}
-                    className="object-cover rounded-xl"
-                    priority
-                  />
-                </div>
-              </div>
-            </Link>
-          </div>
-
-          <h1 className="text-5xl md:text-7xl font-bold mb-4 bg-gradient-to-r from-orange-400 via-yellow-400 to-amber-400 bg-clip-text text-transparent animate-border-flow text-balance leading-tight">
-            Upcoming Events
-          </h1>
-
-          <div className="relative inline-block mb-6">
-            <p className="text-xl md:text-2xl text-white/90 font-medium text-balance relative z-10">
-              This Quarter&rsquo;s Exciting Activities
-            </p>
-            <div className="absolute inset-0 bg-gradient-to-r from-orange-500/20 via-yellow-500/20 to-amber-500/20 blur-2xl animate-pulse-glow" />
-          </div>
-
-          <p className="text-base md:text-lg text-white/60 max-w-3xl mx-auto text-pretty leading-relaxed">
-            Join us for an amazing quarter filled with culture, fun, and community. Mark your calendars for these unforgettable events!
-          </p>
-
-          <div className="mt-8 flex items-center justify-center gap-4">
-            <div className="h-px w-20 bg-gradient-to-r from-transparent via-orange-400/40 to-transparent" />
-            <PartyPopper className="w-5 h-5 text-yellow-400 animate-pulse" />
-            <div className="h-px w-20 bg-gradient-to-r from-transparent via-amber-400/40 to-transparent" />
-          </div>
-        </div>
-
-        {/* Events Grid with Enhanced Cards */}
-        <div className="space-y-12">
-          {events.map((event, index) => {
-            const Icon = event.icon
-            const isHovered = hoveredEvent === index
-            
-            return (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 28 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-120px" }}
-                transition={{ duration: 0.5, ease: "easeOut", delay: index * 0.08 }}
-                onMouseEnter={() => setHoveredEvent(index)}
-                onMouseLeave={() => setHoveredEvent(null)}
-              >
-                <InteractiveCard className="group relative overflow-hidden border-orange-500/10 bg-gradient-to-br from-orange-950/20 to-amber-950/30 backdrop-blur-xl transition-all duration-700 hover:scale-[1.02] hover:border-orange-400/30 hover:shadow-2xl">
-                  {/* Animated gradient background */}
-                  <div
-                    className={`absolute inset-0 bg-gradient-to-br ${event.gradient} opacity-0 group-hover:opacity-30 transition-all duration-700 animate-border-flow`}
-                  />
-
-                  {/* Shimmer effect */}
-                  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700">
-                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-shimmer" />
-                  </div>
-
-                  {/* Floating decorative icons */}
-                  <div className="absolute top-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-all duration-700">
-                    {event.decorativeIcons.map((DecorIcon, i) => (
-                      <div
-                        key={i}
-                        className="animate-float"
-                        style={{ animationDelay: `${i * 0.2}s` }}
-                      >
-                        <DecorIcon className={`w-5 h-5 text-${event.accentColor}-400/60`} />
-                      </div>
-                    ))}
-                  </div>
-
-                  {/* Main Content */}
-                  <div className="relative p-8 md:p-12">
-                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                      {/* Left: Icon & Title */}
-                      <div className="lg:col-span-2">
-                        <div className="flex items-start gap-6 mb-6">
-                          {/* Enhanced Icon */}
-                          <div className="relative flex-shrink-0">
-                            <div
-                              className={`absolute inset-0 bg-gradient-to-br ${event.gradient} rounded-3xl blur-2xl opacity-50 group-hover:opacity-100 transition-all duration-700 group-hover:scale-150`}
-                            />
-                            <div
-                              className={`relative w-24 h-24 rounded-3xl bg-gradient-to-br ${event.gradient} flex items-center justify-center transform group-hover:scale-110 group-hover:rotate-12 transition-all duration-700 shadow-2xl`}
-                            >
-                              <Icon className="w-12 h-12 text-white drop-shadow-2xl" />
-                            </div>
-                          </div>
-
-                          {/* Title & Tagline */}
-                          <div className="flex-1 min-w-0">
-                            <h2 className="text-3xl md:text-4xl font-bold mb-2 text-white group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:bg-clip-text transition-all duration-700" style={{ backgroundImage: `linear-gradient(to right, var(--tw-gradient-stops))`, backgroundClip: isHovered ? 'text' : 'unset' }}>
-                              {event.title}
-                            </h2>
-                            <p className={`text-lg md:text-xl font-semibold text-${event.accentColor}-300 mb-4`}>
-                              {event.tagline}
-                            </p>
-                            <p className="text-white/70 text-base md:text-lg leading-relaxed">
-                              {event.description}
-                            </p>
-                          </div>
-                        </div>
-
-                        {/* Highlights */}
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-6">
-                          {event.highlights.map((highlight, i) => (
-                            <div
-                              key={i}
-                              className="flex items-center gap-3 text-white/80 transition-all duration-500 group-hover:translate-x-2"
-                              style={{ transitionDelay: `${i * 50}ms` }}
-                            >
-                              <div className={`w-2 h-2 rounded-full bg-gradient-to-r ${event.gradient} shadow-lg`} />
-                              <span className="text-sm md:text-base">{highlight}</span>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-
-                      {/* Right: Event Details */}
-                      <div className="lg:col-span-1">
-                        <div className="space-y-4">
-                          {/* Date Card */}
-                          <div className={`p-4 rounded-2xl bg-gradient-to-br from-white/10 to-white/5 border border-white/10 group-hover:border-${event.accentColor}-400/30 transition-all duration-500`}>
-                            <div className="flex items-center gap-3 mb-2">
-                              <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${event.gradient} flex items-center justify-center`}>
-                                <Calendar className="w-5 h-5 text-white" />
-                              </div>
-                              <div>
-                                <p className="text-xs text-white/50 uppercase tracking-wider">Date</p>
-                                <p className="text-lg font-bold text-white">{event.date === "TBA" ? "More info coming soon" : event.date}</p>
-                              </div>
-                            </div>
-                          </div>
-
-                          {/* Time Card */}
-                          <div className={`p-4 rounded-2xl bg-gradient-to-br from-white/10 to-white/5 border border-white/10 group-hover:border-${event.accentColor}-400/30 transition-all duration-500`}>
-                            <div className="flex items-center gap-3 mb-2">
-                              <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${event.gradient} flex items-center justify-center`}>
-                                <Clock className="w-5 h-5 text-white" />
-                              </div>
-                              <div>
-                                <p className="text-xs text-white/50 uppercase tracking-wider">Time</p>
-                                <p className="text-lg font-bold text-white">{event.time}</p>
-                              </div>
-                            </div>
-                          </div>
-
-                          {/* Location Card */}
-                          <div className={`p-4 rounded-2xl bg-gradient-to-br from-white/10 to-white/5 border border-white/10 group-hover:border-${event.accentColor}-400/30 transition-all duration-500`}>
-                            <div className="flex items-center gap-3 mb-2">
-                              <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${event.gradient} flex items-center justify-center`}>
-                                <MapPin className="w-5 h-5 text-white" />
-                              </div>
-                              <div>
-                                <p className="text-xs text-white/50 uppercase tracking-wider">Location</p>
-                                <p className="text-lg font-bold text-white">{event.location}</p>
-                              </div>
-                            </div>
-                          </div>
-
-                          {/* RSVP Button */}
-                          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.97 }}>
-                            {event.registrationOpen ? (
-                              <Link
-                                href={event.registrationUrl || "#"}
-                                className={`w-full mt-4 px-6 py-4 rounded-2xl bg-gradient-to-r ${event.gradient} text-white font-bold text-lg shadow-xl hover:shadow-2xl transform transition-all duration-500 hover:brightness-110 flex items-center justify-center gap-2`}
-                              >
-                                <Gamepad2 className="w-5 h-5" />
-                                Register Now ⚽
-                              </Link>
-                            ) : (
-                              <a
-                                href="https://instagram.com/deanzamenaa"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className={`w-full mt-4 px-6 py-4 rounded-2xl bg-gradient-to-r ${event.gradient} text-white font-bold text-lg shadow-xl hover:shadow-2xl transform transition-all duration-500 hover:brightness-110 flex items-center justify-center gap-2`}
-                              >
-                                <Zap className="w-5 h-5" />
-                                Follow for updates
-                              </a>
-                            )}
-                          </motion.div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Bottom accent bar */}
-                  <div
-                    className={`absolute bottom-0 left-0 right-0 h-2 bg-gradient-to-r ${event.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-700`}
-                  />
-
-                  {/* Corner decorations */}
-                  <div className="absolute top-4 left-4 w-12 h-12 opacity-20 group-hover:opacity-40 transition-opacity duration-500">
-                    <div className={`w-full h-full border-t-2 border-l-2 border-${event.accentColor}-400 rounded-tl-2xl`} />
-                  </div>
-                  <div className="absolute bottom-4 right-4 w-12 h-12 opacity-20 group-hover:opacity-40 transition-opacity duration-500">
-                    <div className={`w-full h-full border-b-2 border-r-2 border-${event.accentColor}-400 rounded-br-2xl`} />
-                  </div>
-                </InteractiveCard>
-              </motion.div>
-            )
-          })}
-        </div>
-
-        {/* Call to Action Section */}
-        <div 
-          className={`mt-20 transition-all duration-1000 ${
-            mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
-          }`}
-          style={{ transitionDelay: "800ms" }}
-        >
-          <Card className="border-orange-500/20 bg-gradient-to-br from-orange-950/40 to-amber-950/50 backdrop-blur-xl p-8 md:p-12 text-center relative overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-br from-orange-500/10 via-yellow-500/10 to-amber-500/10 animate-border-flow" />
-            
-            <div className="relative z-10 max-w-3xl mx-auto">
-              <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-br from-orange-500 via-yellow-500 to-amber-600 mb-6 animate-pulse-3d">
-                <Users className="w-10 h-10 text-white" />
-              </div>
-
-              <h2 className="text-3xl md:text-4xl font-bold mb-4 bg-gradient-to-r from-orange-300 via-yellow-300 to-amber-300 bg-clip-text text-transparent">
-                Don&rsquo;t Miss Out!
-              </h2>
-
-              <p className="text-lg text-white/80 mb-8 leading-relaxed">
-                Stay connected with us on Instagram and Discord for exact dates, times, and special announcements. 
-                These events fill up fast, so make sure you&rsquo;re following us to get the latest updates!
-              </p>
-
-              <div className="flex flex-wrap justify-center gap-4">
-                <a
-                  href="https://instagram.com/deanzamenaa"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="group inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-orange-500 to-orange-600 rounded-2xl text-white font-semibold shadow-xl hover:shadow-2xl hover:shadow-orange-500/50 transform hover:scale-105 transition-all duration-300"
-                >
-                  <Star className="w-5 h-5 group-hover:rotate-180 transition-transform duration-500" />
-                  <span>Follow on Instagram</span>
-                </a>
-
-                <a
-                  href="https://discord.gg/UAS7xXRj27"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="group inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-amber-600 to-yellow-600 rounded-2xl text-white font-semibold shadow-xl hover:shadow-2xl hover:shadow-yellow-500/50 transform hover:scale-105 transition-all duration-300"
-                >
-                  <Sparkles className="w-5 h-5 group-hover:rotate-180 transition-transform duration-500" />
-                  <span>Join Discord</span>
-                </a>
-              </div>
-            </div>
-
-            {/* Floating particles */}
-            {[...Array(8)].map((_, i) => (
-              <div
-                key={i}
-                className="absolute w-2 h-2 rounded-full bg-gradient-to-r from-amber-400 to-rose-400 opacity-40 animate-float"
-                style={{
-                  left: `${10 + i * 12}%`,
-                  top: `${20 + (i % 3) * 30}%`,
-                  animationDelay: `${i * 0.3}s`,
-                }}
-              />
-            ))}
-          </Card>
-        </div>
-
-        {/* Past Events Section */}
-        <div className="mt-20">
-          <h2 
-            className={`text-3xl md:text-4xl font-bold text-center mb-12 bg-gradient-to-r from-orange-300 via-yellow-300 to-amber-300 bg-clip-text text-transparent transition-all duration-1000 ${
-              mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
-            }`}
-            style={{ transitionDelay: "900ms" }}
-          >
-            Past Events
-          </h2>
-
-          {/* FIFA Night Event Card */}
+      <div className="relative z-10 mx-auto flex min-h-screen w-full max-w-6xl flex-col items-center justify-center gap-16 px-6 py-24 sm:px-10 lg:flex-row">
+        <div className="max-w-xl space-y-10 text-center lg:text-left">
           <motion.div
-            initial={{ opacity: 0, y: 24 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-100px" }}
-            transition={{ duration: 0.45, ease: "easeOut" }}
-            className="mb-12"
+            className="inline-flex items-center gap-2 rounded-full bg-amber-500/10 px-5 py-2 text-sm font-medium uppercase tracking-[0.28em] text-amber-300/90 shadow-[0_0_0_1px_rgba(244,114,35,0.35)]"
+            initial={{ opacity: 0, y: -12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
           >
-            <Link href="/events/fifa-night-gallery" className="block">
-              <InteractiveCard className="group relative overflow-hidden border-amber-500/15 bg-gradient-to-br from-stone-950/50 via-emerald-950/40 to-teal-950/40 backdrop-blur-md transition-all duration-500 hover:border-emerald-400/40 cursor-pointer hover:scale-[1.01]">
-              {/* Animated pitch glow */}
-              <div className="absolute inset-0 bg-gradient-radial from-emerald-500/15 via-green-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
-              <div className="absolute inset-0 bg-[url('/textures/pitch-lines.svg')] opacity-10 mix-blend-screen animate-pulse-slow" />
-
-              <div className="relative p-6 md:p-10">
-                <div className="flex flex-col lg:flex-row items-start gap-6 mb-8">
-                  {/* Icon & gradient */}
-                  <div className="relative flex-shrink-0">
-                    <div className="absolute inset-0 bg-gradient-to-br from-emerald-500 via-lime-500 to-yellow-400 rounded-3xl blur-2xl opacity-60 group-hover:opacity-100 transition-all duration-700" />
-                    <div className="relative w-24 h-24 rounded-3xl bg-gradient-to-br from-emerald-500 via-lime-500 to-yellow-400 flex items-center justify-center transform group-hover:scale-110 group-hover:-rotate-6 transition-all duration-700 shadow-2xl shadow-emerald-500/40">
-                      <Gamepad2 className="w-12 h-12 text-white drop-shadow-2xl" />
-                    </div>
-                  </div>
-
-                  <div className="flex-1 min-w-0">
-                    <div className="flex flex-wrap items-center gap-3 mb-3">
-                      <h3 className="text-3xl md:text-4xl font-bold text-white drop-shadow-2xl">
-                        MENAA FIFA Night ⚽
-                      </h3>
-                      <motion.span
-                        initial={{ opacity: 0, scale: 0.8 }}
-                        whileInView={{ opacity: 1, scale: 1 }}
-                        viewport={{ once: true }}
-                        transition={{ delay: 0.2, duration: 0.4 }}
-                        className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/20 border border-emerald-400/30 text-emerald-200 text-sm font-semibold"
-                      >
-                        <CheckCircle2 className="w-4 h-4" />
-                        Event Completed
-                      </motion.span>
-                    </div>
-
-                    <div className="flex flex-wrap items-center gap-4 text-sm text-emerald-200/80 mb-6">
-                      <div className="inline-flex items-center gap-2">
-                        <Calendar className="w-4 h-4" />
-                        <span>Wednesday, November 5, 2025</span>
-                      </div>
-                      <div className="inline-flex items-center gap-2">
-                        <Clock className="w-4 h-4" />
-                        <span>4:00 PM – 6:00 PM</span>
-                      </div>
-                      <div className="inline-flex items-center gap-2">
-                        <MapPin className="w-4 h-4" />
-                        <span>L73, Social & Humanities Village</span>
-                      </div>
-                    </div>
-
-                    <p className="text-white/75 text-base md:text-lg leading-relaxed mb-6">
-                      A night of electric goals, MENAA energy, and community spirit! +10 players battled through our FIFA tournament while supporters cheered, celebrated, and connected. Adam clinched the title — earning a free jersey — with Ahmed right behind him after a gripping finale.
-                    </p>
-
-                    {/* Highlight chips */}
-                    <div className="flex flex-wrap gap-3 mb-6">
-                      {[
-                        "⚡ Knockout FIFA tournament",
-                        "🎶 Live hype playlist",
-                        "🏆 Adam crowned champion (free jersey reward)",
-                        "🥈 Ahmed runner-up"
-                      ].map((highlight, index) => (
-                        <motion.span
-                          key={highlight}
-                          initial={{ opacity: 0, y: 12 }}
-                          whileInView={{ opacity: 1, y: 0 }}
-                          viewport={{ once: true }}
-                          transition={{ delay: 0.1 * index, duration: 0.35 }}
-                          className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/15 text-emerald-100 text-sm border border-emerald-400/30"
-                        >
-                          {highlight}
-                        </motion.span>
-                      ))}
-                    </div>
-
-                    {/* Event stats */}
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
-                      {[
-                        { label: "Players in the tournament", value: "+10", icon: Users },
-                        { label: "Champion", value: "Adam", icon: Trophy },
-                        { label: "Runner-Up", value: "Ahmed", icon: Star }
-                      ].map(({ label, value, icon: StatIcon }, i) => (
-                        <motion.div
-                          key={label}
-                          initial={{ opacity: 0, y: 10 }}
-                          whileInView={{ opacity: 1, y: 0 }}
-                          viewport={{ once: true }}
-                          transition={{ delay: 0.15 * i, duration: 0.3 }}
-                          className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-white/10 to-white/5 border border-white/10 px-4 py-5 backdrop-blur-xl"
-                        >
-                          <div className="absolute inset-0 bg-gradient-to-br from-emerald-400/10 via-transparent to-emerald-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                          <div className="relative flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-xl bg-emerald-500/20 flex items-center justify-center text-emerald-200">
-                              <StatIcon className="w-5 h-5" />
-                            </div>
-                            <div>
-                              <p className="text-xs uppercase tracking-[0.2em] text-emerald-200/70">{label}</p>
-                              <p className="text-lg font-semibold text-white">{value}</p>
-                            </div>
-                          </div>
-                        </motion.div>
-                      ))}
-                    </div>
-
-                    {/* Event Photos Preview */}
-                    <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3">
-                      {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map((num, index) => (
-                        <motion.div
-                          key={num}
-                          initial={{ opacity: 0, scale: 0.8, rotateY: -90 }}
-                          whileInView={{ opacity: 1, scale: 1, rotateY: 0 }}
-                          viewport={{ once: true }}
-                          transition={{ 
-                            delay: 0.05 * index, 
-                            duration: 0.5,
-                            ease: [0.34, 1.56, 0.64, 1]
-                          }}
-                          whileHover={{ 
-                            scale: 1.05,
-                            rotateY: 5,
-                            zIndex: 10,
-                            transition: { duration: 0.3 }
-                          }}
-                          className="relative aspect-square rounded-xl overflow-hidden border border-emerald-400/20 group/img cursor-pointer"
-                          style={{ transformStyle: "preserve-3d", perspective: "1000px" }}
-                        >
-                          <Image
-                            src={`/events/menaaevent2_${num}.jpg`}
-                            alt={`MENAA FIFA Night Event Photo ${num}`}
-                            fill
-                            className="object-cover transition-all duration-500 group-hover/img:scale-110 group-hover/img:brightness-110"
-                            sizes="(max-width: 768px) 50vw, (max-width: 1024px) 25vw, 16vw"
-                          />
-                          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/0 to-black/0 opacity-0 group-hover/img:opacity-100 transition-opacity duration-500" />
-                          <div className="absolute inset-0 opacity-0 group-hover/img:opacity-100 transition-opacity duration-700">
-                            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent translate-x-[-200%] group-hover/img:translate-x-[200%] transition-transform duration-1000" />
-                          </div>
-                          <div className="absolute inset-0 rounded-xl border-2 border-transparent group-hover/img:border-emerald-400/50 group-hover/img:shadow-xl group-hover/img:shadow-emerald-500/30 transition-all duration-500" />
-                        </motion.div>
-                      ))}
-                    </div>
-                    <motion.div
-                      initial={{ opacity: 0, y: 10 }}
-                      whileInView={{ opacity: 1, y: 0 }}
-                      viewport={{ once: true }}
-                      transition={{ delay: 0.6, duration: 0.4 }}
-                      className="mt-4 text-center"
-                    >
-                      <p className="text-sm text-emerald-200/70 inline-flex items-center gap-2">
-                        <Camera className="w-4 h-4" />
-                        <span>Click to view full gallery</span>
-                        <ArrowLeft className="w-4 h-4 rotate-180" />
-                      </p>
-                    </motion.div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-emerald-500 via-lime-400 to-yellow-400 opacity-60 group-hover:opacity-100 transition-opacity duration-700" />
-              </InteractiveCard>
-            </Link>
+            <Sparkles className="h-4 w-4 text-amber-200" />
+            MENAA Friendsgiving
           </motion.div>
 
-          {/* Social Mixer Event Card */}
-          <motion.div
-            initial={{ opacity: 0, y: 24 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-100px" }}
-            transition={{ duration: 0.45, ease: "easeOut" }}
-            className="mb-12"
+          <motion.h1
+            className="text-4xl font-semibold leading-tight text-slate-50 sm:text-5xl"
+            initial={{ opacity: 0, y: 18 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.3 }}
           >
-            <InteractiveCard className="group relative overflow-hidden border-orange-500/10 bg-gradient-to-br from-orange-950/20 to-amber-950/30 backdrop-blur-md transition-all duration-500 hover:border-orange-400/30">
-              <div className="absolute inset-0 bg-gradient-to-br from-amber-600 via-orange-600 to-yellow-600 opacity-0 group-hover:opacity-10 transition-all duration-500 animate-border-flow" />
+            RSVP your club for a{" "}
+            <span className="bg-gradient-to-r from-amber-300 via-rose-200 to-emerald-200 bg-clip-text text-transparent">
+              MENA-inspired Friendsgiving
+            </span>
+            .
+          </motion.h1>
 
-              <div className="relative p-6 md:p-8">
-                <div className="flex flex-col md:flex-row items-start gap-4 mb-6">
-                  <div className="relative flex-shrink-0">
-                    <div className="absolute inset-0 bg-gradient-to-br from-amber-600 via-orange-600 to-yellow-600 rounded-2xl blur-lg opacity-50 group-hover:opacity-100 transition-opacity duration-500" />
-                    <div className="relative w-16 h-16 rounded-2xl bg-gradient-to-br from-amber-600 via-orange-600 to-yellow-600 flex items-center justify-center transform group-hover:scale-110 group-hover:rotate-6 transition-all duration-500">
-                      <Users className="w-8 h-8 text-white drop-shadow-lg" />
-                    </div>
-                  </div>
-
-                  <div className="flex-1">
-                    <h3 className="text-2xl md:text-3xl font-bold text-white mb-2 flex items-center gap-2">
-                      MENAA Social Mixer
-                      <CheckCircle2 className="w-5 h-5 text-green-400" />
-                    </h3>
-                    <div className="flex items-center gap-2 text-sm text-orange-300 mb-3">
-                      <Calendar className="w-4 h-4" />
-                      <span>Wednesday, October 15, 2025</span>
-                    </div>
-                    <p className="text-white/70 text-sm md:text-base leading-relaxed mb-4">
-                      Our first social mixer of the quarter! Students connected, vibed, and made new friends across the MENAA community. Features included MENA Bingo, henna & glitter tattoos, games, snacks, and amazing vibes.
-                    </p>
-                    <div className="flex flex-wrap gap-2">
-                      <span className="px-3 py-1 rounded-full bg-orange-500/20 text-orange-300 text-xs font-medium border border-orange-500/30">
-                        🎯 MENA Bingo
-                      </span>
-                      <span className="px-3 py-1 rounded-full bg-amber-500/20 text-amber-300 text-xs font-medium border border-amber-500/30">
-                        🎨 Henna Art
-                      </span>
-                      <span className="px-3 py-1 rounded-full bg-yellow-500/20 text-yellow-300 text-xs font-medium border border-yellow-500/30">
-                        ✨ Community
-                      </span>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Event Photos Gallery */}
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 md:gap-4">
-                  {[1, 2, 3, 4, 5].map((num, index) => (
-                    <motion.div
-                      key={num}
-                      initial={{ opacity: 0, scale: 0.8, rotateY: -90 }}
-                      whileInView={{ opacity: 1, scale: 1, rotateY: 0 }}
-                      viewport={{ once: true, margin: "-50px" }}
-                      transition={{ 
-                        duration: 0.6, 
-                        delay: index * 0.1,
-                        ease: [0.34, 1.56, 0.64, 1]
-                      }}
-                      whileHover={{ 
-                        scale: 1.05,
-                        zIndex: 10,
-                        transition: { duration: 0.3 }
-                      }}
-                      onClick={() => openImageViewer(index)}
-                      className="group/img relative aspect-square rounded-2xl overflow-hidden cursor-pointer"
-                    >
-                      {/* Main Image */}
-                      <div className="relative w-full h-full">
-                        <Image
-                          src={`/events/menaaevent1_${num}${num === 3 ? 'jpg' : ''}.jpg`}
-                          alt={`MENAA Social Mixer Event Photo ${num}`}
-                          fill
-                          className="object-cover transition-all duration-700 group-hover/img:scale-110 group-hover/img:brightness-110"
-                          sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 20vw"
-                        />
-                        
-                        {/* Gradient Overlay */}
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/0 to-black/0 opacity-0 group-hover/img:opacity-100 transition-opacity duration-500" />
-                        
-                        {/* Shimmer Effect on Hover */}
-                        <div className="absolute inset-0 opacity-0 group-hover/img:opacity-100 transition-opacity duration-700">
-                          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent translate-x-[-200%] group-hover/img:translate-x-[200%] transition-transform duration-1000" />
-                        </div>
-
-                        {/* Border Glow Effect */}
-                        <div className="absolute inset-0 rounded-2xl border-2 border-transparent group-hover/img:border-orange-400/50 group-hover/img:shadow-xl group-hover/img:shadow-orange-500/30 transition-all duration-500" />
-
-                        {/* Watermark Logo - Bottom Right Corner */}
-                        <motion.div 
-                          className="absolute bottom-2 right-2 w-8 h-8 md:w-10 md:h-10 opacity-60 group-hover/img:opacity-90 transition-all duration-500"
-                          initial={{ opacity: 0, scale: 0 }}
-                          whileInView={{ opacity: 0.6, scale: 1 }}
-                          viewport={{ once: true }}
-                          transition={{ delay: index * 0.1 + 0.3, duration: 0.5 }}
-                        >
-                          <div className="relative w-full h-full rounded-lg overflow-hidden shadow-2xl shadow-black/50 ring-1 ring-white/20 backdrop-blur-sm bg-black/20">
-                            <Image
-                              src="/MENAA_LOGO.jpg"
-                              alt="MENAA Logo"
-                              fill
-                              className="object-cover"
-                              sizes="40px"
-                            />
-                            {/* Logo glow effect */}
-                            <div className="absolute inset-0 bg-gradient-to-br from-orange-500/20 via-yellow-500/20 to-amber-500/20 mix-blend-overlay" />
-                          </div>
-                        </motion.div>
-
-                        {/* Sparkle Effects on Hover */}
-                        <div className="absolute top-2 left-2 opacity-0 group-hover/img:opacity-100 transition-opacity duration-500">
-                          <Sparkles className="w-5 h-5 text-yellow-400 animate-pulse" />
-                        </div>
-                      </div>
-
-                      {/* Floating particle effect */}
-                      <div className="absolute inset-0 pointer-events-none opacity-0 group-hover/img:opacity-100 transition-opacity duration-700">
-                        {[...Array(3)].map((_, i) => (
-                          <motion.div
-                            key={i}
-                            className="absolute w-1 h-1 rounded-full bg-yellow-400"
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{
-                              opacity: [0, 1, 0],
-                              y: [20, -20],
-                              x: [0, (i - 1) * 10]
-                            }}
-                            transition={{
-                              duration: 1.5,
-                              repeat: Infinity,
-                              delay: i * 0.3
-                            }}
-                            style={{
-                              left: `${30 + i * 20}%`,
-                              bottom: '10%'
-                            }}
-                          />
-                        ))}
-                      </div>
-                    </motion.div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-amber-600 via-orange-600 to-yellow-600 opacity-50 group-hover:opacity-100 transition-opacity duration-700" />
-            </InteractiveCard>
-          </motion.div>
-
-          {/* Coming Soon Placeholder */}
-          <motion.div
-            initial={{ opacity: 0, y: 24 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-100px" }}
-            transition={{ duration: 0.45, ease: "easeOut", delay: 0.2 }}
+          <motion.p
+            className="text-lg text-slate-300"
+            initial={{ opacity: 0, y: 18 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.4 }}
           >
-            <InteractiveCard className="group relative overflow-hidden border-orange-500/10 bg-gradient-to-br from-orange-950/20 to-amber-950/30 backdrop-blur-md transition-all duration-500 hover:scale-[1.01] hover:border-orange-400/30">
-              <div className="absolute inset-0 bg-gradient-to-br from-orange-500/5 to-amber-500/5" />
+            We’re weaving warm spices, cultural rhythms, and community gratitude
+            into one table. Share your club’s details so we can set the scene
+            and reserve your seats.
+          </motion.p>
 
-              <div className="relative flex flex-col items-center justify-center p-8 md:p-12 min-h-[300px]">
-                <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-br from-orange-500/20 via-yellow-500/20 to-amber-600/20 mb-6 animate-pulse">
-                  <ImageIcon className="w-10 h-10 text-orange-400/60" />
-                </div>
-                
-                <h3 className="text-2xl font-bold text-white/80 mb-3 text-center">
-                  More Events Coming Soon!
-                </h3>
-                
-                <p className="text-white/60 text-center max-w-xs leading-relaxed">
-                  Check back here after our next events to see photos and highlights from our community gatherings.
+          <motion.div
+            className="grid gap-4 text-left sm:grid-cols-2"
+            initial={{ opacity: 0, y: 18 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.5 }}
+          >
+            <div className="flex items-center gap-4 rounded-2xl border border-white/5 bg-white/5 px-4 py-4 backdrop-blur">
+              <MapPin className="h-10 w-10 text-emerald-200" />
+              <div>
+                <p className="text-sm uppercase tracking-[0.2em] text-slate-400">
+                  Gathering Place
+                </p>
+                <p className="text-base text-slate-100">
+                  MENAA Commons · Warm + welcoming
                 </p>
               </div>
-            </InteractiveCard>
-          </motion.div>
-
-          <div className="mt-8 text-center">
-            <p className="text-white/50 text-sm">
-              Want to see your photos here? Tag us on Instagram{" "}
-              <a 
-                href="https://instagram.com/deanzamenaa" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="text-orange-400 hover:text-orange-300 transition-colors font-semibold"
-              >
-                @deanzamenaa
-              </a>
-            </p>
-          </div>
-        </div>
-
-        {/* Footer */}
-        <div
-          className={`text-center mt-12 transition-all duration-1000 ${
-            mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
-          }`}
-          style={{ transitionDelay: "1000ms" }}
-        >
-          <p className="text-sm text-white/40 mb-2">
-            Made with <Heart className="inline w-4 h-4 text-orange-400 fill-orange-400 animate-pulse" /> by MENAA
-          </p>
-          <p className="text-xs text-white/30">© 2025 De Anza MENAA. All rights reserved.</p>
-        </div>
-      </div>
-
-      {/* Stories-Style Image Viewer Modal */}
-      {selectedImage !== null && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          className="fixed inset-0 z-[100] bg-black/95 backdrop-blur-xl"
-          onClick={(e) => {
-            if (e.target === e.currentTarget) closeImageViewer()
-          }}
-        >
-          {/* Story Progress Bars */}
-          <div className="absolute top-4 left-4 right-4 flex gap-2 z-50">
-            {[0, 1, 2, 3, 4].map((index) => (
-              <div 
-                key={index} 
-                className={`flex-1 h-1 bg-white/20 rounded-full overflow-hidden backdrop-blur-sm transition-all duration-300 ${
-                  isPaused && index === selectedImage ? 'ring-1 ring-white/30' : ''
-                }`}
-              >
-                <motion.div
-                  className={`h-full bg-gradient-to-r from-orange-400 via-yellow-400 to-amber-400 rounded-full ${
-                    isPaused && index === selectedImage ? 'opacity-80' : ''
-                  }`}
-                  style={{
-                    width: index < selectedImage ? '100%' : index === selectedImage ? `${storyProgress}%` : '0%'
-                  }}
-                  transition={{ duration: 0.1 }}
-                />
-              </div>
-            ))}
-          </div>
-
-          {/* Header with Logo and Close Button */}
-          <div className="absolute top-8 left-4 right-4 flex items-center justify-between z-50 mt-6">
-            <div className="flex items-center gap-3">
-              <motion.div
-                initial={{ scale: 0, rotate: -180 }}
-                animate={{ scale: 1, rotate: 0 }}
-                className="w-12 h-12 rounded-full overflow-hidden ring-2 ring-orange-400/50 shadow-xl"
-              >
-                <Image
-                  src="/MENAA_LOGO.jpg"
-                  alt="MENAA Logo"
-                  width={48}
-                  height={48}
-                  className="object-cover"
-                />
-              </motion.div>
+            </div>
+            <div className="flex items-center gap-4 rounded-2xl border border-white/5 bg-white/5 px-4 py-4 backdrop-blur">
+              <Clock className="h-10 w-10 text-amber-200" />
               <div>
-                <h3 className="text-white font-bold text-sm">MENAA Social Mixer</h3>
-                <p className="text-white/60 text-xs">October 15, 2025</p>
+                <p className="text-sm uppercase tracking-[0.2em] text-slate-400">
+                  Event Window
+                </p>
+                <p className="text-base text-slate-100">4:00 PM – 8:00 PM</p>
               </div>
             </div>
-            
-            <div className="flex items-center gap-2">
-              {/* Pause/Play Button */}
-              <motion.button
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.9 }}
-                onClick={() => setIsPaused(!isPaused)}
-                className="w-10 h-10 rounded-full bg-white/10 backdrop-blur-md hover:bg-white/20 transition-all flex items-center justify-center group"
-                aria-label={isPaused ? "Play" : "Pause"}
-              >
-                {isPaused ? (
-                  <Play className="w-5 h-5 text-white fill-white" />
-                ) : (
-                  <Pause className="w-5 h-5 text-white fill-white" />
+          </motion.div>
+        </div>
+
+        <motion.div
+          ref={cardRef}
+          className="relative w-full max-w-xl rounded-[32px] border border-white/10 bg-white/10 p-[1px] shadow-[0_20px_80px_rgba(15,118,110,0.25)]"
+          style={{ transformStyle: "preserve-3d" }}
+          animate={{ rotateX: tilt.x, rotateY: tilt.y }}
+          transition={{ type: "spring", stiffness: 160, damping: 18, mass: 0.9 }}
+          onMouseMove={handleTilt}
+          onMouseLeave={resetTilt}
+        >
+          <div className="relative h-full w-full overflow-hidden rounded-[30px] bg-gradient-to-br from-slate-900/80 via-slate-900/55 to-emerald-950/40 p-8 backdrop-blur-xl">
+            <motion.div
+              className="pointer-events-none absolute -left-24 top-12 h-48 w-48 rounded-full bg-emerald-400/20 blur-3xl"
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 1.2, delay: 0.2 }}
+            />
+            <motion.div
+              className="pointer-events-none absolute -right-16 bottom-10 h-52 w-52 rounded-full bg-amber-500/25 blur-3xl"
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 1.2, delay: 0.35 }}
+            />
+
+            <div className="relative z-10" style={{ transform: "translateZ(40px)" }}>
+              <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
+                <div>
+                  <p className="text-sm uppercase tracking-[0.35em] text-emerald-200/70">
+                    Reservation Form
+                  </p>
+                  <h2 className="text-2xl font-semibold text-slate-50">
+                    Friendsgiving Club RSVP
+                  </h2>
+                </div>
+                <motion.span
+                  className="rounded-full bg-emerald-400/10 px-4 py-2 text-sm font-medium text-emerald-200"
+                  animate={{ y: [0, -4, 0] }}
+                  transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+                >
+                  Seats filling fast
+                </motion.span>
+              </div>
+
+              <form className="space-y-6" onSubmit={handleSubmit}>
+                <div className="space-y-2">
+                  <label
+                    htmlFor="clubName"
+                    className="text-sm font-medium text-slate-200"
+                  >
+                    Club or organization name
+                  </label>
+                  <input
+                    id="clubName"
+                    name="clubName"
+                    type="text"
+                    required
+                    placeholder="MENAA Cultural Society"
+                    value={formData.clubName}
+                    onChange={(event) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        clubName: event.target.value,
+                      }))
+                    }
+                    className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-base text-slate-100 outline-none transition focus:border-emerald-300/70 focus:bg-emerald-400/10"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <label
+                    htmlFor="attendees"
+                    className="text-sm font-medium text-slate-200"
+                  >
+                    Expected number of members attending
+                  </label>
+                  <input
+                    id="attendees"
+                    name="attendees"
+                    type="number"
+                    min={1}
+                    required
+                    placeholder="e.g. 15"
+                    value={formData.attendees}
+                    onChange={(event) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        attendees: event.target.value,
+                      }))
+                    }
+                    className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-base text-slate-100 outline-none transition focus:border-emerald-300/70 focus:bg-emerald-400/10"
+                  />
+                </div>
+
+                <div className="space-y-3">
+                  <p className="text-sm font-medium text-slate-200">
+                    Which date(s) work best for your club?
+                  </p>
+                  <div className="grid gap-3 sm:grid-cols-2">
+                    {RSVP_DATES.map(({ label, value }) => {
+                      const isActive = selectedDates.includes(value)
+                      return (
+                        <motion.button
+                          key={value}
+                          type="button"
+                          onClick={() => toggleDate(value)}
+                          aria-pressed={isActive}
+                          whileTap={{ scale: 0.97 }}
+                          className={`rounded-2xl border px-4 py-3 text-left text-sm font-medium transition ${
+                            isActive
+                              ? "border-emerald-300/70 bg-emerald-500/20 text-emerald-100 shadow-[0_0_20px_rgba(16,185,129,0.35)]"
+                              : "border-white/10 bg-white/5 text-slate-200 hover:border-emerald-300/40 hover:bg-emerald-500/10 hover:text-emerald-100"
+                          }`}
+                        >
+                          {label}
+                        </motion.button>
+                      )
+                    })}
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <label
+                    htmlFor="notes"
+                    className="text-sm font-medium text-slate-200"
+                  >
+                    Cultural offerings or special notes (optional)
+                  </label>
+                  <textarea
+                    id="notes"
+                    name="notes"
+                    rows={3}
+                    placeholder="Share a dish, performance idea, or accessibility need."
+                    value={formData.notes}
+                    onChange={(event) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        notes: event.target.value,
+                      }))
+                    }
+                    className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-base text-slate-100 outline-none transition focus:border-emerald-300/70 focus:bg-emerald-400/10"
+                  />
+                </div>
+
+                {errorMessage && (
+                  <div className="rounded-2xl border border-rose-400/50 bg-rose-500/10 px-4 py-3 text-sm text-rose-200">
+                    {errorMessage}
+                  </div>
                 )}
-              </motion.button>
 
-              {/* Close Button */}
-              <button
-                onClick={closeImageViewer}
-                className="w-10 h-10 rounded-full bg-white/10 backdrop-blur-md hover:bg-white/20 transition-all flex items-center justify-center group"
-                aria-label="Close viewer"
-              >
-                <div className="text-white text-2xl group-hover:rotate-90 transition-transform duration-300">×</div>
-              </button>
-            </div>
-          </div>
+                {isSuccess && (
+                  <motion.div
+                    className="rounded-2xl border border-emerald-300/60 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-100"
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    Thank you! We’ve received your RSVP and will follow up with
+                    hosting details soon.
+                  </motion.div>
+                )}
 
-          {/* Main Image Container */}
-          <div 
-            className="absolute inset-0 flex items-center justify-center p-4 pt-24 pb-32"
-            onMouseDown={handleMouseDown}
-            onMouseMove={handleMouseMove}
-            onMouseUp={handleMouseUp}
-            onMouseLeave={handleMouseUp}
-            onWheel={handleWheel}
-            onTouchStart={handleTouchStart}
-            onTouchMove={handleTouchMove}
-            onTouchEnd={handleTouchEnd}
-          >
-            {/* Paused Indicator */}
-            {isPaused && (
-              <motion.div
-                initial={{ opacity: 0, scale: 0.8, y: 20 }}
-                animate={{ opacity: 1, scale: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.8, y: 20 }}
-                className="absolute top-24 left-1/2 -translate-x-1/2 z-50 mt-16"
-              >
-                <div className="flex items-center gap-2 px-4 py-2 bg-black/60 backdrop-blur-lg rounded-full border border-white/20 shadow-2xl">
-                  <Pause className="w-4 h-4 text-white" />
-                  <span className="text-white text-sm font-medium">Paused</span>
+                <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                  <div className="flex items-center gap-2 text-xs text-slate-400">
+                    <Flame className="h-4 w-4 text-amber-300" />
+                    Taste of home, stories, and gratitude—together.
+                  </div>
+                  <motion.button
+                    type="submit"
+                    disabled={isSubmitting}
+                    whileTap={{ scale: isSubmitting ? 1 : 0.97 }}
+                    className="flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-emerald-400 via-teal-400 to-amber-400 px-6 py-3 text-sm font-semibold uppercase tracking-[0.28em] text-slate-900 shadow-[0_10px_40px_rgba(16,185,129,0.45)] transition hover:from-emerald-300 hover:via-emerald-200 hover:to-amber-200 disabled:cursor-not-allowed disabled:opacity-60"
+                  >
+                    {isSubmitting ? "Sending..." : "Submit RSVP"}
+                  </motion.button>
                 </div>
-              </motion.div>
-            )}
-
-            {/* Swipe Direction Indicator */}
-            {swipeDirection && (
-              <motion.div
-                initial={{ opacity: 0, scale: 0.5 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.5 }}
-                className={`absolute ${swipeDirection === 'left' ? 'right-20' : 'left-20'} top-1/2 -translate-y-1/2 z-40`}
-              >
-                <div className="w-16 h-16 rounded-full bg-orange-500/80 backdrop-blur-md flex items-center justify-center">
-                  <ArrowLeft className={`w-8 h-8 text-white ${swipeDirection === 'left' ? 'rotate-180' : ''}`} />
-                </div>
-              </motion.div>
-            )}
-
-            <motion.div
-              key={selectedImage}
-              initial={{ 
-                x: slideDirection === 'next' ? '100%' : '-100%',
-                opacity: 0,
-                scale: 0.9
-              }}
-              animate={{ 
-                x: 0,
-                opacity: 1,
-                scale: 1
-              }}
-              exit={{ 
-                x: slideDirection === 'next' ? '-30%' : '30%',
-                opacity: 0,
-                scale: 0.95
-              }}
-              transition={{ 
-                type: "spring", 
-                damping: 30, 
-                stiffness: 300,
-                opacity: { duration: 0.3 }
-              }}
-              className="relative max-w-5xl max-h-full w-full h-full"
-              style={{
-                cursor: imageScale > 1 ? (isDragging ? 'grabbing' : 'grab') : 'default'
-              }}
-            >
-              {/* Click zones for navigation (like Instagram stories) */}
-              {imageScale === 1 && (
-                <>
-                  {selectedImage > 0 && (
-                    <div
-                      onClick={handlePrevImage}
-                      className="absolute left-0 top-0 bottom-0 w-1/3 cursor-w-resize z-10"
-                      aria-label="Previous image zone"
-                    />
-                  )}
-                  {selectedImage < 4 && (
-                    <div
-                      onClick={handleNextImage}
-                      className="absolute right-0 top-0 bottom-0 w-1/3 cursor-e-resize z-10"
-                      aria-label="Next image zone"
-                    />
-                  )}
-                </>
-              )}
-
-              <div 
-                className="relative w-full h-full"
-                style={{
-                  transform: `scale(${imageScale}) translate(${imagePosition.x / imageScale}px, ${imagePosition.y / imageScale}px)`,
-                  transition: isDragging ? 'none' : 'transform 0.3s ease-out'
-                }}
-              >
-                <Image
-                  src={`/events/menaaevent1_${selectedImage + 1}${selectedImage === 2 ? 'jpg' : ''}.jpg`}
-                  alt={`MENAA Event Photo ${selectedImage + 1}`}
-                  fill
-                  className="object-contain"
-                  sizes="100vw"
-                  priority
-                />
-              </div>
-            </motion.div>
-          </div>
-
-          {/* Navigation Arrows */}
-          {selectedImage > 0 && (
-            <motion.button
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              onClick={handlePrevImage}
-              className="absolute left-4 top-1/2 -translate-y-1/2 w-14 h-14 rounded-full bg-white/10 backdrop-blur-md hover:bg-white/20 transition-all flex items-center justify-center group z-50"
-              aria-label="Previous image"
-            >
-              <ArrowLeft className="w-6 h-6 text-white group-hover:scale-110 transition-transform" />
-            </motion.button>
-          )}
-
-          {selectedImage < 4 && (
-            <motion.button
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              onClick={handleNextImage}
-              className="absolute right-4 top-1/2 -translate-y-1/2 w-14 h-14 rounded-full bg-white/10 backdrop-blur-md hover:bg-white/20 transition-all flex items-center justify-center group z-50 rotate-180"
-              aria-label="Next image"
-            >
-              <ArrowLeft className="w-6 h-6 text-white group-hover:scale-110 transition-transform" />
-            </motion.button>
-          )}
-
-          {/* Bottom Controls */}
-          <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex items-center gap-4 z-50">
-            {/* Zoom Controls */}
-            <div className="flex items-center gap-2 bg-white/10 backdrop-blur-md rounded-full px-4 py-2">
-              <button
-                onClick={() => handleZoom(-0.2)}
-                className="w-8 h-8 rounded-full hover:bg-white/20 transition-all flex items-center justify-center text-white font-bold"
-                aria-label="Zoom out"
-              >
-                −
-              </button>
-              <span className="text-white text-sm font-medium min-w-[3rem] text-center">
-                {Math.round(imageScale * 100)}%
-              </span>
-              <button
-                onClick={() => handleZoom(0.2)}
-                className="w-8 h-8 rounded-full hover:bg-white/20 transition-all flex items-center justify-center text-white font-bold"
-                aria-label="Zoom in"
-              >
-                +
-              </button>
+              </form>
             </div>
-
-            {/* Reset Zoom Button */}
-            {imageScale !== 1 && (
-              <motion.button
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                onClick={() => {
-                  setImageScale(1)
-                  setImagePosition({ x: 0, y: 0 })
-                }}
-                className="px-4 py-2 rounded-full bg-orange-500/80 backdrop-blur-md hover:bg-orange-500 transition-all text-white text-sm font-medium"
-              >
-                Reset
-              </motion.button>
-            )}
-
-            {/* Image Counter */}
-            <div className="bg-white/10 backdrop-blur-md rounded-full px-4 py-2">
-              <span className="text-white text-sm font-medium">
-                {selectedImage + 1} / 5
-              </span>
-            </div>
-          </div>
-
-          {/* Swipe Indicator for Mobile */}
-          <div className="absolute bottom-32 left-1/2 -translate-x-1/2 md:hidden">
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.5 }}
-              className="text-white/60 text-xs text-center"
-            >
-              <p>Swipe or tap sides to navigate</p>
-              <p className="mt-1">Pinch to zoom</p>
-            </motion.div>
-          </div>
-
-          {/* Keyboard Shortcuts Hint for Desktop */}
-          <div className="absolute bottom-4 left-4 hidden md:block">
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.5 }}
-              className="text-white/40 text-xs space-y-1 bg-black/30 backdrop-blur-sm rounded-lg px-3 py-2"
-            >
-              <p>← → Arrow keys to navigate</p>
-              <p>SPACE to pause • +/− to zoom</p>
-              <p>ESC to close</p>
-            </motion.div>
-          </div>
-
-          {/* Decorative Elements */}
-          <div className="absolute inset-0 pointer-events-none overflow-hidden">
-            {[...Array(5)].map((_, i) => (
-              <motion.div
-                key={i}
-                className="absolute w-2 h-2 rounded-full bg-gradient-to-r from-orange-400 to-yellow-400"
-                initial={{ opacity: 0, scale: 0 }}
-                animate={{
-                  opacity: [0, 0.6, 0],
-                  scale: [0, 1, 0],
-                  x: [0, (i - 2) * 30],
-                  y: [0, -50]
-                }}
-                transition={{
-                  duration: 2,
-                  repeat: Infinity,
-                  delay: i * 0.4
-                }}
-                style={{
-                  left: '50%',
-                  top: '50%'
-                }}
-              />
-            ))}
           </div>
         </motion.div>
-      )}
+      </div>
     </div>
   )
 }
