@@ -1,13 +1,15 @@
-"use client"
-
-import {
-  type FormEvent,
-  type MouseEvent as ReactMouseEvent,
-  useRef,
-  useState,
-} from "react"
+ "use client"
+ 
+ import Link from "next/link"
+ import {
+   type FormEvent,
+   type MouseEvent as ReactMouseEvent,
+   useRef,
+   useState,
+ } from "react"
 import { motion } from "framer-motion"
 import {
+   ArrowLeft,
   CalendarDays,
   Clock,
   Flame,
@@ -156,6 +158,16 @@ export default function EventsPage() {
   return (
     <div className="relative min-h-screen overflow-hidden bg-slate-950 text-slate-100">
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(249,115,22,0.28),_transparent_55%),_radial-gradient(circle_at_bottom,_rgba(31,112,81,0.3),_transparent_55%)]" />
+
+      <div className="absolute left-6 top-6 z-20">
+        <Link
+          href="/"
+          className="group inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/10 px-4 py-2 text-sm font-medium text-slate-100 backdrop-blur transition hover:border-emerald-300/40 hover:bg-emerald-500/15"
+        >
+          <ArrowLeft className="h-4 w-4 transition group-hover:-translate-x-1 group-hover:text-emerald-200" />
+          Back to home
+        </Link>
+      </div>
 
       <ArabesquePatterns />
 
