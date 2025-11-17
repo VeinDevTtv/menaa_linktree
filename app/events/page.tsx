@@ -20,16 +20,7 @@ import {
 
 import { ArabesquePatterns } from "@/components/arabesque-patterns"
 
-const RSVP_DATES = [
-  { label: "Tuesday · Nov 19 · 4 – 8 PM", value: "November 19 (4-8 PM)" },
-  { label: "Wednesday · Nov 20 · 4 – 8 PM", value: "November 20 (4-8 PM)" },
-  { label: "Friday · Nov 22 · 4 – 8 PM", value: "November 22 (4-8 PM)" },
-  { label: "Saturday · Nov 23 · 4 – 8 PM", value: "November 23 (4-8 PM)" },
-  { label: "Tuesday · Nov 26 · 4 – 8 PM", value: "November 26 (4-8 PM)" },
-]
-
-const WEBHOOK_URL =
-  "https://discord.com/api/webhooks/1427370612401242232/rut_6p-3W9ns228YE_E2jmRPWVuiTyOcAyj8_Exhom_LBlEaqgFJHxOH_NgrdbC3rdRO"
+const API_ENDPOINT = "/api/friendsgiving-rsvp"
 
 type FormStatus = "idle" | "loading" | "success" | "error"
 
@@ -42,11 +33,10 @@ const floatingAccents = [
 
 export default function EventsPage() {
   const [formData, setFormData] = useState({
-    clubName: "",
-    attendees: "",
-    notes: "",
+    fullName: "",
+    email: "",
+    attending: "" as "yes" | "no" | "",
   })
-  const [selectedDates, setSelectedDates] = useState<string[]>([])
   const [status, setStatus] = useState<FormStatus>("idle")
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
 
@@ -72,35 +62,27 @@ export default function EventsPage() {
 
   const resetTilt = () => setTilt({ x: 0, y: 0 })
 
-  const toggleDate = (value: string) => {
-    setSelectedDates((prev) =>
-      prev.includes(value)
-        ? prev.filter((entry) => entry !== value)
-        : [...prev, value],
-    )
-  }
-
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
 
-    const clubName = formData.clubName.trim()
-    const attendees = Number.parseInt(formData.attendees, 10)
-    const hasDates = selectedDates.length > 0
+    const fullName = formData.fullName.trim()
+    const email = formData.email.trim()
+    const attending = formData.attending
 
-    if (!clubName) {
-      setErrorMessage("Share the club or organization you're representing.")
+    if (!fullName) {
+      setErrorMessage("Please enter your full name.")
       setStatus("error")
       return
     }
 
-    if (!Number.isFinite(attendees) || attendees <= 0) {
-      setErrorMessage("Let us know roughly how many members are joining.")
+    if (!email) {
+      setErrorMessage("Please enter your email address.")
       setStatus("error")
       return
     }
 
-    if (!hasDates) {
-      setErrorMessage("Pick at least one date that works best for your club.")
+    if (!attending) {
+      setErrorMessage("Please select whether you're attending.")
       setStatus("error")
       return
     }
@@ -108,44 +90,30 @@ export default function EventsPage() {
     setErrorMessage(null)
     setStatus("loading")
 
-    const preferredDates = selectedDates.join("\n• ")
-    const notes = formData.notes.trim() || "No additional notes."
-
-    const embedFields = [
-      { name: "Club / Organization", value: clubName },
-      { name: "Expected Guests", value: `${attendees}` },
-      { name: "Preferred Dates", value: `• ${preferredDates}` },
-      { name: "Notes & Cultural Touches", value: notes },
-    ]
-
     try {
-      const response = await fetch(WEBHOOK_URL, {
+      const response = await fetch(API_ENDPOINT, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          username: "MENAA Friendsgiving RSVP",
-          content: "**New Friendsgiving RSVP received!**",
-          embeds: [
-            {
-              title: "🍂 Friendsgiving Club RSVP",
-              description:
-                "Celebrating community, gratitude, and MENA flavors.",
-              color: 0xf97316,
-              fields: embedFields,
-              footer: { text: "MENAA Friendsgiving RSVP Portal" },
-              timestamp: new Date().toISOString(),
-            },
-          ],
+          fullName,
+          email,
+          attending,
         }),
       })
 
+      if (response.status === 409) {
+        setErrorMessage("You've already RSVP'd for Friendsgiving!")
+        setStatus("error")
+        return
+      }
+
       if (!response.ok) {
-        throw new Error(`Webhook responded with ${response.status}`)
+        const errorText = await response.text()
+        throw new Error(errorText || `Server responded with ${response.status}`)
       }
 
       setStatus("success")
-      setFormData({ clubName: "", attendees: "", notes: "" })
-      setSelectedDates([])
+      setFormData({ fullName: "", email: "", attending: "" })
     } catch (error) {
       console.error("Failed to submit RSVP", error)
       setStatus("error")
@@ -210,9 +178,9 @@ export default function EventsPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.3 }}
           >
-            RSVP your club for a{" "}
+            RSVP for{" "}
             <span className="bg-gradient-to-r from-amber-300 via-rose-200 to-emerald-200 bg-clip-text text-transparent">
-              MENA Friendsgiving
+              MENAA Friendsgiving
             </span>
             .
           </motion.h1>
@@ -223,9 +191,9 @@ export default function EventsPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.4 }}
           >
-            We’re weaving warm spices, cultural rhythms, and community gratitude
-            into one table. Share your club’s details so we can set the scene
-            and reserve your seats.
+            We&apos;re weaving warm spices, cultural rhythms, and community gratitude
+            into one table. Join us for an evening of food, fellowship, and
+            celebration.
           </motion.p>
 
           <motion.div
@@ -238,10 +206,10 @@ export default function EventsPage() {
               <MapPin className="h-10 w-10 text-emerald-200" />
               <div>
                 <p className="text-sm uppercase tracking-[0.2em] text-slate-400">
-                  Gathering Place
+                  Location
                 </p>
                 <p className="text-base text-slate-100">
-                  MENAA Commons · Warm + welcoming
+                  3968 Twilight Drive, San Jose, CA 95124
                 </p>
               </div>
             </div>
@@ -249,9 +217,11 @@ export default function EventsPage() {
               <Clock className="h-10 w-10 text-amber-200" />
               <div>
                 <p className="text-sm uppercase tracking-[0.2em] text-slate-400">
-                  Event Window
+                  Date & Time
                 </p>
-                <p className="text-base text-slate-100">4:00 PM – 8:00 PM</p>
+                <p className="text-base text-slate-100">
+                  Saturday, November 23 · 4:00 PM – 8:00 PM
+                </p>
               </div>
             </div>
           </motion.div>
@@ -280,14 +250,14 @@ export default function EventsPage() {
               transition={{ duration: 1.2, delay: 0.35 }}
             />
 
-            <div className="relative z-10" style={{ transform: "translateZ(40px)" }}>
+              <div className="relative z-10" style={{ transform: "translateZ(40px)" }}>
               <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
                 <div>
                   <p className="text-sm uppercase tracking-[0.35em] text-emerald-200/70">
-                    Reservation Form
+                    RSVP Form
                   </p>
                   <h2 className="text-2xl font-semibold text-slate-50">
-                    Friendsgiving Club RSVP
+                    Friendsgiving RSVP
                   </h2>
                 </div>
                 <motion.span
@@ -302,22 +272,22 @@ export default function EventsPage() {
               <form className="space-y-6" onSubmit={handleSubmit}>
                 <div className="space-y-2">
                   <label
-                    htmlFor="clubName"
+                    htmlFor="fullName"
                     className="text-sm font-medium text-slate-200"
                   >
-                    Club or organization name
+                    Full Name
                   </label>
                   <input
-                    id="clubName"
-                    name="clubName"
+                    id="fullName"
+                    name="fullName"
                     type="text"
                     required
-                    placeholder="MENAA Cultural Society"
-                    value={formData.clubName}
+                    placeholder="Enter your full name"
+                    value={formData.fullName}
                     onChange={(event) =>
                       setFormData((prev) => ({
                         ...prev,
-                        clubName: event.target.value,
+                        fullName: event.target.value,
                       }))
                     }
                     className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-base text-slate-100 outline-none transition focus:border-emerald-300/70 focus:bg-emerald-400/10"
@@ -326,23 +296,22 @@ export default function EventsPage() {
 
                 <div className="space-y-2">
                   <label
-                    htmlFor="attendees"
+                    htmlFor="email"
                     className="text-sm font-medium text-slate-200"
                   >
-                    Expected number of members attending
+                    Email Address
                   </label>
                   <input
-                    id="attendees"
-                    name="attendees"
-                    type="number"
-                    min={1}
+                    id="email"
+                    name="email"
+                    type="email"
                     required
-                    placeholder="e.g. 15"
-                    value={formData.attendees}
+                    placeholder="your.email@example.com"
+                    value={formData.email}
                     onChange={(event) =>
                       setFormData((prev) => ({
                         ...prev,
-                        attendees: event.target.value,
+                        email: event.target.value,
                       }))
                     }
                     className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-base text-slate-100 outline-none transition focus:border-emerald-300/70 focus:bg-emerald-400/10"
@@ -351,16 +320,24 @@ export default function EventsPage() {
 
                 <div className="space-y-3">
                   <p className="text-sm font-medium text-slate-200">
-                    Which date(s) work best for your club?
+                    Will you be attending?
                   </p>
                   <div className="grid gap-3 sm:grid-cols-2">
-                    {RSVP_DATES.map(({ label, value }) => {
-                      const isActive = selectedDates.includes(value)
+                    {[
+                      { label: "Yes, I'll be there! 🍂", value: "yes" },
+                      { label: "No, I can't make it", value: "no" },
+                    ].map(({ label, value }) => {
+                      const isActive = formData.attending === value
                       return (
                         <motion.button
                           key={value}
                           type="button"
-                          onClick={() => toggleDate(value)}
+                          onClick={() =>
+                            setFormData((prev) => ({
+                              ...prev,
+                              attending: value as "yes" | "no",
+                            }))
+                          }
                           aria-pressed={isActive}
                           whileTap={{ scale: 0.97 }}
                           className={`rounded-2xl border px-4 py-3 text-left text-sm font-medium transition ${
@@ -376,29 +353,6 @@ export default function EventsPage() {
                   </div>
                 </div>
 
-                <div className="space-y-2">
-                  <label
-                    htmlFor="notes"
-                    className="text-sm font-medium text-slate-200"
-                  >
-                    Cultural offerings or special notes (optional)
-                  </label>
-                  <textarea
-                    id="notes"
-                    name="notes"
-                    rows={3}
-                    placeholder="Share a dish, performance idea, or accessibility need."
-                    value={formData.notes}
-                    onChange={(event) =>
-                      setFormData((prev) => ({
-                        ...prev,
-                        notes: event.target.value,
-                      }))
-                    }
-                    className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-base text-slate-100 outline-none transition focus:border-emerald-300/70 focus:bg-emerald-400/10"
-                  />
-                </div>
-
                 {errorMessage && (
                   <div className="rounded-2xl border border-rose-400/50 bg-rose-500/10 px-4 py-3 text-sm text-rose-200">
                     {errorMessage}
@@ -412,8 +366,8 @@ export default function EventsPage() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.3 }}
                   >
-                    Thank you! We’ve received your RSVP and will follow up with
-                    hosting details soon.
+                    Thank you! We&apos;ve received your RSVP. We look forward to
+                    celebrating Friendsgiving with you!
                   </motion.div>
                 )}
 
