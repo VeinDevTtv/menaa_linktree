@@ -221,7 +221,7 @@ export default function EventsPage() {
                   Date & Time
                 </p>
                 <p className="text-base text-slate-100">
-                  Saturday, November 23 · 4:00 PM – 8:00 PM
+                  Sunday, November 23 · 4:00 PM – 8:00 PM
                 </p>
               </div>
             </div>
