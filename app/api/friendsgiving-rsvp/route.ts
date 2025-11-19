@@ -28,7 +28,7 @@ export async function POST(req: Request) {
         { name: "Attending", value: data.attending === "yes" ? "Yes 🍂" : "No", inline: true },
         { name: "Event Date", value: "Saturday, November 23, 2024", inline: true },
         { name: "Time", value: "4:00 PM - 8:00 PM", inline: true },
-        { name: "Location", value: "3968 Twilight Drive, San Jose, CA 95124", inline: true },
+        { name: "Location", value: "Houge Park Twilight Drive & white oaks avenue, san jose, ca, 95124", inline: true },
       ],
       timestamp: new Date().toISOString(),
       footer: {

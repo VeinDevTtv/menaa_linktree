@@ -209,7 +209,7 @@ export default function EventsPage() {
                   Location
                 </p>
                 <p className="text-base text-slate-100">
-                  3968 Twilight Drive, San Jose, CA 95124
+                  Houge Park Twilight Drive & white oaks avenue, san jose, ca, 95124
                 </p>
               </div>
             </div>
