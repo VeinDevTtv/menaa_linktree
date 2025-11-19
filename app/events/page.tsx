@@ -209,7 +209,8 @@ export default function EventsPage() {
                   Location
                 </p>
                 <p className="text-base text-slate-100">
-                  Houge Park Twilight Drive & white oaks avenue, san jose, ca, 95124
+                  <span className="text-xl font-semibold text-emerald-200">Houge Park</span>{" "}
+                  Twilight Drive & white oaks avenue, san jose, ca, 95124
                 </p>
               </div>
             </div>
