@@ -3,6 +3,7 @@
 import Link from "next/link"
 import Image from "next/image"
 import { motion } from "framer-motion"
+import { useState } from "react"
 import {
   ArrowLeft,
   CalendarDays,
@@ -61,6 +62,8 @@ const pastEvents = [
   },
 ]
 
+const upcomingEvents: typeof pastEvents = []
+
 const floatingAccents = [
   { Icon: Sparkles, top: "12%", left: "10%", delay: 0 },
   { Icon: Users, top: "22%", right: "12%", delay: 1.2 },
@@ -69,6 +72,10 @@ const floatingAccents = [
 ]
 
 export default function EventsPage() {
+  const [viewMode, setViewMode] = useState<"upcoming" | "past">("upcoming")
+  const currentEvents = viewMode === "past" ? pastEvents : upcomingEvents
+  const hasEvents = currentEvents.length > 0
+
   return (
     <div className="relative min-h-screen overflow-hidden bg-slate-950 text-slate-100">
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(249,115,22,0.28),_transparent_55%),_radial-gradient(circle_at_bottom,_rgba(31,112,81,0.3),_transparent_55%)]" />
@@ -120,7 +127,7 @@ export default function EventsPage() {
             transition={{ duration: 0.5, delay: 0.2 }}
           >
             <Sparkles className="h-4 w-4 text-amber-200" />
-            Past Events
+            {viewMode === "past" ? "Past Events" : "Upcoming Events"}
           </motion.div>
 
           <motion.h1
@@ -144,10 +151,53 @@ export default function EventsPage() {
             Celebrating culture, connection, and community through unforgettable
             gatherings.
           </motion.p>
+
+          <motion.div
+            className="mt-8 flex flex-wrap items-center justify-center gap-4"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.5 }}
+          >
+            <button
+              onClick={() => setViewMode("upcoming")}
+              className={`inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-semibold uppercase tracking-[0.28em] transition-all ${
+                viewMode === "upcoming"
+                  ? "bg-gradient-to-r from-emerald-400 via-teal-400 to-amber-400 text-slate-900 shadow-[0_10px_40px_rgba(16,185,129,0.45)] hover:from-emerald-300 hover:via-emerald-200 hover:to-amber-200 hover:scale-105"
+                  : "border border-white/20 bg-white/5 text-slate-300 hover:border-emerald-300/40 hover:bg-emerald-500/15 hover:text-emerald-200"
+              }`}
+            >
+              <CalendarDays className="h-4 w-4" />
+              View Upcoming Events
+            </button>
+            <button
+              onClick={() => setViewMode("past")}
+              className={`inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-semibold uppercase tracking-[0.28em] transition-all ${
+                viewMode === "past"
+                  ? "bg-gradient-to-r from-emerald-400 via-teal-400 to-amber-400 text-slate-900 shadow-[0_10px_40px_rgba(16,185,129,0.45)] hover:from-emerald-300 hover:via-emerald-200 hover:to-amber-200 hover:scale-105"
+                  : "border border-white/20 bg-white/5 text-slate-300 hover:border-emerald-300/40 hover:bg-emerald-500/15 hover:text-emerald-200"
+              }`}
+            >
+              <CalendarDays className="h-4 w-4" />
+              View Past Events
+            </button>
+          </motion.div>
         </motion.div>
 
-        <div className="grid gap-12 lg:gap-16">
-          {pastEvents.map((event, eventIndex) => (
+        {!hasEvents && viewMode === "upcoming" ? (
+          <motion.div
+            className="text-center py-24"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+          >
+            <p className="text-2xl text-slate-400 mb-4">No events for now...</p>
+            <p className="text-slate-500">
+              Check back soon for upcoming community events!
+            </p>
+          </motion.div>
+        ) : (
+          <div className="grid gap-12 lg:gap-16">
+            {currentEvents.map((event, eventIndex) => (
             <motion.article
               key={event.id}
               className="group relative overflow-hidden rounded-3xl border border-white/10 bg-white/5 backdrop-blur-xl"
@@ -270,8 +320,9 @@ export default function EventsPage() {
                 </div>
               </div>
             </motion.article>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
 
         <motion.div
           className="mt-16 text-center"
@@ -281,7 +332,9 @@ export default function EventsPage() {
           transition={{ duration: 0.6, delay: 0.5 }}
         >
           <p className="text-slate-400 mb-4">
-            More events coming soon! Stay tuned for announcements.
+            {viewMode === "past"
+              ? "More events coming soon! Stay tuned for announcements."
+              : "Check back soon for upcoming community events!"}
           </p>
           <Link
             href="/"
