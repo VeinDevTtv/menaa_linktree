@@ -116,7 +116,7 @@ export default function FifaNightRecapPage() {
               >
                 <span className="inline-flex items-center gap-2 rounded-full bg-emerald-500/10 px-4 py-2 border border-emerald-400/20">
                   <Calendar className="w-4 h-4" />
-                  November 5, 2025
+                  November 23, 2025
                 </span>
                 <span className="inline-flex items-center gap-2 rounded-full bg-emerald-500/10 px-4 py-2 border border-emerald-400/20">
                   <Clock className="w-4 h-4" />

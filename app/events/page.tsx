@@ -18,8 +18,8 @@ import { ArabesquePatterns } from "@/components/arabesque-patterns"
 const pastEvents = [
   {
     id: "friendsgiving-2024",
-    title: "MENAA Friendsgiving",
-    date: "November 23, 2024",
+    title: "MENAA Welcome",
+    date: "November 5, 2024",
     time: "4:00 PM – 8:00 PM",
     location: "Houge Park, San Jose, CA",
     description:
@@ -37,7 +37,7 @@ const pastEvents = [
   {
     id: "fifa-night-2024",
     title: "MENAA FIFA Night",
-    date: "November 5, 2024",
+    date: "November 23, 2025",
     time: "4:00 PM – 6:00 PM",
     location: "L73 · Social & Humanities Village",
     description:
