@@ -1,128 +1,74 @@
- "use client"
- 
- import Link from "next/link"
- import {
-   type FormEvent,
-   type MouseEvent as ReactMouseEvent,
-   useRef,
-   useState,
- } from "react"
+"use client"
+
+import Link from "next/link"
+import Image from "next/image"
 import { motion } from "framer-motion"
 import {
-   ArrowLeft,
+  ArrowLeft,
   CalendarDays,
-  Clock,
-  Flame,
+  Camera,
   MapPin,
+  Clock,
   Sparkles,
   Users,
 } from "lucide-react"
 
 import { ArabesquePatterns } from "@/components/arabesque-patterns"
 
-const API_ENDPOINT = "/api/friendsgiving-rsvp"
-
-type FormStatus = "idle" | "loading" | "success" | "error"
+const pastEvents = [
+  {
+    id: "friendsgiving-2024",
+    title: "MENAA Friendsgiving",
+    date: "November 23, 2024",
+    time: "4:00 PM – 8:00 PM",
+    location: "Houge Park, San Jose, CA",
+    description:
+      "We wove warm spices, cultural rhythms, and community gratitude into one table. An evening of food, fellowship, and celebration.",
+    images: [
+      "/events/menaaevent1_1.jpg",
+      "/events/menaaevent1_2.jpg",
+      "/events/menaaevent1_3jpg.jpg",
+      "/events/menaaevent1_4.jpg",
+      "/events/menaaevent1_5.jpg",
+    ],
+    gradient: "from-amber-500/20 via-orange-500/20 to-rose-500/20",
+    borderColor: "border-amber-400/30",
+  },
+  {
+    id: "fifa-night-2024",
+    title: "MENAA FIFA Night",
+    date: "November 5, 2024",
+    time: "4:00 PM – 6:00 PM",
+    location: "L73 · Social & Humanities Village",
+    description:
+      "Heart-pounding matches, MENAA community pride, and electric fan atmosphere. Champions were crowned on the digital pitch.",
+    images: [
+      "/events/menaaevent2_1.jpg",
+      "/events/menaaevent2_2.jpg",
+      "/events/menaaevent2_3.jpg",
+      "/events/menaaevent2_4.jpg",
+      "/events/menaaevent2_5.jpg",
+      "/events/menaaevent2_6.jpg",
+      "/events/menaaevent2_7.jpg",
+      "/events/menaaevent2_8.jpg",
+      "/events/menaaevent2_9.jpg",
+      "/events/menaaevent2_10.jpg",
+      "/events/menaaevent2_11.jpg",
+    ],
+    gradient: "from-emerald-500/20 via-green-500/20 to-lime-500/20",
+    borderColor: "border-emerald-400/30",
+    link: "/events/fifa-night-gallery",
+  },
+]
 
 const floatingAccents = [
   { Icon: Sparkles, top: "12%", left: "10%", delay: 0 },
   { Icon: Users, top: "22%", right: "12%", delay: 1.2 },
-  { Icon: Flame, bottom: "18%", left: "16%", delay: 0.6 },
+  { Icon: Camera, bottom: "18%", left: "16%", delay: 0.6 },
   { Icon: CalendarDays, bottom: "20%", right: "8%", delay: 1.8 },
 ]
 
 export default function EventsPage() {
-  const [formData, setFormData] = useState({
-    fullName: "",
-    email: "",
-    attending: "" as "yes" | "no" | "",
-  })
-  const [status, setStatus] = useState<FormStatus>("idle")
-  const [errorMessage, setErrorMessage] = useState<string | null>(null)
-
-  const cardRef = useRef<HTMLDivElement>(null)
-  const [tilt, setTilt] = useState({ x: 0, y: 0 })
-
-  const isSubmitting = status === "loading"
-  const isSuccess = status === "success"
-
-  const handleTilt = (event: ReactMouseEvent<HTMLDivElement>) => {
-    const element = cardRef.current
-    if (!element) return
-
-    const bounds = element.getBoundingClientRect()
-    const relativeX = event.clientX - bounds.left
-    const relativeY = event.clientY - bounds.top
-
-    const rotateY = ((relativeX / bounds.width) - 0.5) * 14
-    const rotateX = -((relativeY / bounds.height) - 0.5) * 12
-
-    setTilt({ x: rotateX, y: rotateY })
-  }
-
-  const resetTilt = () => setTilt({ x: 0, y: 0 })
-
-  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
-
-    const fullName = formData.fullName.trim()
-    const email = formData.email.trim()
-    const attending = formData.attending
-
-    if (!fullName) {
-      setErrorMessage("Please enter your full name.")
-      setStatus("error")
-      return
-    }
-
-    if (!email) {
-      setErrorMessage("Please enter your email address.")
-      setStatus("error")
-      return
-    }
-
-    if (!attending) {
-      setErrorMessage("Please select whether you're attending.")
-      setStatus("error")
-      return
-    }
-
-    setErrorMessage(null)
-    setStatus("loading")
-
-    try {
-      const response = await fetch(API_ENDPOINT, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          fullName,
-          email,
-          attending,
-        }),
-      })
-
-      if (response.status === 409) {
-        setErrorMessage("You've already RSVP'd for Friendsgiving!")
-        setStatus("error")
-        return
-      }
-
-      if (!response.ok) {
-        const errorText = await response.text()
-        throw new Error(errorText || `Server responded with ${response.status}`)
-      }
-
-      setStatus("success")
-      setFormData({ fullName: "", email: "", attending: "" })
-    } catch (error) {
-      console.error("Failed to submit RSVP", error)
-      setStatus("error")
-      setErrorMessage(
-        "We couldn't send your RSVP. Please try again or reach out directly.",
-      )
-    }
-  }
-
   return (
     <div className="relative min-h-screen overflow-hidden bg-slate-950 text-slate-100">
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(249,115,22,0.28),_transparent_55%),_radial-gradient(circle_at_bottom,_rgba(31,112,81,0.3),_transparent_55%)]" />
@@ -160,238 +106,192 @@ export default function EventsPage() {
         </motion.span>
       ))}
 
-      <div className="relative z-10 mx-auto flex min-h-screen w-full max-w-6xl flex-col items-center justify-center gap-16 px-6 py-24 sm:px-10 lg:flex-row">
-        <div className="max-w-xl space-y-10 text-center lg:text-left">
+      <div className="relative z-10 mx-auto min-h-screen w-full max-w-6xl px-6 py-24 sm:px-10">
+        <motion.div
+          className="mb-16 text-center"
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+        >
           <motion.div
-            className="inline-flex items-center gap-2 rounded-full bg-amber-500/10 px-5 py-2 text-sm font-medium uppercase tracking-[0.28em] text-amber-300/90 shadow-[0_0_0_1px_rgba(244,114,35,0.35)]"
-            initial={{ opacity: 0, y: -12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
+            className="mb-6 inline-flex items-center gap-2 rounded-full bg-amber-500/10 px-5 py-2 text-sm font-medium uppercase tracking-[0.28em] text-amber-300/90 shadow-[0_0_0_1px_rgba(244,114,35,0.35)]"
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
           >
             <Sparkles className="h-4 w-4 text-amber-200" />
-            MENAA Friendsgiving
+            Past Events
           </motion.div>
 
           <motion.h1
-            className="text-4xl font-semibold leading-tight text-slate-50 sm:text-5xl"
-            initial={{ opacity: 0, y: 18 }}
+            className="text-4xl font-semibold leading-tight text-slate-50 sm:text-5xl lg:text-6xl"
+            initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.3 }}
           >
-            RSVP for{" "}
+            Our{" "}
             <span className="bg-gradient-to-r from-amber-300 via-rose-200 to-emerald-200 bg-clip-text text-transparent">
-              MENAA Friendsgiving
+              Community Events
             </span>
-            .
           </motion.h1>
 
           <motion.p
-            className="text-lg text-slate-300"
-            initial={{ opacity: 0, y: 18 }}
+            className="mt-4 text-lg text-slate-300 max-w-2xl mx-auto"
+            initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.4 }}
           >
-            We&apos;re weaving warm spices, cultural rhythms, and community gratitude
-            into one table. Join us for an evening of food, fellowship, and
-            celebration.
+            Celebrating culture, connection, and community through unforgettable
+            gatherings.
           </motion.p>
+        </motion.div>
 
-          <motion.div
-            className="grid gap-4 text-left sm:grid-cols-2"
-            initial={{ opacity: 0, y: 18 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.5 }}
-          >
-            <div className="flex items-center gap-4 rounded-2xl border border-white/5 bg-white/5 px-4 py-4 backdrop-blur">
-              <MapPin className="h-10 w-10 text-emerald-200" />
-              <div>
-                <p className="text-sm uppercase tracking-[0.2em] text-slate-400">
-                  Location
-                </p>
-                <p className="text-base text-slate-100">
-                  <span className="text-xl font-semibold text-emerald-200">Houge Park</span>{" "}
-                  Twilight Drive & white oaks avenue, san jose, ca, 95124
-                </p>
+        <div className="grid gap-12 lg:gap-16">
+          {pastEvents.map((event, eventIndex) => (
+            <motion.article
+              key={event.id}
+              className="group relative overflow-hidden rounded-3xl border border-white/10 bg-white/5 backdrop-blur-xl"
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-100px" }}
+              transition={{ duration: 0.7, delay: eventIndex * 0.15 }}
+            >
+              <div
+                className={`absolute inset-0 bg-gradient-to-br ${event.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-500`}
+              />
+
+              <div className="relative grid lg:grid-cols-2 gap-0">
+                {/* Image Gallery Section */}
+                <div className="relative h-[400px] lg:h-auto overflow-hidden">
+                  <div className="absolute inset-0 grid grid-cols-2 gap-2 p-4">
+                    {event.images.slice(0, 4).map((image, idx) => (
+                      <motion.div
+                        key={idx}
+                        className="relative overflow-hidden rounded-xl"
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        whileInView={{ opacity: 1, scale: 1 }}
+                        viewport={{ once: true }}
+                        transition={{
+                          duration: 0.5,
+                          delay: eventIndex * 0.15 + idx * 0.1,
+                        }}
+                        whileHover={{ scale: 1.05, zIndex: 10 }}
+                      >
+                        <Image
+                          src={image}
+                          alt={`${event.title} photo ${idx + 1}`}
+                          fill
+                          className="object-cover transition-transform duration-500 group-hover:scale-110"
+                          sizes="(max-width: 1024px) 50vw, 25vw"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                      </motion.div>
+                    ))}
+                  </div>
+                  {event.images.length > 4 && (
+                    <div className="absolute bottom-4 right-4 rounded-full bg-black/60 backdrop-blur-md px-4 py-2 text-sm font-medium text-white border border-white/20">
+                      +{event.images.length - 4} more photos
+                    </div>
+                  )}
+                </div>
+
+                {/* Event Details Section */}
+                <div className="relative p-8 lg:p-12 flex flex-col justify-center">
+                  <div className="mb-6">
+                    <motion.h2
+                      className="text-3xl lg:text-4xl font-bold text-slate-50 mb-4"
+                      initial={{ opacity: 0, x: 20 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.6, delay: eventIndex * 0.15 + 0.2 }}
+                    >
+                      {event.title}
+                    </motion.h2>
+                    <motion.p
+                      className="text-lg text-slate-300 leading-relaxed"
+                      initial={{ opacity: 0, x: 20 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.6, delay: eventIndex * 0.15 + 0.3 }}
+                    >
+                      {event.description}
+                    </motion.p>
+                  </div>
+
+                  <div className="space-y-4 mb-8">
+                    <motion.div
+                      className="flex items-center gap-3 text-slate-300"
+                      initial={{ opacity: 0, x: 20 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.6, delay: eventIndex * 0.15 + 0.4 }}
+                    >
+                      <CalendarDays className="h-5 w-5 text-amber-300" />
+                      <span className="text-base">{event.date}</span>
+                    </motion.div>
+                    <motion.div
+                      className="flex items-center gap-3 text-slate-300"
+                      initial={{ opacity: 0, x: 20 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.6, delay: eventIndex * 0.15 + 0.5 }}
+                    >
+                      <Clock className="h-5 w-5 text-emerald-300" />
+                      <span className="text-base">{event.time}</span>
+                    </motion.div>
+                    <motion.div
+                      className="flex items-center gap-3 text-slate-300"
+                      initial={{ opacity: 0, x: 20 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.6, delay: eventIndex * 0.15 + 0.6 }}
+                    >
+                      <MapPin className="h-5 w-5 text-rose-300" />
+                      <span className="text-base">{event.location}</span>
+                    </motion.div>
+                  </div>
+
+                  {event.link && (
+                    <motion.div
+                      initial={{ opacity: 0, x: 20 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.6, delay: eventIndex * 0.15 + 0.7 }}
+                    >
+                      <Link
+                        href={event.link}
+                        className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-emerald-400 via-teal-400 to-amber-400 px-6 py-3 text-sm font-semibold uppercase tracking-[0.28em] text-slate-900 shadow-[0_10px_40px_rgba(16,185,129,0.45)] transition hover:from-emerald-300 hover:via-emerald-200 hover:to-amber-200 hover:scale-105"
+                      >
+                        <Camera className="h-4 w-4" />
+                        View Gallery
+                      </Link>
+                    </motion.div>
+                  )}
+                </div>
               </div>
-            </div>
-            <div className="flex items-center gap-4 rounded-2xl border border-white/5 bg-white/5 px-4 py-4 backdrop-blur">
-              <Clock className="h-10 w-10 text-amber-200" />
-              <div>
-                <p className="text-sm uppercase tracking-[0.2em] text-slate-400">
-                  Date & Time
-                </p>
-                <p className="text-base text-slate-100">
-                  Sunday, November 23 · 4:00 PM – 8:00 PM
-                </p>
-              </div>
-            </div>
-          </motion.div>
+            </motion.article>
+          ))}
         </div>
 
         <motion.div
-          ref={cardRef}
-          className="relative w-full max-w-xl rounded-[32px] border border-white/10 bg-white/10 p-[1px] shadow-[0_20px_80px_rgba(15,118,110,0.25)]"
-          style={{ transformStyle: "preserve-3d" }}
-          animate={{ rotateX: tilt.x, rotateY: tilt.y }}
-          transition={{ type: "spring", stiffness: 160, damping: 18, mass: 0.9 }}
-          onMouseMove={handleTilt}
-          onMouseLeave={resetTilt}
+          className="mt-16 text-center"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: 0.5 }}
         >
-          <div className="relative h-full w-full overflow-hidden rounded-[30px] bg-gradient-to-br from-slate-900/80 via-slate-900/55 to-emerald-950/40 p-8 backdrop-blur-xl">
-            <motion.div
-              className="pointer-events-none absolute -left-24 top-12 h-48 w-48 rounded-full bg-emerald-400/20 blur-3xl"
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 1.2, delay: 0.2 }}
-            />
-            <motion.div
-              className="pointer-events-none absolute -right-16 bottom-10 h-52 w-52 rounded-full bg-amber-500/25 blur-3xl"
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 1.2, delay: 0.35 }}
-            />
-
-              <div className="relative z-10" style={{ transform: "translateZ(40px)" }}>
-              <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
-                <div>
-                  <p className="text-sm uppercase tracking-[0.35em] text-emerald-200/70">
-                    RSVP Form
-                  </p>
-                  <h2 className="text-2xl font-semibold text-slate-50">
-                    Friendsgiving RSVP
-                  </h2>
-                </div>
-                <motion.span
-                  className="rounded-full bg-emerald-400/10 px-4 py-2 text-sm font-medium text-emerald-200"
-                  animate={{ y: [0, -4, 0] }}
-                  transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-                >
-                  Seats filling fast
-                </motion.span>
-              </div>
-
-              <form className="space-y-6" onSubmit={handleSubmit}>
-                <div className="space-y-2">
-                  <label
-                    htmlFor="fullName"
-                    className="text-sm font-medium text-slate-200"
-                  >
-                    Full Name
-                  </label>
-                  <input
-                    id="fullName"
-                    name="fullName"
-                    type="text"
-                    required
-                    placeholder="Enter your full name"
-                    value={formData.fullName}
-                    onChange={(event) =>
-                      setFormData((prev) => ({
-                        ...prev,
-                        fullName: event.target.value,
-                      }))
-                    }
-                    className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-base text-slate-100 outline-none transition focus:border-emerald-300/70 focus:bg-emerald-400/10"
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <label
-                    htmlFor="email"
-                    className="text-sm font-medium text-slate-200"
-                  >
-                    Email Address
-                  </label>
-                  <input
-                    id="email"
-                    name="email"
-                    type="email"
-                    required
-                    placeholder="your.email@example.com"
-                    value={formData.email}
-                    onChange={(event) =>
-                      setFormData((prev) => ({
-                        ...prev,
-                        email: event.target.value,
-                      }))
-                    }
-                    className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-base text-slate-100 outline-none transition focus:border-emerald-300/70 focus:bg-emerald-400/10"
-                  />
-                </div>
-
-                <div className="space-y-3">
-                  <p className="text-sm font-medium text-slate-200">
-                    Will you be attending?
-                  </p>
-                  <div className="grid gap-3 sm:grid-cols-2">
-                    {[
-                      { label: "Yes, I'll be there! 🍂", value: "yes" },
-                      { label: "No, I can't make it", value: "no" },
-                    ].map(({ label, value }) => {
-                      const isActive = formData.attending === value
-                      return (
-                        <motion.button
-                          key={value}
-                          type="button"
-                          onClick={() =>
-                            setFormData((prev) => ({
-                              ...prev,
-                              attending: value as "yes" | "no",
-                            }))
-                          }
-                          aria-pressed={isActive}
-                          whileTap={{ scale: 0.97 }}
-                          className={`rounded-2xl border px-4 py-3 text-left text-sm font-medium transition ${
-                            isActive
-                              ? "border-emerald-300/70 bg-emerald-500/20 text-emerald-100 shadow-[0_0_20px_rgba(16,185,129,0.35)]"
-                              : "border-white/10 bg-white/5 text-slate-200 hover:border-emerald-300/40 hover:bg-emerald-500/10 hover:text-emerald-100"
-                          }`}
-                        >
-                          {label}
-                        </motion.button>
-                      )
-                    })}
-                  </div>
-                </div>
-
-                {errorMessage && (
-                  <div className="rounded-2xl border border-rose-400/50 bg-rose-500/10 px-4 py-3 text-sm text-rose-200">
-                    {errorMessage}
-                  </div>
-                )}
-
-                {isSuccess && (
-                  <motion.div
-                    className="rounded-2xl border border-emerald-300/60 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-100"
-                    initial={{ opacity: 0, y: 8 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.3 }}
-                  >
-                    Thank you! We&apos;ve received your RSVP. We look forward to
-                    celebrating Friendsgiving with you!
-                  </motion.div>
-                )}
-
-                <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                  <div className="flex items-center gap-2 text-xs text-slate-400">
-                    <Flame className="h-4 w-4 text-amber-300" />
-                    Taste of home, stories, and gratitude—together.
-                  </div>
-                  <motion.button
-                    type="submit"
-                    disabled={isSubmitting}
-                    whileTap={{ scale: isSubmitting ? 1 : 0.97 }}
-                    className="flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-emerald-400 via-teal-400 to-amber-400 px-6 py-3 text-sm font-semibold uppercase tracking-[0.28em] text-slate-900 shadow-[0_10px_40px_rgba(16,185,129,0.45)] transition hover:from-emerald-300 hover:via-emerald-200 hover:to-amber-200 disabled:cursor-not-allowed disabled:opacity-60"
-                  >
-                    {isSubmitting ? "Sending..." : "Submit RSVP"}
-                  </motion.button>
-                </div>
-              </form>
-            </div>
-          </div>
+          <p className="text-slate-400 mb-4">
+            More events coming soon! Stay tuned for announcements.
+          </p>
+          <Link
+            href="/"
+            className="inline-flex items-center gap-2 text-emerald-300 hover:text-emerald-200 transition-colors"
+          >
+            <Sparkles className="h-4 w-4" />
+            Back to home
+          </Link>
         </motion.div>
       </div>
     </div>
   )
 }
-
