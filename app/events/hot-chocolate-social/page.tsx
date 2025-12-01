@@ -2,7 +2,7 @@
 
 import { useState, FormEvent } from "react"
 import Link from "next/link"
-import { motion, AnimatePresence } from "framer-motion"
+import { motion, AnimatePresence, Variants } from "framer-motion"
 import {
   ArrowLeft,
   Calendar,
@@ -51,7 +51,7 @@ export default function HotChocolateSocialPage() {
     }
   }
 
-  const floatingVariants = {
+  const floatingVariants: Variants = {
     animate: {
       y: ["0%", "-10%", "0%"],
       rotate: [0, 5, 0],
