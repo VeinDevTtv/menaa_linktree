@@ -20,11 +20,11 @@ import { ArabesquePatterns } from "@/components/arabesque-patterns"
 
 const pastEvents = [
   {
-    id: "friendsgiving-2024",
+    id: "welcome-event-2025",
     title: "MENAA Welcome",
-    date: "November 5, 2024",
+    date: "November 5, 2025",
     time: "4:00 PM – 8:00 PM",
-    location: "Houge Park, San Jose, CA",
+    location: "Fireside Room",
     description:
       "We wove warm spices, cultural rhythms, and community gratitude into one table. An evening of food, fellowship, and celebration.",
     images: [
@@ -61,6 +61,25 @@ const pastEvents = [
     gradient: "from-emerald-500/20 via-green-500/20 to-lime-500/20",
     borderColor: "border-emerald-400/30",
     link: "/events/fifa-night-gallery",
+  },
+  {
+    id: "friendsgiving-2025",
+    title: "MENAA Friendsgiving",
+    date: "November 23, 2025",
+    time: "4:00 PM – 8:00 PM",
+    location: "Houge Park Twilight Drive & White Oaks Avenue, San Jose, CA 95124",
+    description:
+      "A heartwarming evening of gratitude, delicious food, and cherished friendships. We gathered to celebrate the spirit of togetherness and community.",
+    images: [
+      "/events/IMG_2982.jpg",
+      "/events/IMG_2984.jpg",
+      "/events/IMG_2985.jpg",
+      "/events/IMG_2990.jpg",
+      "/events/IMG_3017.jpg",
+    ],
+    gradient: "from-amber-500/20 via-orange-500/20 to-rose-500/20",
+    borderColor: "border-orange-400/30",
+    link: "/events/friendsgiving-gallery",
   },
 ]
 
