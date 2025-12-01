@@ -62,7 +62,26 @@ const pastEvents = [
   },
 ]
 
-const upcomingEvents: typeof pastEvents = []
+const upcomingEvents: typeof pastEvents = [
+  {
+    id: "hot-chocolate-social-2024",
+    title: "Hot Chocolate Social / Game Night",
+    date: "December 3, 2024",
+    time: "3:00 PM – 5:00 PM",
+    location: "Fireside Room",
+    description:
+      "Cozy up with a warm cup of hot chocolate, challenge your friends to board games, and enjoy a relaxing evening with the MENAA community.",
+    images: [
+      "/events/chocolate.jpg",
+      "/events/games.jpg",
+      "/events/social.jpg",
+      "/events/menaachoco.jpg",
+    ],
+    gradient: "from-amber-700/30 via-yellow-700/30 to-orange-700/30",
+    borderColor: "border-amber-600/40",
+    link: "/events/hot-chocolate-social",
+  },
+]
 
 const floatingAccents = [
   { Icon: Sparkles, top: "12%", left: "10%", delay: 0 },
