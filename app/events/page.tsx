@@ -66,17 +66,12 @@ const upcomingEvents: typeof pastEvents = [
   {
     id: "hot-chocolate-social-2024",
     title: "Hot Chocolate Social / Game Night",
-    date: "December 3, 2024",
+    date: "December 3, 2025",
     time: "3:00 PM – 5:00 PM",
     location: "Fireside Room",
     description:
       "Cozy up with a warm cup of hot chocolate, challenge your friends to board games, and enjoy a relaxing evening with the MENAA community.",
-    images: [
-      "/events/chocolate.jpg",
-      "/events/games.jpg",
-      "/events/social.jpg",
-      "/events/menaachoco.jpg",
-    ],
+    images: [],
     gradient: "from-amber-700/30 via-yellow-700/30 to-orange-700/30",
     borderColor: "border-amber-600/40",
     link: "/events/hot-chocolate-social",
@@ -331,8 +326,8 @@ export default function EventsPage() {
                         href={event.link}
                         className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-emerald-400 via-teal-400 to-amber-400 px-6 py-3 text-sm font-semibold uppercase tracking-[0.28em] text-slate-900 shadow-[0_10px_40px_rgba(16,185,129,0.45)] transition hover:from-emerald-300 hover:via-emerald-200 hover:to-amber-200 hover:scale-105"
                       >
-                        <Camera className="h-4 w-4" />
-                        View Gallery
+                        <CalendarDays className="h-4 w-4" />
+                        {viewMode === "upcoming" ? "Register" : "View Gallery"}
                       </Link>
                     </motion.div>
                   )}
