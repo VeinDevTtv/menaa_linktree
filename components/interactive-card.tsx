@@ -1,51 +1,40 @@
 "use client"
 
-import * as React from "react"
 import { cn } from "@/lib/utils"
+import { motion, HTMLMotionProps } from "framer-motion"
 
-type InteractiveCardProps = React.HTMLAttributes<HTMLDivElement>
+interface InteractiveCardProps extends HTMLMotionProps<"div"> {
+  children: React.ReactNode
+  className?: string
+  glowColor?: string
+}
 
-export function InteractiveCard({ className, onMouseMove, children, ...props }: InteractiveCardProps) {
-  const ref = React.useRef<HTMLDivElement>(null)
-
-  function handleMouseMove(e: React.MouseEvent<HTMLDivElement>) {
-    const el = ref.current
-    if (!el) return
-    const rect = el.getBoundingClientRect()
-    const x = e.clientX - rect.left
-    const y = e.clientY - rect.top
-    const px = (x / rect.width) * 2 - 1
-    const py = (y / rect.height) * 2 - 1
-
-    const rotateX = (-py * 6).toFixed(2)
-    const rotateY = (px * 6).toFixed(2)
-
-    el.style.transform = `perspective(900px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`
-    el.style.setProperty("--mouse-x", `${x}px`)
-    el.style.setProperty("--mouse-y", `${y}px`)
-    onMouseMove?.(e)
-  }
-
-  function handleMouseLeave() {
-    const el = ref.current
-    if (!el) return
-    el.style.transform = "perspective(900px) rotateX(0deg) rotateY(0deg)"
-  }
-
+export function InteractiveCard({ children, className, glowColor = "rgba(251, 191, 36, 0.3)", ...props }: InteractiveCardProps) {
   return (
-    <div
-      ref={ref}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
+    <motion.div
+      whileHover={{ y: -5, scale: 1.02 }}
+      whileTap={{ scale: 0.98 }}
       className={cn(
-        "transition-transform duration-300 will-change-transform card-spotlight",
+        "relative rounded-2xl overflow-hidden glass-panel transition-all duration-300 group",
         className
       )}
       {...props}
     >
-      {children}
-    </div>
+      {/* Inner Glow Gradient */}
+      <div
+        className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
+        style={{
+          background: `radial-gradient(circle at center, ${glowColor}, transparent 70%)`
+        }}
+      />
+
+      {/* Border Gradient */}
+      <div className="absolute inset-0 border border-white/10 rounded-2xl group-hover:border-primary/50 transition-colors duration-300 pointer-events-none" />
+
+      {/* Content */}
+      <div className="relative z-10 p-6 h-full flex flex-col">
+        {children}
+      </div>
+    </motion.div>
   )
 }
-
-
